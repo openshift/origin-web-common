@@ -9,9 +9,6 @@
     "angular": "1.5.11"
   },
   "devDependencies": {
-    "angular-mocks": "1.5.11",
-    "angular-scenario": "1.5.11",
-    "angular-utf8-base64": "0.0.5",
     "express": "3.4.4",
     "grunt": "0.4.5",
     "grunt-angular-templates": "0.5.7",
@@ -28,8 +25,6 @@
     "grunt-karma": "0.8.3",
     "grunt-ng-annotate": "^1.0.1",
     "grunt-remove": "^0.1.0",
-    "js-logger": "0.9.14",
-    "jquery": "2.1.4",
     "karma": "0.12.23",
     "karma-chrome-launcher": "0.1.4",
     "karma-coverage": "^1.1.1",
@@ -38,7 +33,6 @@
     "karma-junit-reporter": "0.2.2",
     "karma-ng-html2js-preprocessor": "~0.1",
     "karma-phantomjs-launcher": "^1.0.0",
-    "lodash": "3.10.1",
     "matchdep": "0.3.0",
     "nsp": "^2.6.1"
   },
