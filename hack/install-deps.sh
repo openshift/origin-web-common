@@ -2,8 +2,6 @@
 
 set -e
 
-OPENSHIFT_JVM_VERSION=v1.1.4
-
 STARTTIME=$(date +%s)
 
 TMPDIR="${TMPDIR:-"/tmp"}"
@@ -46,10 +44,5 @@ cmd "npm install --unsafe-perm"
 # In case upstream components change things without incrementing versions
 cmd "bower cache clean --allow-root"
 cmd "bower update --allow-root" 3
-
-cmd "rm -rf openshift-jvm"
-cmd "mkdir -p openshift-jvm"
-unset CURL_CA_BUNDLE
-curl -s https://codeload.github.com/hawtio/openshift-jvm/tar.gz/${OPENSHIFT_JVM_VERSION}-build | tar -xz -C openshift-jvm --strip-components=1
 
 ret=$?; ENDTIME=$(date +%s); echo "$0 took $(($ENDTIME - $STARTTIME)) seconds"; exit "$ret"
