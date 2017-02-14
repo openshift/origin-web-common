@@ -32,7 +32,7 @@ describe("DataService", function(){
       [{resource:'pods'},              "http://localhost:8443/api/v1/pods"],
       [{resource:'Pods'},              "http://localhost:8443/api/v1/pods"],
 
-      // Openshift resource
+      // OpenShift resource
       [{resource:'builds'                             }, "http://localhost:8443/oapi/v1/builds"],
       [{resource:'builds', namespace:"foo"            }, "http://localhost:8443/oapi/v1/namespaces/foo/builds"],
       [{resource:'builds',                  name:"bar"}, "http://localhost:8443/oapi/v1/builds/bar"],
