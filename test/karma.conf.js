@@ -28,7 +28,7 @@ module.exports = function(config) {
       "bower_components/uri.js/src/URITemplate.js",
       "bower_components/uri.js/src/jquery.URI.js",
       "bower_components/uri.js/src/URI.fragmentURI.js",
-      "bower_components/hawtio-core/hawtio-core.js",
+      "bower_components/hawtio-core/dist/hawtio-core.js",
       "bower_components/kubernetes-container-terminal/dist/container-terminal.js",
       "bower_components/hawtio-extension-service/dist/hawtio-extension-service.js",
       'src/**/*.js',
