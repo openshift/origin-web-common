@@ -4,17 +4,14 @@
  * @description
  *   Base module for openshiftCommon.
  */
-angular.module('openshiftCommon', ['kubernetesUI', 'ab-base64'])
+angular.module('openshiftCommon', ['ab-base64'])
   .config(["AuthServiceProvider", function(AuthServiceProvider) {
     AuthServiceProvider.UserStore('MemoryUserStore');
   }])
   .constant("API_CFG", _.get(window.OPENSHIFT_CONFIG, "api", {}))
   .constant("APIS_CFG", _.get(window.OPENSHIFT_CONFIG, "apis", {}))
   .constant("AUTH_CFG", _.get(window.OPENSHIFT_CONFIG, "auth", {}))
-  .constant("LOGGING_URL", _.get(window.OPENSHIFT_CONFIG, "loggingURL"))
-  .constant("METRICS_URL", _.get(window.OPENSHIFT_CONFIG, "metricsURL"))
-  .constant("LIMIT_REQUEST_OVERRIDES", _.get(window.OPENSHIFT_CONFIG, "limitRequestOverrides"))
-  .config(["$httpProvider", "AuthServiceProvider", "RedirectLoginServiceProvider", "AUTH_CFG", "API_CFG", "kubernetesContainerSocketProvider", function($httpProvider, AuthServiceProvider, RedirectLoginServiceProvider, AUTH_CFG, API_CFG, kubernetesContainerSocketProvider) {
+  .config(["$httpProvider", "AuthServiceProvider", "RedirectLoginServiceProvider", "AUTH_CFG", function($httpProvider, AuthServiceProvider, RedirectLoginServiceProvider, AUTH_CFG) {
     $httpProvider.interceptors.push('AuthInterceptor');
 
     AuthServiceProvider.LoginService('RedirectLoginService');
@@ -25,9 +22,6 @@ angular.module('openshiftCommon', ['kubernetesUI', 'ab-base64'])
     RedirectLoginServiceProvider.OAuthClientID(AUTH_CFG.oauth_client_id);
     RedirectLoginServiceProvider.OAuthAuthorizeURI(AUTH_CFG.oauth_authorize_uri);
     RedirectLoginServiceProvider.OAuthRedirectURI(URI(AUTH_CFG.oauth_redirect_base).segment("oauth").toString());
-
-    // Configure the container terminal
-    kubernetesContainerSocketProvider.WebSocketFactory = "ContainerWebSocket";
   }]);
 
 hawtioPluginLoader.addModule('openshiftCommon');
