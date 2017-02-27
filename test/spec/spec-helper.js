@@ -40,9 +40,6 @@ beforeEach(module(function ($provide) {
     .constant("API_CFG", _.get(window.OPENSHIFT_CONFIG, "api", {}))
     .constant("APIS_CFG", _.get(window.OPENSHIFT_CONFIG, "apis", {}))
     .constant("AUTH_CFG", _.get(window.OPENSHIFT_CONFIG, "auth", {}))
-    .constant("LOGGING_URL", _.get(window.OPENSHIFT_CONFIG, "loggingURL"))
-    .constant("METRICS_URL", _.get(window.OPENSHIFT_CONFIG, "metricsURL"))
-    .constant("LIMIT_REQUEST_OVERRIDES", _.get(window.OPENSHIFT_CONFIG, "limitRequestOverrides"))
     .config(function($httpProvider, AuthServiceProvider, AUTH_CFG, API_CFG) {
       AuthServiceProvider.LoginService('RedirectLoginService');
       AuthServiceProvider.LogoutService('DeleteTokenLogoutService');
