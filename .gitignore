@@ -6,4 +6,6 @@ bower_components
 phantomjsdriver.log
 .DS_Store
 test/test-results.xml
+npm-debug.log
+
 
