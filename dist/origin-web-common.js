@@ -2859,16 +2859,4 @@ angular.module('openshiftCommon')
 
     return $ws;
   }];
-}])
-
-/* A WebSocket factory for kubernetesContainerTerminal */
-.factory("ContainerWebSocket", ["API_CFG", "$ws", function(API_CFG, $ws) {
-  return function AuthWebSocket(url, protocols) {
-    var scheme;
-    if (url.indexOf("/") === 0) {
-      scheme = window.location.protocol === "http:" ? "ws://" : "wss://";
-      url = scheme + API_CFG.openshift.hostPort + url;
-    }
-    return $ws({ url: url, method: "WATCH", protocols: protocols, auth: {} });
-  };
 }]);
