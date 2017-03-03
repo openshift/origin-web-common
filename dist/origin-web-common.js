@@ -91,43 +91,60 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
   //   }
   // }
   var apisBaseURL = protocol + window.OPENSHIFT_CONFIG.apis.hostPort + window.OPENSHIFT_CONFIG.apis.prefix;
-  var apisDeferred = $.get(apisBaseURL)
-    .then(function(data) {
-      var apisDeferredVersions = [];
-      _.each(data.groups, function(apiGroup) {
-        var group = {
-          name: apiGroup.name,
-          preferredVersion: apiGroup.preferredVersion.version,
-          versions: {}
+  var getGroups = function(baseURL, hostPrefix, data) {
+    var apisDeferredVersions = [];
+    _.each(data.groups, function(apiGroup) {
+      var group = {
+        name: apiGroup.name,
+        preferredVersion: apiGroup.preferredVersion.version,
+        versions: {},
+        hostPrefix: hostPrefix
+      };
+      apis[group.name] = group;
+      _.each(apiGroup.versions, function(apiVersion) {
+        var versionStr = apiVersion.version;
+        group.versions[versionStr] = {
+          version: versionStr,
+          groupVersion: apiVersion.groupVersion
         };
-        apis[group.name] = group;
-        _.each(apiGroup.versions, function(apiVersion) {
-          var versionStr = apiVersion.version;
-          group.versions[versionStr] = {
-            version: versionStr,
-            groupVersion: apiVersion.groupVersion
-          };
-          apisDeferredVersions.push($.get(apisBaseURL + "/" + apiVersion.groupVersion)
-            .done(function(data) {
-              group.versions[versionStr].resources = _.indexBy(data.resources, 'name');
-            })
-            .fail(function(data, textStatus, jqXHR) {
-              API_DISCOVERY_ERRORS.push({
-                data: data,
-                textStatus: textStatus,
-                xhr: jqXHR
-              });
-            }));
-        });
+        apisDeferredVersions.push($.get(baseURL + "/" + apiVersion.groupVersion)
+          .done(function(data) {
+            group.versions[versionStr].resources = _.indexBy(data.resources, 'name');
+          })
+          .fail(function(data, textStatus, jqXHR) {
+            API_DISCOVERY_ERRORS.push({
+              data: data,
+              textStatus: textStatus,
+              xhr: jqXHR
+            });
+          }));
       });
-      return $.when.apply(this, apisDeferredVersions);
-    }, function(data, textStatus, jqXHR) {
+    });
+    return $.when.apply(this, apisDeferredVersions);
+  };
+  var apisDeferred = $.get(apisBaseURL)
+    .then(_.partial(getGroups, apisBaseURL, null), function(data, textStatus, jqXHR) {
       API_DISCOVERY_ERRORS.push({
         data: data,
         textStatus: textStatus,
         xhr: jqXHR
       });
     });
+
+  // Additional servers can be defined for debugging and prototyping against new servers not yet served by the aggregator
+  // There can not be any conflicts in the groups/resources from these API servers.
+  var additionalDeferreds = [];
+  _.each(window.OPENSHIFT_CONFIG.additionalServers, function(server) {
+   var baseURL = server.protocol + "://" + server.hostPort + server.prefix;
+   additionalDeferreds.push($.get(baseURL)
+    .then(_.partial(getGroups, baseURL, server), function(data, textStatus, jqXHR) {
+      API_DISCOVERY_ERRORS.push({
+        data: data,
+        textStatus: textStatus,
+        xhr: jqXHR
+      });
+    }));
+  });
 
   // Will be called on success or failure
   var discoveryFinished = function() {
@@ -139,7 +156,13 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
     }
     next();
   };
-  $.when(k8sDeferred,osDeferred,apisDeferred).always(discoveryFinished);
+  var allDeferreds = [
+    k8sDeferred,
+    osDeferred,
+    apisDeferred
+  ];
+  allDeferreds = allDeferreds.concat(additionalDeferreds);
+  $.when.apply(this, allDeferreds).always(discoveryFinished);
 });
 
 
@@ -393,17 +416,21 @@ angular.module('openshiftCommon')
 
     resource = toResourceGroupVersion(resource);
     var primaryResource = resource.primaryResource();
-
+    var discoveredResource;
     // API info for resources in an API group, if the resource was not found during discovery return undefined
     if (resource.group) {
-      if (!_.get(APIS_CFG, ["groups", resource.group, "versions", resource.version, "resources", primaryResource])) {
+      discoveredResource = _.get(APIS_CFG, ["groups", resource.group, "versions", resource.version, "resources", primaryResource]);
+      if (!discoveredResource) {
         return undefined;
       }
+      var hostPrefixObj = _.get(APIS_CFG, ["groups", resource.group, 'hostPrefix']) || APIS_CFG;
       return {
-        hostPort: APIS_CFG.hostPort,
-        prefix:   APIS_CFG.prefix,
+        protocol: hostPrefixObj.protocol,
+        hostPort: hostPrefixObj.hostPort,
+        prefix:   hostPrefixObj.prefix,
         group:    resource.group,
-        version:  resource.version
+        version:  resource.version,
+        namespaced: discoveredResource.namespaced
       };
     }
 
@@ -412,13 +439,15 @@ angular.module('openshiftCommon')
     var api;
     for (var apiName in API_CFG) {
       api = API_CFG[apiName];
-      if (!_.get(api, ["resources", resource.version, primaryResource])) {
+      discoveredResource = _.get(api, ["resources", resource.version, primaryResource]);
+      if (!discoveredResource) {
         continue;
       }
       return {
         hostPort: api.hostPort,
         prefix:   api.prefix,
-        version:  resource.version
+        version:  resource.version,
+        namespaced: discoveredResource.namespaced
       };
     }
     return undefined;
@@ -2193,7 +2222,12 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
       params.namespace = context.namespace;
     }
 
-    var namespaceInPath = params.namespace;
+    if (apiInfo.namespaced && !params.namespace) {
+      Logger.error("_urlForResource called for a namespaced resource but no namespace provided", resource, arguments);
+      return null;
+    }
+
+    var namespaceInPath = apiInfo.namespaced;
     var namespace = null;
     if (namespaceInPath) {
       namespace = params.namespace;
@@ -2202,7 +2236,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
     }
     var template;
     var templateOptions = {
-      protocol: protocol,
+      protocol: apiInfo.protocol || protocol,
       hostPort: apiInfo.hostPort,
       prefix: apiInfo.prefix,
       group: apiInfo.group,

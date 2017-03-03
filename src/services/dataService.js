@@ -1223,7 +1223,12 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
       params.namespace = context.namespace;
     }
 
-    var namespaceInPath = params.namespace;
+    if (apiInfo.namespaced && !params.namespace) {
+      Logger.error("_urlForResource called for a namespaced resource but no namespace provided", resource, arguments);
+      return null;
+    }
+
+    var namespaceInPath = apiInfo.namespaced;
     var namespace = null;
     if (namespaceInPath) {
       namespace = params.namespace;
@@ -1232,7 +1237,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
     }
     var template;
     var templateOptions = {
-      protocol: protocol,
+      protocol: apiInfo.protocol || protocol,
       hostPort: apiInfo.hostPort,
       prefix: apiInfo.prefix,
       group: apiInfo.group,
