@@ -91,43 +91,60 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
   //   }
   // }
   var apisBaseURL = protocol + window.OPENSHIFT_CONFIG.apis.hostPort + window.OPENSHIFT_CONFIG.apis.prefix;
-  var apisDeferred = $.get(apisBaseURL)
-    .then(function(data) {
-      var apisDeferredVersions = [];
-      _.each(data.groups, function(apiGroup) {
-        var group = {
-          name: apiGroup.name,
-          preferredVersion: apiGroup.preferredVersion.version,
-          versions: {}
+  var getGroups = function(baseURL, hostPrefix, data) {
+    var apisDeferredVersions = [];
+    _.each(data.groups, function(apiGroup) {
+      var group = {
+        name: apiGroup.name,
+        preferredVersion: apiGroup.preferredVersion.version,
+        versions: {},
+        hostPrefix: hostPrefix
+      };
+      apis[group.name] = group;
+      _.each(apiGroup.versions, function(apiVersion) {
+        var versionStr = apiVersion.version;
+        group.versions[versionStr] = {
+          version: versionStr,
+          groupVersion: apiVersion.groupVersion
         };
-        apis[group.name] = group;
-        _.each(apiGroup.versions, function(apiVersion) {
-          var versionStr = apiVersion.version;
-          group.versions[versionStr] = {
-            version: versionStr,
-            groupVersion: apiVersion.groupVersion
-          };
-          apisDeferredVersions.push($.get(apisBaseURL + "/" + apiVersion.groupVersion)
-            .done(function(data) {
-              group.versions[versionStr].resources = _.indexBy(data.resources, 'name');
-            })
-            .fail(function(data, textStatus, jqXHR) {
-              API_DISCOVERY_ERRORS.push({
-                data: data,
-                textStatus: textStatus,
-                xhr: jqXHR
-              });
-            }));
-        });
+        apisDeferredVersions.push($.get(baseURL + "/" + apiVersion.groupVersion)
+          .done(function(data) {
+            group.versions[versionStr].resources = _.indexBy(data.resources, 'name');
+          })
+          .fail(function(data, textStatus, jqXHR) {
+            API_DISCOVERY_ERRORS.push({
+              data: data,
+              textStatus: textStatus,
+              xhr: jqXHR
+            });
+          }));
       });
-      return $.when.apply(this, apisDeferredVersions);
-    }, function(data, textStatus, jqXHR) {
+    });
+    return $.when.apply(this, apisDeferredVersions);
+  };
+  var apisDeferred = $.get(apisBaseURL)
+    .then(_.partial(getGroups, apisBaseURL, null), function(data, textStatus, jqXHR) {
       API_DISCOVERY_ERRORS.push({
         data: data,
         textStatus: textStatus,
         xhr: jqXHR
       });
     });
+
+  // Additional servers can be defined for debugging and prototyping against new servers not yet served by the aggregator
+  // There can not be any conflicts in the groups/resources from these API servers.
+  var additionalDeferreds = [];
+  _.each(window.OPENSHIFT_CONFIG.additionalServers, function(server) {
+   var baseURL = server.protocol + "://" + server.hostPort + server.prefix;
+   additionalDeferreds.push($.get(baseURL)
+    .then(_.partial(getGroups, baseURL, server), function(data, textStatus, jqXHR) {
+      API_DISCOVERY_ERRORS.push({
+        data: data,
+        textStatus: textStatus,
+        xhr: jqXHR
+      });
+    }));
+  });
 
   // Will be called on success or failure
   var discoveryFinished = function() {
@@ -139,7 +156,13 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
     }
     next();
   };
-  $.when(k8sDeferred,osDeferred,apisDeferred).always(discoveryFinished);
+  var allDeferreds = [
+    k8sDeferred,
+    osDeferred,
+    apisDeferred
+  ];
+  allDeferreds = allDeferreds.concat(additionalDeferreds);
+  $.when.apply(this, allDeferreds).always(discoveryFinished);
 });
 
 

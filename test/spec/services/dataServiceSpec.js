@@ -29,19 +29,19 @@ describe("DataService", function(){
       [{resource:'Users'},             "http://localhost:8443/oapi/v1/users"],
       [{resource:'oauthaccesstokens'}, "http://localhost:8443/oapi/v1/oauthaccesstokens"],
       [{resource:'OAuthAccessTokens'}, "http://localhost:8443/oapi/v1/oauthaccesstokens"],
-      [{resource:'pods'},              "http://localhost:8443/api/v1/pods"],
-      [{resource:'Pods'},              "http://localhost:8443/api/v1/pods"],
+      [{resource:'nodes'},              "http://localhost:8443/api/v1/nodes"],
+      [{resource:'Nodes'},              "http://localhost:8443/api/v1/nodes"],
 
       // OpenShift resource
-      [{resource:'builds'                             }, "http://localhost:8443/oapi/v1/builds"],
+      [{resource:'clusterroles'                       }, "http://localhost:8443/oapi/v1/clusterroles"],
       [{resource:'builds', namespace:"foo"            }, "http://localhost:8443/oapi/v1/namespaces/foo/builds"],
-      [{resource:'builds',                  name:"bar"}, "http://localhost:8443/oapi/v1/builds/bar"],
+      [{resource:'clusterroles',            name:"bar"}, "http://localhost:8443/oapi/v1/clusterroles/bar"],
       [{resource:'builds', namespace:"foo", name:"bar"}, "http://localhost:8443/oapi/v1/namespaces/foo/builds/bar"],
 
       // k8s resource
-      [{resource:'replicationcontrollers'                             }, "http://localhost:8443/api/v1/replicationcontrollers"],
+      [{resource:'nodes'                                              }, "http://localhost:8443/api/v1/nodes"],
       [{resource:'replicationcontrollers', namespace:"foo"            }, "http://localhost:8443/api/v1/namespaces/foo/replicationcontrollers"],
-      [{resource:'replicationcontrollers',                  name:"bar"}, "http://localhost:8443/api/v1/replicationcontrollers/bar"],
+      [{resource:'nodes',                                   name:"bar"}, "http://localhost:8443/api/v1/nodes/bar"],
       [{resource:'replicationcontrollers', namespace:"foo", name:"bar"}, "http://localhost:8443/api/v1/namespaces/foo/replicationcontrollers/bar"],
 
       // Subresources and webhooks
@@ -76,16 +76,16 @@ describe("DataService", function(){
       [{resource:'pods/proxy', name:"mypod", namespace:"myns", myparam1:"myvalue"}, "http://localhost:8443/api/v1/namespaces/myns/pods/mypod/proxy?myparam1=myvalue"],
 
       // Different API versions
-      [{resource:'builds',version:'v1beta3'}, null],
-      [{resource:'builds',version:'v1'     }, "http://localhost:8443/oapi/v1/builds"],
-      [{resource:'builds',version:'unknown'}, null],
+      [{resource:'clusterroles',version:'v1beta3'}, null],
+      [{resource:'clusterroles',version:'v1'     }, "http://localhost:8443/oapi/v1/clusterroles"],
+      [{resource:'clusterroles',version:'unknown'}, null],
 
-      [{resource:'pods',  version:'v1beta3'}, null],
-      [{resource:'pods',  version:'v1'     }, "http://localhost:8443/api/v1/pods"],
-      [{resource:'pods',  version:'unknown'}, null],
+      [{resource:'nodes',  version:'v1beta3'}, null],
+      [{resource:'nodes',  version:'v1'     }, "http://localhost:8443/api/v1/nodes"],
+      [{resource:'nodes',  version:'unknown'}, null],
 
       // Different API groups
-      [{resource:'jobs',  group: 'extensions', version:'v1beta1'}, "http://localhost:8443/apis/extensions/v1beta1/jobs"]
+      [{resource:'jobs',  group: 'extensions', version:'v1beta1', namespace:"foo"}, "http://localhost:8443/apis/extensions/v1beta1/namespaces/foo/jobs"]
     ];
 
     angular.forEach(tc, function(item) {
