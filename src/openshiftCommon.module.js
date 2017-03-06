@@ -135,7 +135,7 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
   // There can not be any conflicts in the groups/resources from these API servers.
   var additionalDeferreds = [];
   _.each(window.OPENSHIFT_CONFIG.additionalServers, function(server) {
-   var baseURL = server.protocol + "://" + server.hostPort + server.prefix;
+   var baseURL = (server.protocol ? (server.protocol + "://") : protocol) + server.hostPort + server.prefix;
    additionalDeferreds.push($.get(baseURL)
     .then(_.partial(getGroups, baseURL, server), function(data, textStatus, jqXHR) {
       API_DISCOVERY_ERRORS.push({
