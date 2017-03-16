@@ -1,7 +1,7 @@
 "use strict";
 
 //load the module
-beforeEach(module('openshiftCommon'));
+beforeEach(module('openshiftCommonServices', 'openshiftCommonUI'));
 
 beforeEach(module(function ($provide) {
   $provide.provider("HawtioNavBuilder", function() {
@@ -34,7 +34,7 @@ beforeEach(module(function ($provide) {
     $('head').append($('<base href="/">'));
   }
 
-  angular.module('openshiftCommon').config(function(AuthServiceProvider) {
+  angular.module('openshiftCommonServices').config(function(AuthServiceProvider) {
      AuthServiceProvider.UserStore('MemoryUserStore');
    })
     .constant("API_CFG", _.get(window.OPENSHIFT_CONFIG, "api", {}))
@@ -45,6 +45,6 @@ beforeEach(module(function ($provide) {
       AuthServiceProvider.LogoutService('DeleteTokenLogoutService');
       AuthServiceProvider.UserStore('LocalStorageUserStore');
     });
-  hawtioPluginLoader.addModule('openshiftCommon');
+  hawtioPluginLoader.addModule('openshiftCommonServices');
 
 }));

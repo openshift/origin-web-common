@@ -30,7 +30,7 @@ module.exports = function (grunt) {
           separator: ';'
         },
         dist: {
-          src: ['src/**/*.module.js', 'src/**/*.js'],
+          src: ['src/**/*.module.js', 'dist/scripts/templates.js', 'src/**/*.js'],
           dest: 'dist/origin-web-common.js'
         }
       },
@@ -41,7 +41,36 @@ module.exports = function (grunt) {
           browsers: ['PhantomJS']
         }
       },
-      // ng-annotate tries to make the code safe for minification automatically
+      less: {
+        production: {
+          files: {
+            'dist/origin-web-common.css': 'src/styles/main.less'
+          },
+          options: {
+            cleancss: true,
+            paths: ['src/styles', 'bower_components/']
+          }
+        }
+      },
+      htmlmin: {
+        dist: {
+          options: {
+            preserveLineBreaks: true,
+            collapseWhitespace: true,
+            conservativeCollapse: false,
+            collapseBooleanAttributes: false,
+            removeComments: true,
+            removeCommentsFromCDATA: true,
+            removeOptionalTags: false,
+            keepClosingSlash: true
+          },
+          files: [{
+            expand: true,
+            src: ['src/components/{,*/}*.html'],
+            dest: 'dist'
+          }]
+        }
+      },      // ng-annotate tries to make the code safe for minification automatically
       // by using the Angular long form for dependency injection.
       ngAnnotate: {
         dist: {
@@ -49,6 +78,17 @@ module.exports = function (grunt) {
             src: 'dist/origin-web-common.js',
             dest: 'dist/origin-web-common.js'
           }]
+        }
+      },
+      ngtemplates: {
+        dist: {
+          src: 'src/components/**/*.html',
+          dest: 'dist/scripts/templates.js',
+          options: {
+            module: 'openshiftCommonUI',
+            standalone: false,
+            htmlmin: ''
+          }
         }
       },
       uglify: {
@@ -78,16 +118,16 @@ module.exports = function (grunt) {
         });
 
       } else {
-        concatSrc = 'src/**/*.js';
+        concatSrc = ['src/**/*.module.js', 'src/**/*.js'];
       }
 
-      grunt.task.run(['clean', 'concat', 'ngAnnotate', 'uglify:build', 'test']);
+      grunt.task.run(['clean', 'ngtemplates', 'concat', 'ngAnnotate', 'less', 'uglify:build', 'test']);
     });
 
     // Runs all the tasks of build with the exception of tests
     grunt.registerTask('deploy', 'Prepares the project for deployment. Does not run unit tests', function () {
       var concatSrc = 'src/**/*.js';
-      grunt.task.run(['clean', 'concat', 'ngAnnotate', 'uglify:build']);
+      grunt.task.run(['clean', 'ngtemplates', 'concat', 'ngAnnotate', 'less', 'uglify:build']);
     });
 
     grunt.registerTask('default', ['build']);

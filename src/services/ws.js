@@ -10,7 +10,7 @@
 //
 //   $ws.available()
 //   returns true if WebSockets are available to use
-angular.module('openshiftCommon')
+angular.module('openshiftCommonServices')
 .provider('$ws', function($httpProvider) {
 
   // $get method is called to build the $ws service

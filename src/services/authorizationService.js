@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module("openshiftCommon")
+angular.module("openshiftCommonServices")
   .factory("AuthorizationService", function($q, $cacheFactory, Logger, $interval, APIService, DataService){
 
     var currentProject = null;

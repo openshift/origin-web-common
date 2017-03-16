@@ -1,7 +1,7 @@
 'use strict';
 /* jshint eqeqeq: false, unused: false, expr: true */
 
-angular.module('openshiftCommon')
+angular.module('openshiftCommonServices')
 .factory('DataService', function($cacheFactory, $http, $ws, $rootScope, $q, API_CFG, APIService, Notification, Logger, $timeout, base64, base64util) {
 
   function Data(array) {

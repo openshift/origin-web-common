@@ -2,7 +2,7 @@
 /* jshint unused: false */
 
 // UserStore objects able to remember user and tokens for the current user
-angular.module('openshiftCommon')
+angular.module('openshiftCommonServices')
 .provider('MemoryUserStore', function() {
   this.$get = function(Logger){
     var authLogger = Logger.get("auth");

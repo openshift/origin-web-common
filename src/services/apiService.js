@@ -38,7 +38,7 @@ ResourceGroupVersion.prototype.equals = function(resource, group, version) {
   return true;
 };
 
-angular.module('openshiftCommon')
+angular.module('openshiftCommonServices')
 .factory('APIService', function(API_CFG,
                                 APIS_CFG,
                                 AuthService,
