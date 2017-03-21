@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('openshiftCommon')
+angular.module('openshiftCommonServices')
   .factory('base64util', function() {
     return {
       pad: function(data){

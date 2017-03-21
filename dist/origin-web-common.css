@@ -1,0 +1,26 @@
+.delete-resource-modal {
+  background-color: #f1f1f1;
+}
+.delete-resource-modal h1 {
+  font-size: 21px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+.delete-resource-modal p {
+  font-size: 15px;
+}
+.delete-resource-modal .help-block {
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+.dialog-btn {
+  float: right !important;
+  margin-right: 10px;
+}
+.dialog-btn:first-of-type {
+  margin-right: 0;
+}

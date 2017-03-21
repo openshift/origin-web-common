@@ -1,7 +1,7 @@
 'use strict';
 
 // Login strategies
-angular.module('openshiftCommon')
+angular.module('openshiftCommonServices')
 .provider('RedirectLoginService', function() {
   var _oauth_client_id = "";
   var _oauth_authorize_uri = "";

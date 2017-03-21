@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('openshiftCommon')
+angular.module('openshiftCommonServices')
 .provider('Logger', function() {
   this.$get = function() {
     // Wraps the global Logger from https://github.com/jonnyreeves/js-logger

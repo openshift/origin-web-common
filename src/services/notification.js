@@ -1,7 +1,7 @@
 'use strict';
 /* jshint unused: false */
 
-angular.module('openshiftCommon')
+angular.module('openshiftCommonServices')
 .factory('Notification', function($rootScope) {
   function Notification() {
     this.messenger = Messenger({

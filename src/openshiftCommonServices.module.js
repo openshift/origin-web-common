@@ -1,10 +1,10 @@
 /**
- * @name  openshiftCommon
+ * @name  openshiftCommonServices
  *
  * @description
- *   Base module for openshiftCommon.
+ *   Base module for openshiftCommonServices.
  */
-angular.module('openshiftCommon', ['ab-base64'])
+angular.module('openshiftCommonServices', ['ab-base64'])
   .config(function(AuthServiceProvider) {
     AuthServiceProvider.UserStore('MemoryUserStore');
   })
@@ -24,7 +24,7 @@ angular.module('openshiftCommon', ['ab-base64'])
     RedirectLoginServiceProvider.OAuthRedirectURI(URI(AUTH_CFG.oauth_redirect_base).segment("oauth").toString());
   });
 
-hawtioPluginLoader.addModule('openshiftCommon');
+hawtioPluginLoader.addModule('openshiftCommonServices');
 
 // API Discovery, this runs before the angular app is bootstrapped
 // TODO we want this to be possible with a single request against the API instead of being dependent on the numbers of groups and versions

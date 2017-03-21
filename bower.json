@@ -1,8 +1,9 @@
 {
-  "name": "origin-web-comon",
+  "name": "origin-web-common",
   "version": "0.0.5",
   "main": [
-    "dist/origin-web-common.js"
+    "dist/origin-web-common.js",
+    "dist/origin-web-common.css"
   ],
   "authors": [
     "Red Hat"
@@ -35,10 +36,14 @@
     "jquery": "~2.1.4",
     "lodash": "~3.10.1",
     "messenger": "~1.4.1",
+    "patternfly": "~3.21.0",
     "uri.js": "~1.18.0"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.11",
     "angular-scenario": "~1.5.11"
+  },
+  "resolutions": {
+    "jquery": "~2.1.4"
   }
 }

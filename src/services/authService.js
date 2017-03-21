@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('openshiftCommon')
+angular.module('openshiftCommonServices')
 // In a config step, set the desired user store and login service. For example:
 //   AuthServiceProvider.setUserStore('LocalStorageUserStore')
 //   AuthServiceProvider.setLoginService('RedirectLoginService')

@@ -1,7 +1,7 @@
 'use strict';
 
 // Logout strategies
-angular.module('openshiftCommon')
+angular.module('openshiftCommonServices')
 .provider('DeleteTokenLogoutService', function() {
 
   this.$get = function($q, $injector, Logger) {
