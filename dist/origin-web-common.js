@@ -901,7 +901,41 @@ angular.module('openshiftCommonUI')
       }
       return null;
     };
-  }]);
+  }])
+  .filter('imageStreamTagAnnotation', function() {
+    // Look up annotations on ImageStream.spec.tags[tag].annotations
+    return function(resource, key, /* optional */ tagName) {
+      tagName = tagName || 'latest';
+      if (resource && resource.spec && resource.spec.tags){
+        var tags = resource.spec.tags;
+        for(var i=0; i < tags.length; ++i){
+          var tag = tags[i];
+          if(tagName === tag.name && tag.annotations){
+            return tag.annotations[key];
+          }
+        }
+      }
+
+      return null;
+    };
+  })
+  .filter('imageStreamTagTags', ["imageStreamTagAnnotationFilter", function(imageStreamTagAnnotationFilter) {
+    // Return ImageStream.spec.tag[tag].annotation.tags as an array
+    return function(resource, /* optional */ tagName) {
+      var imageTags = imageStreamTagAnnotationFilter(resource, 'tags', tagName);
+      if (!imageTags) {
+        return [];
+      }
+
+      return imageTags.split(/\s*,\s*/);
+    };
+  }])
+  .filter('imageStreamTagIconClass', ["imageStreamTagAnnotationFilter", function(imageStreamTagAnnotationFilter) {
+  return function(resource, /* optional */ tagName) {
+    var icon = imageStreamTagAnnotationFilter(resource, "iconClass", tagName);
+    return (icon) ? icon : "fa fa-cube";
+  };
+}]);
 
 ;'use strict';
 
