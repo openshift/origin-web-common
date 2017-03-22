@@ -954,6 +954,59 @@ angular
 ;'use strict';
 
 angular.module('openshiftCommonUI')
+  .filter('highlightKeywords', ["KeywordService", function(KeywordService) {
+    // Returns HTML wrapping the matching words in a `mark` tag.
+    return function(str, keywords, caseSensitive) {
+      if (!str) {
+        return str;
+      }
+
+      if (_.isEmpty(keywords)) {
+        return _.escape(str);
+      }
+
+      // If passed a plain string, get the keywords from KeywordService.
+      if (_.isString(keywords)) {
+        keywords = KeywordService.generateKeywords(keywords);
+      }
+
+      // Combine the keywords into a single regex.
+      var source = _.map(keywords, function(keyword) {
+        if (_.isRegExp(keyword)) {
+          return keyword.source;
+        }
+        return _.escapeRegExp(keyword);
+      }).join('|');
+
+      // Search for matches.
+      var match;
+      var result = '';
+      var lastIndex = 0;
+      var flags = caseSensitive ? 'g' : 'ig';
+      var regex = new RegExp(source, flags);
+      while ((match = regex.exec(str)) !== null) {
+        // Escape any text between the end of the last match and the start of
+        // this match, and add it to the result.
+        if (lastIndex < match.index) {
+          result += _.escape(str.substring(lastIndex, match.index));
+        }
+
+        // Wrap the match in a `mark` element to use the Bootstrap / Patternfly highlight styles.
+        result += "<mark>" + _.escape(match[0]) + "</mark>";
+        lastIndex = regex.lastIndex;
+      }
+
+      // Escape any remaining text and add it to the result.
+      if (lastIndex < str.length) {
+        result += _.escape(str.substring(lastIndex));
+      }
+
+      return result;
+    };
+  }]);
+;'use strict';
+
+angular.module('openshiftCommonUI')
   .filter('orderObjectsByDate', ["toArrayFilter", function(toArrayFilter) {
     return function(items, reverse) {
       items = toArrayFilter(items);
@@ -3347,6 +3400,59 @@ angular.module('openshiftCommonServices')
     };
   }];
 });
+;'use strict';
+
+angular.module("openshiftCommonServices")
+  .service("KeywordService", function(){
+
+    var generateKeywords = function(filterText) {
+      if (!filterText) {
+        return [];
+      }
+
+      var keywords = _.uniq(filterText.match(/\S+/g));
+
+      // Sort the longest keyword first.
+      keywords.sort(function(a, b){
+        return b.length - a.length;
+      });
+
+      // Convert the keyword to a case-insensitive regular expression for the filter.
+      return _.map(keywords, function(keyword) {
+        return new RegExp(_.escapeRegExp(keyword), "i");
+      });
+    };
+
+    var filterForKeywords = function(objects, filterFields, keywords) {
+      var filteredObjects = objects;
+      if (_.isEmpty(keywords)) {
+        return filteredObjects;
+      }
+
+      // Find resources that match all keywords.
+      angular.forEach(keywords, function(regex) {
+        var matchesKeyword = function(obj) {
+          var i;
+          for (i = 0; i < filterFields.length; i++) {
+            var value = _.get(obj, filterFields[i]);
+            if (value && regex.test(value)) {
+              return true;
+            }
+          }
+
+          return false;
+        };
+
+        filteredObjects = _.filter(filteredObjects, matchesKeyword);
+      });
+      return filteredObjects;
+    };
+
+    return {
+      filterForKeywords: filterForKeywords,
+      generateKeywords: generateKeywords
+    };
+  });
 ;'use strict';
 
 angular.module('openshiftCommonServices')

@@ -24,6 +24,13 @@
 .dialog-btn:first-of-type {
   margin-right: 0;
 }
+mark {
+  padding: 0;
+  background-color: rgba(252, 248, 160, 0.5);
+}
+.ui-select-choices-row.active > span mark {
+  background-color: rgba(252, 248, 160, 0.75);
+}
 ul.messenger.messenger-theme-flat {
   margin: 0;
   padding: 0;
