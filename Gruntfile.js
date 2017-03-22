@@ -12,8 +12,7 @@ module.exports = function (grunt) {
             descriptions: {
               'help': 'Task list helper for your Grunt enabled projects.',
               'clean': 'Deletes the content of the dist directory.',
-              'build': 'Builds the project (including documentation) into the dist directory. You can specify modules to be built as arguments (' +
-              'grunt build:buttons:notification) otherwise all available modules are built.',
+              'build': 'Builds the project into the dist directory.',
               'test': 'Executes the karma testsuite.'
             },
             groups: {
@@ -28,6 +27,14 @@ module.exports = function (grunt) {
       concat: {
         options: {
           separator: ';'
+        },
+        ui: {
+          src: ['src/**/*UI.module.js', 'dist/scripts/templates.js', 'src/components/**/*.js', 'src/filers/**/*.js'],
+          dest: 'dist/origin-web-common-ui.js'
+        },
+        services: {
+          src: ['src/**/*Services.module.js', 'src/services/**/*.js'],
+          dest: 'dist/origin-web-common-services.js'
         },
         dist: {
           src: ['src/**/*.module.js', 'dist/scripts/templates.js', 'src/**/*.js'],
@@ -105,28 +112,11 @@ module.exports = function (grunt) {
 
     // You can specify which modules to build as arguments of the build task.
     grunt.registerTask('build', 'Create bootstrap build files', function () {
-      var concatSrc = [];
-
-      if (this.args.length) {
-        this.args.forEach(function (file) {
-          if (grunt.file.exists('./src/' + file)) {
-            grunt.log.ok('Adding ' + file + ' to the build queue.');
-            concatSrc.push('src/' + file + '/*.js');
-          } else {
-            grunt.fail.warn('Unable to build module \'' + file + '\'. The module doesn\'t exist.');
-          }
-        });
-
-      } else {
-        concatSrc = ['src/**/*.module.js', 'src/**/*.js'];
-      }
-
       grunt.task.run(['clean', 'ngtemplates', 'concat', 'ngAnnotate', 'less', 'uglify:build', 'test']);
     });
 
     // Runs all the tasks of build with the exception of tests
     grunt.registerTask('deploy', 'Prepares the project for deployment. Does not run unit tests', function () {
-      var concatSrc = 'src/**/*.js';
       grunt.task.run(['clean', 'ngtemplates', 'concat', 'ngAnnotate', 'less', 'uglify:build']);
     });
 
