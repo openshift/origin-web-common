@@ -70,6 +70,17 @@ angular.module('openshiftCommonUI')
       return null;
     };
   })
+  .filter('imageStreamTagTags', function(imageStreamTagAnnotationFilter) {
+    // Return ImageStream.spec.tag[tag].annotation.tags as an array
+    return function(resource, /* optional */ tagName) {
+      var imageTags = imageStreamTagAnnotationFilter(resource, 'tags', tagName);
+      if (!imageTags) {
+        return [];
+      }
+
+      return imageTags.split(/\s*,\s*/);
+    };
+  })
   .filter('imageStreamTagIconClass', function(imageStreamTagAnnotationFilter) {
   return function(resource, /* optional */ tagName) {
     var icon = imageStreamTagAnnotationFilter(resource, "iconClass", tagName);
