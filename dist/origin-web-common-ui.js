@@ -642,3 +642,320 @@ angular.module('openshiftCommonUI')
       }
     };
   });
+;'use strict';
+/* jshint unused: false */
+
+angular.module('openshiftCommonUI')
+  .filter('annotationName', function() {
+    // This maps an annotation key to all known synonymous keys to insulate
+    // the referring code from key renames across API versions.
+    var annotationMap = {
+      "buildConfig":              ["openshift.io/build-config.name"],
+      "deploymentConfig":         ["openshift.io/deployment-config.name"],
+      "deployment":               ["openshift.io/deployment.name"],
+      "pod":                      ["openshift.io/deployer-pod.name"],
+      "deployerPod":              ["openshift.io/deployer-pod.name"],
+      "deployerPodFor":           ["openshift.io/deployer-pod-for.name"],
+      "deploymentStatus":         ["openshift.io/deployment.phase"],
+      "deploymentStatusReason":   ["openshift.io/deployment.status-reason"],
+      "deploymentCancelled":      ["openshift.io/deployment.cancelled"],
+      "encodedDeploymentConfig":  ["openshift.io/encoded-deployment-config"],
+      "deploymentVersion":        ["openshift.io/deployment-config.latest-version"],
+      "displayName":              ["openshift.io/display-name"],
+      "description":              ["openshift.io/description"],
+      "buildNumber":              ["openshift.io/build.number"],
+      "buildPod":                 ["openshift.io/build.pod-name"],
+      "jenkinsBuildURL":          ["openshift.io/jenkins-build-uri"],
+      "jenkinsLogURL":            ["openshift.io/jenkins-log-url"],
+      "jenkinsStatus":            ["openshift.io/jenkins-status-json"],
+      "idledAt":                  ["idling.alpha.openshift.io/idled-at"],
+      "idledPreviousScale":       ["idling.alpha.openshift.io/previous-scale"],
+      "systemOnly":               ["authorization.openshift.io/system-only"]
+    };
+    return function(annotationKey) {
+      return annotationMap[annotationKey] || null;
+    };
+  })
+  .filter('annotation', function(annotationNameFilter) {
+    return function(resource, key) {
+      if (resource && resource.metadata && resource.metadata.annotations) {
+        // If the key's already in the annotation map, return it.
+        if (resource.metadata.annotations[key] !== undefined) {
+          return resource.metadata.annotations[key];
+        }
+        // Try and return a value for a mapped key.
+        var mappings = annotationNameFilter(key) || [];
+        for (var i=0; i < mappings.length; i++) {
+          var mappedKey = mappings[i];
+          if (resource.metadata.annotations[mappedKey] !== undefined) {
+            return resource.metadata.annotations[mappedKey];
+          }
+        }
+        // Couldn't find anything.
+        return null;
+      }
+      return null;
+    };
+  })
+  .filter('imageStreamTagAnnotation', function() {
+    // Look up annotations on ImageStream.spec.tags[tag].annotations
+    return function(resource, key, /* optional */ tagName) {
+      tagName = tagName || 'latest';
+      if (resource && resource.spec && resource.spec.tags){
+        var tags = resource.spec.tags;
+        for(var i=0; i < tags.length; ++i){
+          var tag = tags[i];
+          if(tagName === tag.name && tag.annotations){
+            return tag.annotations[key];
+          }
+        }
+      }
+
+      return null;
+    };
+  })
+  .filter('imageStreamTagIconClass', function(imageStreamTagAnnotationFilter) {
+  return function(resource, /* optional */ tagName) {
+    var icon = imageStreamTagAnnotationFilter(resource, "iconClass", tagName);
+    return (icon) ? icon : "fa fa-cube";
+  };
+});
+
+;'use strict';
+
+angular
+  .module('openshiftCommonUI')
+  .filter('canI', function(AuthorizationService) {
+    return function(resource, verb, projectName) {
+      return AuthorizationService.canI(resource, verb, projectName);
+    };
+  })
+  .filter('canIAddToProject', function(AuthorizationService) {
+    return function(namespace) {
+      return AuthorizationService.canIAddToProject(namespace);
+    };
+  });
+;'use strict';
+
+angular.module('openshiftCommonUI')
+  .filter('orderObjectsByDate', function(toArrayFilter) {
+    return function(items, reverse) {
+      items = toArrayFilter(items);
+
+      /*
+       * Note: This is a hotspot in our code. We sort frequently by date on
+       *       the overview and browse pages.
+       */
+
+      items.sort(function (a, b) {
+        if (!a.metadata || !a.metadata.creationTimestamp || !b.metadata || !b.metadata.creationTimestamp) {
+          throw "orderObjectsByDate expects all objects to have the field metadata.creationTimestamp";
+        }
+
+        // The date format can be sorted using straight string comparison.
+        // Compare as strings for performance.
+        // Example Date: 2016-02-02T21:53:07Z
+        if (a.metadata.creationTimestamp < b.metadata.creationTimestamp) {
+          return reverse ? 1 : -1;
+        }
+
+        if (a.metadata.creationTimestamp > b.metadata.creationTimestamp) {
+          return reverse ? -1 : 1;
+        }
+
+        return 0;
+      });
+
+      return items;
+    };
+  });
+;'use strict';
+/* jshint unused: false */
+
+angular.module('openshiftCommonUI')
+  // this filter is intended for use with the "track by" in an ng-repeat
+  // when uid is not defined it falls back to object identity for uniqueness
+  .filter('uid', function() {
+    return function(resource) {
+      if (resource && resource.metadata && resource.metadata.uid) {
+        return resource.metadata.uid;
+      }
+      else {
+        return resource;
+      }
+    };
+  })
+  .filter('labelName', function() {
+    var labelMap = {
+      'buildConfig' : ["openshift.io/build-config.name"],
+      'deploymentConfig' : ["openshift.io/deployment-config.name"]
+    };
+    return function(labelKey) {
+      return labelMap[labelKey];
+    };
+  })
+  .filter('description', function(annotationFilter) {
+    return function(resource) {
+      // Prefer `openshift.io/description`, but fall back to `kubernetes.io/description`.
+      return annotationFilter(resource, 'openshift.io/description') ||
+             annotationFilter(resource, 'kubernetes.io/description');
+    };
+  })
+  .filter('displayName', function(annotationFilter) {
+    // annotationOnly - if true, don't fall back to using metadata.name when
+    //                  there's no displayName annotation
+    return function(resource, annotationOnly) {
+      var displayName = annotationFilter(resource, "displayName");
+      if (displayName || annotationOnly) {
+        return displayName;
+      }
+
+      if (resource && resource.metadata) {
+        return resource.metadata.name;
+      }
+
+      return null;
+    };
+  })
+  .filter('uniqueDisplayName', function(displayNameFilter){
+    function countNames(projects){
+      var nameCount = {};
+      angular.forEach(projects, function(project, key){
+        var displayName = displayNameFilter(project);
+        nameCount[displayName] = (nameCount[displayName] || 0) + 1;
+      });
+      return nameCount;
+    }
+    return function (resource, projects){
+      if (!resource) {
+        return '';
+      }
+      var displayName = displayNameFilter(resource);
+      var name = resource.metadata.name;
+      if (displayName !== name && countNames(projects)[displayName] > 1 ){
+        return displayName + ' (' + name + ')';
+      }
+      return displayName;
+    };
+  })
+  .filter('label', function() {
+    return function(resource, key) {
+      if (resource && resource.metadata && resource.metadata.labels) {
+        return resource.metadata.labels[key];
+      }
+      return null;
+    };
+  })
+  .filter('humanizeKind', function (startCaseFilter) {
+    // Changes "ReplicationController" to "replication controller".
+    // If useTitleCase, returns "Replication Controller".
+    return function(kind, useTitleCase) {
+      if (!kind) {
+        return kind;
+      }
+
+      var humanized = _.startCase(kind);
+      if (useTitleCase) {
+        return humanized;
+      }
+
+      return humanized.toLowerCase();
+    };
+  });
+;'use strict';
+angular.module('openshiftCommonUI')
+  .filter('camelToLower', function() {
+    return function(str) {
+      if (!str) {
+        return str;
+      }
+
+      // Use the special logic in _.startCase to handle camel case strings, kebab
+      // case strings, snake case strings, etc.
+      return _.startCase(str).toLowerCase();
+    };
+  })
+  .filter('upperFirst', function() {
+    // Uppercase the first letter of a string (without making any other changes).
+    // Different than `capitalize` because it doesn't lowercase other letters.
+    return function(str) {
+      if (!str) {
+        return str;
+      }
+
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+  })
+  .filter('sentenceCase', function(camelToLowerFilter, upperFirstFilter) {
+    // Converts a camel case string to sentence case
+    return function(str) {
+      if (!str) {
+        return str;
+      }
+
+      // Unfortunately, _.lowerCase() and _.upperFirst() aren't in our lodash version.
+      var lower = camelToLowerFilter(str);
+      return upperFirstFilter(lower);
+    };
+  })
+  .filter('startCase', function () {
+    return function(str) {
+      if (!str) {
+        return str;
+      }
+
+      // https://lodash.com/docs#startCase
+      return _.startCase(str);
+    };
+  })
+  .filter('capitalize', function() {
+    return function(input) {
+      return _.capitalize(input);
+    };
+  })
+  .filter('isMultiline', function() {
+    return function(str, ignoreTrailing) {
+      if (!str) {
+        return false;
+      }
+
+      var index = str.search(/\r|\n/);
+      if (index === -1) {
+        return false;
+      }
+
+      // Ignore a final, trailing newline?
+      if (ignoreTrailing) {
+        return index !== (str.length - 1);
+      }
+
+      return true;
+    };
+  });
+;'use strict';
+
+angular.module('openshiftCommonUI')
+  .filter("toArray", function() {
+    return function (items) {
+      if (!items) {
+        return [];
+      }
+
+      if (angular.isArray(items)) {
+        return items;
+      }
+
+      var itemsArray = [];
+      angular.forEach(items, function (item) {
+        itemsArray.push(item);
+      });
+
+      return itemsArray;
+    };
+  })
+  .filter('hashSize', function() {
+    return function(hash) {
+      if(!hash) { return 0; }
+      return Object.keys(hash).length;
+    };
+  });
