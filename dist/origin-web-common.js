@@ -429,6 +429,34 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "</form>\n"
   );
 
+
+  $templateCache.put('src/components/truncate-long-text/truncateLongText.html',
+    "<!--\n" +
+    "  Do not remove class `truncated-content` (here or below) even though it's not\n" +
+    "  styled directly in origin-web-common.  `truncated-content` is used by\n" +
+    "  origin-web-console in certain contexts.\n" +
+    "-->\n" +
+    "<span ng-if=\"!truncated\" ng-bind-html=\"content | highlightKeywords : keywords\" class=\"truncated-content\"></span>\n" +
+    "<span ng-if=\"truncated\">\n" +
+    "  <span ng-if=\"!toggles.expanded\">\n" +
+    "    <span ng-attr-title=\"{{content}}\" class=\"truncation-block\">\n" +
+    "      <span ng-bind-html=\"truncatedContent | highlightKeywords : keywords\" class=\"truncated-content\"></span>&hellip;\n" +
+    "    </span>\n" +
+    "    <a ng-if=\"expandable\" href=\"\" ng-click=\"toggles.expanded = true\" class=\"nowrap\">See All</a>\n" +
+    "  </span>\n" +
+    "  <span ng-if=\"toggles.expanded\">\n" +
+    "    <div ng-if=\"prettifyJson\" class=\"well\">\n" +
+    "      <span class=\"pull-right\" style=\"margin-top: -10px;\"><a href=\"\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a></span>\n" +
+    "      <span ng-bind-html=\"content | prettifyJSON | highlightKeywords : keywords\" class=\"pretty-json truncated-content\"></span>\n" +
+    "    </div>\n" +
+    "    <span ng-if=\"!prettifyJson\">\n" +
+    "      <span class=\"pull-right\"><a href=\"\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a></span>\n" +
+    "      <span ng-bind-html=\"content | highlightKeywords : keywords\" class=\"truncated-content\"></span>\n" +
+    "    </span>\n" +
+    "  </span>\n" +
+    "</span>\n"
+  );
+
 }]);
 ;"use strict";
 
@@ -810,6 +838,39 @@ angular.module('openshiftCommonUI')
       }
     };
   }]);
+;'use strict';
+
+angular.module('openshiftCommonUI')
+  // Truncates text to a length, adding a tooltip and an ellipsis if truncated.
+  // Different than `text-overflow: ellipsis` because it allows for multiline text.
+  .directive('truncateLongText', ["truncateFilter", function(truncateFilter) {
+    return {
+      restrict: 'E',
+      scope: {
+        content: '=',
+        limit: '=',
+        newlineLimit: '=',
+        useWordBoundary: '=',
+        expandable: '=',
+        keywords: '=highlightKeywords',  // optional keywords to highlight using the `highlightKeywords` filter
+        prettifyJson: '='                // prettifies JSON blobs when expanded, only used if expandable is true
+      },
+      templateUrl: 'src/components/truncate-long-text/truncateLongText.html',
+      link: function(scope) {
+        scope.toggles = {expanded: false};
+        scope.$watch('content', function(content) {
+          if (content) {
+            scope.truncatedContent = truncateFilter(content, scope.limit, scope.useWordBoundary, scope.newlineLimit);
+            scope.truncated = scope.truncatedContent.length !== content.length;
+          }
+          else {
+            scope.truncatedContent = null;
+            scope.truncated = false;
+          }
+        });
+      }
+    };
+  }]);
 ;// This is the default configuration for the dev mode of the web console.
 // A generated version of this config is created at run-time when running
 // the web console from the openshift binary.
@@ -1039,6 +1100,47 @@ angular.module('openshiftCommonUI')
     };
   }]);
 ;'use strict';
+
+angular.module('openshiftCommonUI')
+  .filter('parseJSON', function() {
+    return function(json) {
+      // return original value if its null or undefined
+      if (!json) {
+        return null;
+      }
+
+      // return the parsed obj if its valid
+      try {
+        var jsonObj = JSON.parse(json);
+        if (typeof jsonObj === "object") {
+          return jsonObj;
+        }
+        else {
+          return null;
+        }
+      }
+      catch (e) {
+        // it wasn't valid json
+        return null;
+      }
+    };
+  });
+;'use strict';
+
+angular.module('openshiftCommonUI')
+  .filter('prettifyJSON', ["parseJSONFilter", function(parseJSONFilter) {
+    return function(json) {
+      var jsonObj = parseJSONFilter(json);
+      if (jsonObj) {
+        return JSON.stringify(jsonObj, null, 4);
+      }
+      else {
+        // it wasn't a json object, return the original value
+        return json;
+      }
+    };
+  }]);
+;'use strict';
 /* jshint unused: false */
 
 angular.module('openshiftCommonUI')
@@ -1199,6 +1301,39 @@ angular.module('openshiftCommonUI')
       }
 
       return true;
+    };
+  });
+;'use strict';
+
+angular.module('openshiftCommonUI')
+  .filter('truncate', function() {
+    return function(str, charLimit, useWordBoundary, newlineLimit) {
+      if (!str) {
+        return str;
+      }
+
+      var truncated = str;
+
+      if (charLimit) {
+        truncated = truncated.substring(0, charLimit);
+      }
+
+      if (newlineLimit) {
+        var nthNewline = str.split("\n", newlineLimit).join("\n").length;
+        truncated = truncated.substring(0, nthNewline);
+      }
+
+      if (useWordBoundary !== false) {
+        // Find the last word break, but don't look more than 10 characters back.
+        // Make sure we show at least the first 5 characters.
+        var startIndex = Math.max(4, charLimit - 10);
+        var lastSpace = truncated.lastIndexOf(/\s/, startIndex);
+        if (lastSpace !== -1) {
+          truncated = truncated.substring(0, lastSpace);
+        }
+      }
+
+      return truncated;
     };
   });
 ;'use strict';

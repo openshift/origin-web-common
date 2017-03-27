@@ -31,6 +31,17 @@ mark {
 .ui-select-choices-row.active > span mark {
   background-color: rgba(252, 248, 160, 0.75);
 }
+.truncation-block {
+  margin-right: 10px;
+}
+.truncation-collapse-link {
+  margin-left: 10px;
+  white-space: nowrap;
+}
+.pretty-json {
+  font-family: Menlo, Monaco, Consolas, monospace;
+  white-space: pre-wrap;
+}
 ul.messenger.messenger-theme-flat {
   margin: 0;
   padding: 0;

@@ -251,4 +251,32 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "</form>\n"
   );
 
+
+  $templateCache.put('src/components/truncate-long-text/truncateLongText.html',
+    "<!--\n" +
+    "  Do not remove class `truncated-content` (here or below) even though it's not\n" +
+    "  styled directly in origin-web-common.  `truncated-content` is used by\n" +
+    "  origin-web-console in certain contexts.\n" +
+    "-->\n" +
+    "<span ng-if=\"!truncated\" ng-bind-html=\"content | highlightKeywords : keywords\" class=\"truncated-content\"></span>\n" +
+    "<span ng-if=\"truncated\">\n" +
+    "  <span ng-if=\"!toggles.expanded\">\n" +
+    "    <span ng-attr-title=\"{{content}}\" class=\"truncation-block\">\n" +
+    "      <span ng-bind-html=\"truncatedContent | highlightKeywords : keywords\" class=\"truncated-content\"></span>&hellip;\n" +
+    "    </span>\n" +
+    "    <a ng-if=\"expandable\" href=\"\" ng-click=\"toggles.expanded = true\" class=\"nowrap\">See All</a>\n" +
+    "  </span>\n" +
+    "  <span ng-if=\"toggles.expanded\">\n" +
+    "    <div ng-if=\"prettifyJson\" class=\"well\">\n" +
+    "      <span class=\"pull-right\" style=\"margin-top: -10px;\"><a href=\"\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a></span>\n" +
+    "      <span ng-bind-html=\"content | prettifyJSON | highlightKeywords : keywords\" class=\"pretty-json truncated-content\"></span>\n" +
+    "    </div>\n" +
+    "    <span ng-if=\"!prettifyJson\">\n" +
+    "      <span class=\"pull-right\"><a href=\"\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a></span>\n" +
+    "      <span ng-bind-html=\"content | highlightKeywords : keywords\" class=\"truncated-content\"></span>\n" +
+    "    </span>\n" +
+    "  </span>\n" +
+    "</span>\n"
+  );
+
 }]);
