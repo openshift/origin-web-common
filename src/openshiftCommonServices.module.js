@@ -138,11 +138,13 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
    var baseURL = (server.protocol ? (server.protocol + "://") : protocol) + server.hostPort + server.prefix;
    additionalDeferreds.push($.get(baseURL)
     .then(_.partial(getGroups, baseURL, server), function(data, textStatus, jqXHR) {
-      API_DISCOVERY_ERRORS.push({
-        data: data,
-        textStatus: textStatus,
-        xhr: jqXHR
-      });
+      if (server.required !== false) {
+        API_DISCOVERY_ERRORS.push({
+          data: data,
+          textStatus: textStatus,
+          xhr: jqXHR
+        });
+      }
     }));
   });
 
