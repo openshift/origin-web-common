@@ -3415,13 +3415,14 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
       return null;
     }
 
+    var serviceProtocol = apiInfo.protocol || window.location.protocol;
     var protocol;
     params = params || {};
     if (isWebsocket) {
-      protocol = window.location.protocol === "http:" ? "ws" : "wss";
+      protocol = serviceProtocol === "http:" ? "ws" : "wss";
     }
     else {
-      protocol = window.location.protocol === "http:" ? "http" : "https";
+      protocol = serviceProtocol === "http:" ? "http" : "https";
     }
 
     if (context && context.namespace && !params.namespace) {
@@ -3442,7 +3443,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
     }
     var template;
     var templateOptions = {
-      protocol: apiInfo.protocol || protocol,
+      protocol: protocol,
       hostPort: apiInfo.hostPort,
       prefix: apiInfo.prefix,
       group: apiInfo.group,
