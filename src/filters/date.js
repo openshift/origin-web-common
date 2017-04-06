@@ -1,6 +1,36 @@
 'use strict';
 
 angular.module('openshiftCommonUI')
+  .filter('isNewerResource', function() {
+    // Checks if candidate is newer than other.
+    return function(candidate, other) {
+      var candidateCreation = _.get(candidate, 'metadata.creationTimestamp');
+      if (!candidateCreation) {
+        return false;
+      }
+
+      var otherCreation = _.get(other, 'metadata.creationTimestamp');
+      if (!otherCreation) {
+        return true;
+      }
+
+      // The date format can be compared using straight string comparison.
+      // Example Date: 2016-02-02T21:53:07Z
+      return candidateCreation > otherCreation;
+    };
+  })
+  .filter('mostRecent', function(isNewerResourceFilter) {
+    return function(objects) {
+      var mostRecent = null;
+      _.each(objects, function(object) {
+        if (!mostRecent || isNewerResourceFilter(object, mostRecent)) {
+          mostRecent = object;
+        }
+      });
+
+      return mostRecent;
+    };
+  })
   .filter('orderObjectsByDate', function(toArrayFilter) {
     return function(items, reverse) {
       items = toArrayFilter(items);
