@@ -97,7 +97,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
   );
 
 
-  $templateCache.put('src/components/delete-link/delete-button.html',
+  $templateCache.put('src/components/delete-project/delete-project-button.html',
     "<div class=\"actions\">\n" +
     "  <!-- Avoid whitespace inside the link -->\n" +
     "  <a href=\"\"\n" +
@@ -107,45 +107,27 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "     ng-attr-aria-disabled=\"{{disableDelete ? 'true' : undefined}}\"\n" +
     "     ng-class=\"{ 'disabled-link': disableDelete }\"\n" +
     "    ><i class=\"fa fa-trash-o\" aria-hidden=\"true\"\n" +
-    "    ></i><span class=\"sr-only\">Delete {{kind | humanizeKind}} {{resourceName}}</span></a>\n" +
+    "    ></i><span class=\"sr-only\">Delete Project {{projectName}}</span></a>\n" +
     "</div>\n"
   );
 
 
-  $templateCache.put('src/components/delete-link/delete-link.html',
-    "<a href=\"javascript:void(0)\"\n" +
-    "   ng-click=\"openDeleteModal()\"\n" +
-    "   role=\"button\"\n" +
-    "   ng-attr-aria-disabled=\"{{disableDelete ? 'true' : undefined}}\"\n" +
-    "   ng-class=\"{ 'disabled-link': disableDelete }\"\n" +
-    ">{{label || 'Delete'}}</a>\n"
-  );
-
-
-  $templateCache.put('src/components/delete-link/delete-resource.html',
+  $templateCache.put('src/components/delete-project/delete-project-modal.html',
     "<div class=\"delete-resource-modal\">\n" +
     "  <!-- Use a form so that the enter key submits when typing a project name to confirm. -->\n" +
     "  <form>\n" +
     "    <div class=\"modal-body\">\n" +
-    "      <h1>Are you sure you want to delete the {{typeDisplayName || (kind | humanizeKind)}}\n" +
-    "        '<strong>{{displayName ? displayName : resourceName}}</strong>'?</h1>\n" +
-    "      <div ng-if=\"replicas\" class=\"alert alert-warning\">\n" +
-    "        <span class=\"pficon pficon-warning-triangle-o\" aria-hidden=\"true\"></span>\n" +
-    "        <span class=\"sr-only\">Warning:</span>\n" +
-    "        <strong>{{resourceName}}</strong> has running pods.  Deleting the\n" +
-    "        {{typeDisplayName || (kind | humanizeKind)}} will <strong>not</strong> delete the pods\n" +
-    "        it controls. Consider scaling the {{typeDisplayName || (kind | humanizeKind)}} down to\n" +
-    "        0 before continuing.\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <p>This<span ng-if=\"isProject\"> will <strong>delete all resources</strong> associated with\n" +
-    "      the project {{displayName ? displayName : resourceName}} and</span> <strong>cannot be\n" +
-    "      undone</strong>.  Make sure this is something you really want to do!</p>\n" +
-    "\n" +
+    "      <h1>Are you sure you want to delete the project\n" +
+    "        '<strong>{{displayName ? displayName : projectName}}</strong>'?</h1>\n" +
+    "      <p>\n" +
+    "        This will <strong>delete all resources</strong> associated with\n" +
+    "        the project {{displayName ? displayName : projectName}} and <strong>cannot be\n" +
+    "        undone</strong>.  Make sure this is something you really want to do!\n" +
+    "      </p>\n" +
     "      <div ng-show=\"typeNameToConfirm\">\n" +
-    "        <p>Type the name of the {{typeDisplayName || (kind | humanizeKind)}} to confirm.</p>\n" +
+    "        <p>Type the name of the project to confirm.</p>\n" +
     "        <p>\n" +
-    "          <label class=\"sr-only\" for=\"resource-to-delete\">{{typeDisplayName || (kind | humanizeKind)}} to delete</label>\n" +
+    "          <label class=\"sr-only\" for=\"resource-to-delete\">project to delete</label>\n" +
     "          <input\n" +
     "              ng-model=\"confirmName\"\n" +
     "              id=\"resource-to-delete\"\n" +
@@ -157,66 +139,23 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "              autofocus>\n" +
     "        </p>\n" +
     "      </div>\n" +
-    "\n" +
-    "      <div ng-switch=\"kind\">\n" +
-    "        <div ng-switch-when=\"Deployment\">\n" +
-    "          <strong>Note:</strong> None of the replica sets created by this deployment will be deleted.\n" +
-    "\n" +
-    "          To delete the deployment and all of its replica sets, you can run the command\n" +
-    "          <pre class=\"code prettyprint mar-top-md\">oc delete deployment {{resourceName}} -n {{projectName}}</pre>\n" +
-    "          Learn more about the <a href=\"command-line\">command line tools</a>.\n" +
-    "        </div>\n" +
-    "\n" +
-    "        <div ng-switch-when=\"DeploymentConfig\">\n" +
-    "          <strong>Note:</strong> None of the deployments created by this deployment config will be deleted.\n" +
-    "\n" +
-    "          To delete the deployment config and all of its deployments, you can run the command\n" +
-    "          <pre class=\"code prettyprint mar-top-md\">oc delete dc {{resourceName}} -n {{projectName}}</pre>\n" +
-    "          Learn more about the <a href=\"command-line\">command line tools</a>.\n" +
-    "        </div>\n" +
-    "\n" +
-    "        <div ng-switch-when=\"BuildConfig\">\n" +
-    "          <strong>Note:</strong> None of the builds created by this build config will be deleted.\n" +
-    "\n" +
-    "          To delete the build config and all of its builds, you can run the command\n" +
-    "          <pre class=\"code prettyprint mar-top-md\">oc delete bc {{resourceName}} -n {{projectName}}</pre>\n" +
-    "          Learn more about the <a href=\"command-line\">command line tools</a>.\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <!--\n" +
-    "        If this is a deployment config or replication controller with associated HPAs, prompt to\n" +
-    "        delete the HPAs as well.\n" +
-    "      -->\n" +
-    "      <div ng-if=\"hpaList.length > 0\">\n" +
-    "        <p>\n" +
-    "          <span ng-if=\"hpaList.length === 1\">\n" +
-    "            This resource has an autoscaler associated with it.\n" +
-    "            It is recommended you delete the autoscaler with the resource it scales.\n" +
-    "          </span>\n" +
-    "          <span ng-if=\"hpaList.length > 1\">\n" +
-    "            This resource has autoscalers associated with it.\n" +
-    "            It is recommended you delete the autoscalers with the resource they scale.\n" +
-    "          </span>\n" +
-    "        </p>\n" +
-    "        <label>\n" +
-    "          <input type=\"checkbox\" ng-model=\"options.deleteHPAs\">\n" +
-    "          Delete\n" +
-    "          <span ng-if=\"hpaList.length === 1\">\n" +
-    "            Horizontal Pod Autoscaler '<strong>{{hpaList[0].metadata.name}}</strong>'\n" +
-    "          </span>\n" +
-    "          <span ng-if=\"hpaList.length > 1\">\n" +
-    "            {{hpaList.length}} associated Horizontal Pod Autoscalers\n" +
-    "          </span>\n" +
-    "        </label>\n" +
-    "      </div>\n" +
     "    </div>\n" +
     "    <div class=\"modal-footer\">\n" +
-    "      <button ng-disabled=\"typeNameToConfirm && confirmName !== resourceName && confirmName !== displayName\" class=\"btn btn-lg btn-danger\" type=\"submit\" ng-click=\"delete();\">Delete</button>\n" +
+    "      <button ng-disabled=\"typeNameToConfirm && confirmName !== projectName && confirmName !== displayName\" class=\"btn btn-lg btn-danger\" type=\"submit\" ng-click=\"delete();\">Delete</button>\n" +
     "      <button class=\"btn btn-lg btn-default\" type=\"button\" ng-click=\"cancel();\">Cancel</button>\n" +
     "    </div>\n" +
     "  </form>\n" +
     "</div>\n"
+  );
+
+
+  $templateCache.put('src/components/delete-project/delete-project.html',
+    "<a href=\"javascript:void(0)\"\n" +
+    "   ng-click=\"openDeleteModal()\"\n" +
+    "   role=\"button\"\n" +
+    "   ng-attr-aria-disabled=\"{{disableDelete ? 'true' : undefined}}\"\n" +
+    "   ng-class=\"{ 'disabled-link': disableDelete }\"\n" +
+    ">{{label || 'Delete'}}</a>\n"
   );
 
 
@@ -360,38 +299,26 @@ angular.module("openshiftCommonUI")
 ;'use strict';
 
 angular.module("openshiftCommonUI")
-  .directive("deleteLink", function ($uibModal, $location, $filter, $q, hashSizeFilter, APIService, DataService, AlertMessageService, Logger) {
+  .directive("deleteProject", function ($uibModal, $location, $filter, $q, hashSizeFilter, APIService, DataService, AlertMessageService, Logger) {
     return {
       restrict: "E",
       scope: {
-        // Resource Kind to delete (e.g., "Pod" or "ReplicationController").
-        kind: "@",
-        // Optional resource group.
-        group: "@?",
-        // Optional display name for kind.
-        typeDisplayName: "@?",
-        // Name of the resource to delete.
-        resourceName: "@",
-        // The name of the resource's project. Optional if kind === "Project".
+        // The name of project to delete
         projectName: "@",
         // Alerts object for success and error alerts.
         alerts: "=",
-        // Optional display name of the resource to delete.
+        // Optional display name of the project to delete.
         displayName: "@",
         // Set to true to disable the delete button.
         disableDelete: "=?",
-        // Force the user to enter the name before we'll delete the resource (e.g. for projects).
+        // Force the user to enter the name before we'll delete the project.
         typeNameToConfirm: "=?",
         // Optional link label. Defaults to "Delete".
         label: "@?",
         // Only show a delete icon with no text.
         buttonOnly: "@",
-        // Stay on the current page without redirecting to the resource list.
+        // Stay on the current page without redirecting to the projects list.
         stayOnCurrentPage: "=?",
-        // Optional replica count for a resource like a ReplicationController or ReplicaSet to display a warning.
-        replicas: '=?',
-        // Array of associated HPAs for this resource. If set, prompts the user to delete the HPA resources as well.
-        hpaList: "=?",
         // Optional callback when the delete succeeds
         success: "=?",
         // Optional redirect URL when the delete succeeds
@@ -399,55 +326,20 @@ angular.module("openshiftCommonUI")
       },
       templateUrl: function(elem, attr) {
         if (angular.isDefined(attr.buttonOnly)) {
-          return "src/components/delete-link/delete-button.html";
+          return "src/components/delete-project/delete-project-button.html";
         }
 
-        return "src/components/delete-link/delete-link.html";
+        return "src/components/delete-project/delete-project.html";
       },
       // Replace so ".dropdown-menu > li > a" styles are applied.
       replace: true,
       link: function(scope, element, attrs) {
-        if (attrs.kind === 'Project') {
-          scope.isProject = true;
-        }
-
-        // Checkbox value
-        scope.options = {
-          deleteHPAs: true
-        };
-
         var showAlert = function(alert) {
           if (scope.stayOnCurrentPage) {
             scope.alerts[alert.name] = alert.data;
           } else {
             AlertMessageService.addAlert(alert);
           }
-        };
-
-        var deleteHPA = function(hpa) {
-          return DataService.delete({
-            resource: 'horizontalpodautoscalers',
-            group: 'extensions'
-          }, hpa.metadata.name, { namespace: scope.projectName })
-          .then(function() {
-            showAlert({
-              name: hpa.metadata.name,
-              data: {
-                type: "success",
-                message: "Horizontal Pod Autoscaler " + hpa.metadata.name + " was marked for deletion."
-              }
-            });
-          })
-          .catch(function(err) {
-            showAlert({
-              name: hpa.metadata.name,
-              data: {
-                type: "error",
-                message: "Horizontal Pod Autoscaler " + hpa.metadata.name + " could not be deleted."
-              }
-            });
-            Logger.error("HPA " + hpa.metadata.name + " could not be deleted.", err);
-          });
         };
 
         var navigateToList = function() {
@@ -457,11 +349,6 @@ angular.module("openshiftCommonUI")
 
           if (scope.redirectUrl) {
             $location.url(scope.redirectUrl);
-            return;
-          }
-
-          if (scope.kind !== 'Project') {
-            $location.url(this.resourceListURL(APIService.kindToResource(scope.kind), scope.projectName));
             return;
           }
 
@@ -482,27 +369,23 @@ angular.module("openshiftCommonUI")
           // opening the modal with settings scope as parent
           var modalInstance = $uibModal.open({
             animation: true,
-            templateUrl: 'src/components/delete-link/delete-resource.html',
-            controller: 'DeleteModalController',
+            templateUrl: 'src/components/delete-project/delete-project-modal.html',
+            controller: 'DeleteProjectModalController',
             scope: scope
           });
 
           modalInstance.result.then(function() {
             // upon clicking delete button, delete resource and send alert
-            var kind = scope.kind;
-            var resourceName = scope.resourceName;
-            var typeDisplayName = scope.typeDisplayName || $filter('humanizeKind')(kind);
-            var formattedResource = typeDisplayName + ' ' + "\'"  + (scope.displayName ? scope.displayName : resourceName) + "\'";
-            var context = (scope.kind === 'Project') ? {} : {namespace: scope.projectName};
+            var projectName = scope.projectName;
+            var formattedResource = "Project \'"  + scope.displayName + "\'";
+            var context = {};
 
             DataService.delete({
-              resource: APIService.kindToResource(kind),
-              // group or undefined
-              group: scope.group
-            }, resourceName, context)
+              resource: APIService.kindToResource("Project")
+            }, projectName, context)
             .then(function() {
               showAlert({
-                name: resourceName,
+                name: projectName,
                 data: {
                   type: "success",
                   message: _.capitalize(formattedResource) + " was marked for deletion."
@@ -513,26 +396,11 @@ angular.module("openshiftCommonUI")
                 scope.success();
               }
 
-              // Delete any associated HPAs if requested.
-              var promises = [];
-              if (scope.options.deleteHPAs) {
-                _.forEach(scope.hpaList, function(hpa) {
-                  promises.push(deleteHPA(hpa));
-                });
-              }
-
-              if (!promises.length) {
-                navigateToList();
-              } else {
-                // Wait until all promises resolve so that we can add alerts to
-                // AlertMessageService before navigating, otherwise they aren't
-                // displayed.
-                $q.all(promises).then(navigateToList);
-              }
+              navigateToList();
             })
             .catch(function(err) {
               // called if failure to delete
-              scope.alerts[resourceName] = {
+              scope.alerts[projectName] = {
                 type: "error",
                 message: _.capitalize(formattedResource) + "\'" + " could not be deleted.",
                 details: $filter('getErrorDetails')(err)
@@ -550,10 +418,10 @@ angular.module("openshiftCommonUI")
 
 /**
  * @ngdoc function
- * @name openshifgCommonUI.controller:DeleteModalController
+ * @name openshiftCommonUI.controller:DeleteProjectModalController
  */
 angular.module('openshiftCommonUI')
-  .controller('DeleteModalController', function ($scope, $uibModalInstance) {
+  .controller('DeleteProjectModalController', function ($scope, $uibModalInstance) {
     $scope.delete = function() {
       $uibModalInstance.close('delete');
     };

@@ -3,10 +3,10 @@
 
 /**
  * @ngdoc function
- * @name openshifgCommonUI.controller:DeleteModalController
+ * @name openshiftCommonUI.controller:DeleteProjectModalController
  */
 angular.module('openshiftCommonUI')
-  .controller('DeleteModalController', function ($scope, $uibModalInstance) {
+  .controller('DeleteProjectModalController', function ($scope, $uibModalInstance) {
     $scope.delete = function() {
       $uibModalInstance.close('delete');
     };

@@ -1,0 +1,33 @@
+<div class="delete-resource-modal">
+  <!-- Use a form so that the enter key submits when typing a project name to confirm. -->
+  <form>
+    <div class="modal-body">
+      <h1>Are you sure you want to delete the project
+        '<strong>{{displayName ? displayName : projectName}}</strong>'?</h1>
+      <p>
+        This will <strong>delete all resources</strong> associated with
+        the project {{displayName ? displayName : projectName}} and <strong>cannot be
+        undone</strong>.  Make sure this is something you really want to do!
+      </p>
+      <div ng-show="typeNameToConfirm">
+        <p>Type the name of the project to confirm.</p>
+        <p>
+          <label class="sr-only" for="resource-to-delete">project to delete</label>
+          <input
+              ng-model="confirmName"
+              id="resource-to-delete"
+              type="text"
+              class="form-control input-lg"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              autofocus>
+        </p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button ng-disabled="typeNameToConfirm && confirmName !== projectName && confirmName !== displayName" class="btn btn-lg btn-danger" type="submit" ng-click="delete();">Delete</button>
+      <button class="btn btn-lg btn-default" type="button" ng-click="cancel();">Cancel</button>
+    </div>
+  </form>
+</div>
