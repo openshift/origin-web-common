@@ -87,7 +87,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
   );
 
 
-  $templateCache.put('src/components/delete-link/delete-button.html',
+  $templateCache.put('src/components/delete-project/delete-project-button.html',
     "<div class=\"actions\">\n" +
     "  <!-- Avoid whitespace inside the link -->\n" +
     "  <a href=\"\"\n" +
@@ -97,45 +97,27 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "     ng-attr-aria-disabled=\"{{disableDelete ? 'true' : undefined}}\"\n" +
     "     ng-class=\"{ 'disabled-link': disableDelete }\"\n" +
     "    ><i class=\"fa fa-trash-o\" aria-hidden=\"true\"\n" +
-    "    ></i><span class=\"sr-only\">Delete {{kind | humanizeKind}} {{resourceName}}</span></a>\n" +
+    "    ></i><span class=\"sr-only\">Delete Project {{projectName}}</span></a>\n" +
     "</div>\n"
   );
 
 
-  $templateCache.put('src/components/delete-link/delete-link.html',
-    "<a href=\"javascript:void(0)\"\n" +
-    "   ng-click=\"openDeleteModal()\"\n" +
-    "   role=\"button\"\n" +
-    "   ng-attr-aria-disabled=\"{{disableDelete ? 'true' : undefined}}\"\n" +
-    "   ng-class=\"{ 'disabled-link': disableDelete }\"\n" +
-    ">{{label || 'Delete'}}</a>\n"
-  );
-
-
-  $templateCache.put('src/components/delete-link/delete-resource.html',
+  $templateCache.put('src/components/delete-project/delete-project-modal.html',
     "<div class=\"delete-resource-modal\">\n" +
     "  <!-- Use a form so that the enter key submits when typing a project name to confirm. -->\n" +
     "  <form>\n" +
     "    <div class=\"modal-body\">\n" +
-    "      <h1>Are you sure you want to delete the {{typeDisplayName || (kind | humanizeKind)}}\n" +
-    "        '<strong>{{displayName ? displayName : resourceName}}</strong>'?</h1>\n" +
-    "      <div ng-if=\"replicas\" class=\"alert alert-warning\">\n" +
-    "        <span class=\"pficon pficon-warning-triangle-o\" aria-hidden=\"true\"></span>\n" +
-    "        <span class=\"sr-only\">Warning:</span>\n" +
-    "        <strong>{{resourceName}}</strong> has running pods.  Deleting the\n" +
-    "        {{typeDisplayName || (kind | humanizeKind)}} will <strong>not</strong> delete the pods\n" +
-    "        it controls. Consider scaling the {{typeDisplayName || (kind | humanizeKind)}} down to\n" +
-    "        0 before continuing.\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <p>This<span ng-if=\"isProject\"> will <strong>delete all resources</strong> associated with\n" +
-    "      the project {{displayName ? displayName : resourceName}} and</span> <strong>cannot be\n" +
-    "      undone</strong>.  Make sure this is something you really want to do!</p>\n" +
-    "\n" +
+    "      <h1>Are you sure you want to delete the project\n" +
+    "        '<strong>{{displayName ? displayName : projectName}}</strong>'?</h1>\n" +
+    "      <p>\n" +
+    "        This will <strong>delete all resources</strong> associated with\n" +
+    "        the project {{displayName ? displayName : projectName}} and <strong>cannot be\n" +
+    "        undone</strong>.  Make sure this is something you really want to do!\n" +
+    "      </p>\n" +
     "      <div ng-show=\"typeNameToConfirm\">\n" +
-    "        <p>Type the name of the {{typeDisplayName || (kind | humanizeKind)}} to confirm.</p>\n" +
+    "        <p>Type the name of the project to confirm.</p>\n" +
     "        <p>\n" +
-    "          <label class=\"sr-only\" for=\"resource-to-delete\">{{typeDisplayName || (kind | humanizeKind)}} to delete</label>\n" +
+    "          <label class=\"sr-only\" for=\"resource-to-delete\">project to delete</label>\n" +
     "          <input\n" +
     "              ng-model=\"confirmName\"\n" +
     "              id=\"resource-to-delete\"\n" +
@@ -147,66 +129,23 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "              autofocus>\n" +
     "        </p>\n" +
     "      </div>\n" +
-    "\n" +
-    "      <div ng-switch=\"kind\">\n" +
-    "        <div ng-switch-when=\"Deployment\">\n" +
-    "          <strong>Note:</strong> None of the replica sets created by this deployment will be deleted.\n" +
-    "\n" +
-    "          To delete the deployment and all of its replica sets, you can run the command\n" +
-    "          <pre class=\"code prettyprint mar-top-md\">oc delete deployment {{resourceName}} -n {{projectName}}</pre>\n" +
-    "          Learn more about the <a href=\"command-line\">command line tools</a>.\n" +
-    "        </div>\n" +
-    "\n" +
-    "        <div ng-switch-when=\"DeploymentConfig\">\n" +
-    "          <strong>Note:</strong> None of the deployments created by this deployment config will be deleted.\n" +
-    "\n" +
-    "          To delete the deployment config and all of its deployments, you can run the command\n" +
-    "          <pre class=\"code prettyprint mar-top-md\">oc delete dc {{resourceName}} -n {{projectName}}</pre>\n" +
-    "          Learn more about the <a href=\"command-line\">command line tools</a>.\n" +
-    "        </div>\n" +
-    "\n" +
-    "        <div ng-switch-when=\"BuildConfig\">\n" +
-    "          <strong>Note:</strong> None of the builds created by this build config will be deleted.\n" +
-    "\n" +
-    "          To delete the build config and all of its builds, you can run the command\n" +
-    "          <pre class=\"code prettyprint mar-top-md\">oc delete bc {{resourceName}} -n {{projectName}}</pre>\n" +
-    "          Learn more about the <a href=\"command-line\">command line tools</a>.\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <!--\n" +
-    "        If this is a deployment config or replication controller with associated HPAs, prompt to\n" +
-    "        delete the HPAs as well.\n" +
-    "      -->\n" +
-    "      <div ng-if=\"hpaList.length > 0\">\n" +
-    "        <p>\n" +
-    "          <span ng-if=\"hpaList.length === 1\">\n" +
-    "            This resource has an autoscaler associated with it.\n" +
-    "            It is recommended you delete the autoscaler with the resource it scales.\n" +
-    "          </span>\n" +
-    "          <span ng-if=\"hpaList.length > 1\">\n" +
-    "            This resource has autoscalers associated with it.\n" +
-    "            It is recommended you delete the autoscalers with the resource they scale.\n" +
-    "          </span>\n" +
-    "        </p>\n" +
-    "        <label>\n" +
-    "          <input type=\"checkbox\" ng-model=\"options.deleteHPAs\">\n" +
-    "          Delete\n" +
-    "          <span ng-if=\"hpaList.length === 1\">\n" +
-    "            Horizontal Pod Autoscaler '<strong>{{hpaList[0].metadata.name}}</strong>'\n" +
-    "          </span>\n" +
-    "          <span ng-if=\"hpaList.length > 1\">\n" +
-    "            {{hpaList.length}} associated Horizontal Pod Autoscalers\n" +
-    "          </span>\n" +
-    "        </label>\n" +
-    "      </div>\n" +
     "    </div>\n" +
     "    <div class=\"modal-footer\">\n" +
-    "      <button ng-disabled=\"typeNameToConfirm && confirmName !== resourceName && confirmName !== displayName\" class=\"btn btn-lg btn-danger\" type=\"submit\" ng-click=\"delete();\">Delete</button>\n" +
+    "      <button ng-disabled=\"typeNameToConfirm && confirmName !== projectName && confirmName !== displayName\" class=\"btn btn-lg btn-danger\" type=\"submit\" ng-click=\"delete();\">Delete</button>\n" +
     "      <button class=\"btn btn-lg btn-default\" type=\"button\" ng-click=\"cancel();\">Cancel</button>\n" +
     "    </div>\n" +
     "  </form>\n" +
     "</div>\n"
+  );
+
+
+  $templateCache.put('src/components/delete-project/delete-project.html',
+    "<a href=\"javascript:void(0)\"\n" +
+    "   ng-click=\"openDeleteModal()\"\n" +
+    "   role=\"button\"\n" +
+    "   ng-attr-aria-disabled=\"{{disableDelete ? 'true' : undefined}}\"\n" +
+    "   ng-class=\"{ 'disabled-link': disableDelete }\"\n" +
+    ">{{label || 'Delete'}}</a>\n"
   );
 
 
