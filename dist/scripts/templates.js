@@ -77,7 +77,6 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "      <button\n" +
     "          class=\"btn btn-default btn-lg\"\n" +
     "          ng-class=\"{'dialog-btn': isDialog}\"\n" +
-    "          back\n" +
     "          ng-click=\"cancelCreateProject()\">\n" +
     "        Cancel\n" +
     "      </button>\n" +
@@ -181,7 +180,6 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "      <button\n" +
     "          class=\"btn btn-default btn-lg\"\n" +
     "          ng-class=\"{'dialog-btn': isDialog}\"\n" +
-    "          back\n" +
     "          ng-click=\"cancelEditProject()\">\n" +
     "        Cancel\n" +
     "      </button>\n" +
