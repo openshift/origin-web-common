@@ -2,7 +2,7 @@
 
 angular.module("openshiftCommonUI")
 
-  .directive("editProject", function() {
+  .directive("editProject", function($window) {
     return {
       restrict: 'E',
       scope: {
@@ -85,6 +85,8 @@ angular.module("openshiftCommonUI")
           var cb = $scope.onCancel();
           if (cb) {
             cb();
+          } else {
+            $window.history.back();
           }
         };
       },

@@ -87,7 +87,6 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "      <button\n" +
     "          class=\"btn btn-default btn-lg\"\n" +
     "          ng-class=\"{'dialog-btn': isDialog}\"\n" +
-    "          back\n" +
     "          ng-click=\"cancelCreateProject()\">\n" +
     "        Cancel\n" +
     "      </button>\n" +
@@ -191,7 +190,6 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "      <button\n" +
     "          class=\"btn btn-default btn-lg\"\n" +
     "          ng-class=\"{'dialog-btn': isDialog}\"\n" +
-    "          back\n" +
     "          ng-click=\"cancelEditProject()\">\n" +
     "        Cancel\n" +
     "      </button>\n" +
@@ -233,7 +231,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
 
 angular.module("openshiftCommonUI")
 
-  .directive("createProject", function() {
+  .directive("createProject", function($window) {
     return {
       restrict: 'E',
       scope: {
@@ -291,6 +289,8 @@ angular.module("openshiftCommonUI")
             if (cb) {
               cb();
             }
+          } else {
+            $window.history.back();
           }
         };
       },
@@ -434,7 +434,7 @@ angular.module('openshiftCommonUI')
 
 angular.module("openshiftCommonUI")
 
-  .directive("editProject", function() {
+  .directive("editProject", function($window) {
     return {
       restrict: 'E',
       scope: {
@@ -517,6 +517,8 @@ angular.module("openshiftCommonUI")
           var cb = $scope.onCancel();
           if (cb) {
             cb();
+          } else {
+            $window.history.back();
           }
         };
       },
