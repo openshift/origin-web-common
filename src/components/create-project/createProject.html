@@ -1,4 +1,4 @@
-<form name="createProjectForm">
+<form name="createProjectForm" novalidate>
   <fieldset ng-disabled="disableInputs">
     <div class="form-group">
       <label for="name" class="required">Name</label>
@@ -23,6 +23,11 @@
       </span>
       <div>
         <span class="help-block">A unique name for the project.</span>
+      </div>
+      <div class="has-error">
+        <span id="nameHelp" class="help-block" ng-if="createProjectForm.name.$error.required && createProjectForm.name.$touched">
+          Name is required.
+        </span>
       </div>
       <div class="has-error">
         <span id="nameHelp" class="help-block" ng-if="createProjectForm.name.$error.minlength && createProjectForm.name.$touched">
