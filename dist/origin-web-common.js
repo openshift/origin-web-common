@@ -182,7 +182,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
   'use strict';
 
   $templateCache.put('src/components/create-project/createProject.html',
-    "<form name=\"createProjectForm\">\n" +
+    "<form name=\"createProjectForm\" novalidate>\n" +
     "  <fieldset ng-disabled=\"disableInputs\">\n" +
     "    <div class=\"form-group\">\n" +
     "      <label for=\"name\" class=\"required\">Name</label>\n" +
@@ -207,6 +207,11 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "      </span>\n" +
     "      <div>\n" +
     "        <span class=\"help-block\">A unique name for the project.</span>\n" +
+    "      </div>\n" +
+    "      <div class=\"has-error\">\n" +
+    "        <span id=\"nameHelp\" class=\"help-block\" ng-if=\"createProjectForm.name.$error.required && createProjectForm.name.$touched\">\n" +
+    "          Name is required.\n" +
+    "        </span>\n" +
     "      </div>\n" +
     "      <div class=\"has-error\">\n" +
     "        <span id=\"nameHelp\" class=\"help-block\" ng-if=\"createProjectForm.name.$error.minlength && createProjectForm.name.$touched\">\n" +
