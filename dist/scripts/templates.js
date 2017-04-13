@@ -29,7 +29,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "        <span class=\"help-block\">A unique name for the project.</span>\n" +
     "      </div>\n" +
     "      <div class=\"has-error\">\n" +
-    "        <span id=\"nameHelp\" class=\"help-block\" ng-if=\"createProjectForm.name.$error.required && createProjectForm.name.$touched\">\n" +
+    "        <span id=\"nameHelp\" class=\"help-block\" ng-if=\"createProjectForm.name.$error.required && createProjectForm.name.$dirty\">\n" +
     "          Name is required.\n" +
     "        </span>\n" +
     "      </div>\n" +
