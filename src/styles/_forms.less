@@ -1,0 +1,11 @@
+label.required:before {
+  content: '*';
+  position: absolute;
+  left: 10px;
+  @media(min-width: @screen-sm-min) {
+    .form-horizontal & {
+      position: relative;
+      left: -3px;
+    }
+  }
+}
