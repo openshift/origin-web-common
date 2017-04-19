@@ -14,7 +14,7 @@ angular.module("openshiftCommonUI")
         isDialog: '@'
       },
       templateUrl: 'src/components/edit-project/editProject.html',
-      controller: function($scope, $filter, $location, DataService, annotationNameFilter) {
+      controller: function($scope, $filter, $location, DataService, NotificationsService, annotationNameFilter, displayNameFilter) {
         if(!($scope.submitButtonLabel)) {
           $scope.submitButtonLabel = 'Save';
         }
@@ -51,6 +51,11 @@ angular.module("openshiftCommonUI")
           return resource;
         };
 
+        var showAlert = function(alert) {
+          $scope.alerts["update"] = alert;
+          NotificationsService.addNotification(alert);
+        };
+
         $scope.editableFields = editableFields($scope.project);
 
         $scope.update = function() {
@@ -63,20 +68,25 @@ angular.module("openshiftCommonUI")
                 cleanEditableAnnotations(mergeEditable($scope.project, $scope.editableFields)),
                 {projectName: $scope.project.name},
                 {errorNotification: false})
-              .then(function() {
+              .then(function(project) {
                 // angular is actually wrapping the redirect action :/
                 var cb = $scope.redirectAction();
                 if (cb) {
                   cb(encodeURIComponent($scope.project.metadata.name));
                 }
+
+                showAlert({
+                  type: "success",
+                  message: "Project \'"  + displayNameFilter(project) + "\' was successfully updated."
+                });
               }, function(result) {
                 $scope.disableInputs = false;
                 $scope.editableFields = editableFields($scope.project);
-                $scope.alerts["update"] = {
+                showAlert({
                   type: "error",
                   message: "An error occurred while updating the project",
                   details: $filter('getErrorDetails')(result)
-                };
+                });
               });
           }
         };

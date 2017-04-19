@@ -341,6 +341,13 @@ ul.messenger-theme-flat .messenger-message.alert-info .messenger-message-inner:b
   display: inline-block;
   background-color: transparent;
 }
+.toast-action-divider {
+  color: #9c9c9c;
+}
+.toast-notification-message {
+  font-weight: 700;
+  margin-right: 5px;
+}
 /* Fix some styles with the angular-ui-select bootstrap theme that isn't right when combined with all of our styles */
 .ui-select-bootstrap {
   /* Fixes ui-select's input box extending to 100% page width if the page has been resized after page-load

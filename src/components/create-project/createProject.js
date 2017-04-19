@@ -12,8 +12,17 @@ angular.module("openshiftCommonUI")
         isDialog: '@'
       },
       templateUrl: 'src/components/create-project/createProject.html',
-      controller: function($scope, $filter, $location, DataService) {
+      controller: function($scope, $filter, $location, DataService, NotificationsService, displayNameFilter) {
+        if(!($scope.submitButtonLabel)) {
+          $scope.submitButtonLabel = 'Create';
+        }
+
         $scope.isDialog = $scope.isDialog === 'true';
+
+        var showAlert = function(name, alert) {
+          $scope.alerts[name] = alert;
+          NotificationsService.addNotification(alert);
+        };
 
         $scope.createProject = function() {
           $scope.disableInputs = true;
@@ -36,6 +45,10 @@ angular.module("openshiftCommonUI")
                 } else {
                   $location.path("project/" + encodeURIComponent(data.metadata.name) + "/create");
                 }
+                showAlert('created-project', {
+                  type: "success",
+                    message: "Project \'"  + displayNameFilter(data) + "\' was successfully created."
+                });
               }, function(result) {
                 $scope.disableInputs = false;
                 var data = result.data || {};
@@ -43,7 +56,7 @@ angular.module("openshiftCommonUI")
                   $scope.nameTaken = true;
                 } else {
                   var msg = data.message || 'An error occurred creating the project.';
-                  $scope.alerts['error-creating-project'] = {type: 'error', message: msg};
+                  showAlert('error-creating-project', {type: 'error', message: msg});
                 }
               });
           }

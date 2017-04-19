@@ -194,6 +194,30 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
   );
 
 
+  $templateCache.put('src/components/toast-notifications/toast-notifications.html',
+    "<div class=\"toast-notifications-list-pf\">\n" +
+    "  <div ng-repeat=\"(notificationID, notification) in notifications track by (notificationID + (notification.message || notification.details))\" ng-if=\"!notification.hidden\"\n" +
+    "       ng-mouseenter=\"setHover(notification, true)\" ng-mouseleave=\"setHover(notification, false)\">\n" +
+    "    <div class=\"toast-pf alert {{notification.type | alertStatus}}\" ng-class=\"{'alert-dismissable': !hideCloseButton}\">\n" +
+    "      <button ng-if=\"!hideCloseButton\" type=\"button\" class=\"close\" ng-click=\"close(notification)\">\n" +
+    "        <span class=\"pficon pficon-close\" aria-hidden=\"true\"></span>\n" +
+    "        <span class=\"sr-only\">Close</span>\n" +
+    "      </button>\n" +
+    "      <span class=\"{{notification.type | alertIcon}}\" aria-hidden=\"true\"></span>\n" +
+    "      <span class=\"sr-only\">{{notification.type}}</span>\n" +
+    "      <span class=\"toast-notification-message\" ng-if=\"notification.message\">{{notification.message}}</span>\n" +
+    "      <span ng-if=\"notification.details\">{{notification.details}}</span>\n" +
+    "      <span ng-repeat=\"link in notification.links\">\n" +
+    "        <a ng-if=\"!link.href\" href=\"\" ng-click=\"onClick(notification, link)\" role=\"button\">{{link.label}}</a>\n" +
+    "        <a ng-if=\"link.href\" ng-href=\"{{link.href}}\" ng-attr-target=\"{{link.target}}\">{{link.label}}</a>\n" +
+    "        <span ng-if=\"!$last\" class=\"toast-action-divider\">|</span>\n" +
+    "      </span>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('src/components/truncate-long-text/truncateLongText.html',
     "<!--\n" +
     "  Do not remove class `truncated-content` (here or below) even though it's not\n" +

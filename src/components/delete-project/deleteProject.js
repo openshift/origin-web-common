@@ -1,13 +1,13 @@
 'use strict';
 
 angular.module("openshiftCommonUI")
-  .directive("deleteProject", function ($uibModal, $location, $filter, $q, hashSizeFilter, APIService, DataService, AlertMessageService, Logger) {
+  .directive("deleteProject", function ($uibModal, $location, $filter, $q, hashSizeFilter, APIService, DataService, AlertMessageService, NotificationsService, Logger) {
     return {
       restrict: "E",
       scope: {
         // The name of project to delete
         projectName: "@",
-        // Alerts object for success and error alerts.
+        // Alerts object for using inline notifications for success and error alerts, notifications are also sent to enable toast notification display.
         alerts: "=",
         // Optional display name of the project to delete.
         displayName: "@",
@@ -42,6 +42,7 @@ angular.module("openshiftCommonUI")
           } else {
             AlertMessageService.addAlert(alert);
           }
+          NotificationsService.addNotification(alert.data);
         };
 
         var navigateToList = function() {
@@ -102,11 +103,13 @@ angular.module("openshiftCommonUI")
             })
             .catch(function(err) {
               // called if failure to delete
-              scope.alerts[projectName] = {
+              var alert = {
                 type: "error",
                 message: _.capitalize(formattedResource) + "\'" + " could not be deleted.",
                 details: $filter('getErrorDetails')(err)
               };
+              scope.alerts[projectName] = alert;
+              NotificationsService.addNotification(alert);
               Logger.error(formattedResource + " could not be deleted.", err);
             });
           });
