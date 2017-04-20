@@ -26,8 +26,10 @@ angular.module('openshiftCommonUI')
   .filter('description', function(annotationFilter) {
     return function(resource) {
       // Prefer `openshift.io/description`, but fall back to `kubernetes.io/description`.
+      // Templates use simply `description` without a namespace.
       return annotationFilter(resource, 'openshift.io/description') ||
-             annotationFilter(resource, 'kubernetes.io/description');
+             annotationFilter(resource, 'kubernetes.io/description') ||
+             annotationFilter(resource, 'description');
     };
   })
   .filter('displayName', function(annotationFilter) {
