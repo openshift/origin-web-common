@@ -29,7 +29,7 @@ module.exports = function (grunt) {
           separator: ';'
         },
         ui: {
-          src: ['src/**/*UI.module.js', 'dist/scripts/templates.js', 'src/components/**/*.js', 'src/filters/**/*.js'],
+          src: ['src/**/*UI.module.js', 'dist/scripts/templates.js', 'src/components/**/*.js', 'src/filters/**/*.js', 'src/ui-services/**/*.js'],
           dest: 'dist/origin-web-common-ui.js'
         },
         services: {

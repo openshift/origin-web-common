@@ -33,6 +33,7 @@
     "angular-utf8-base64": "~0.0.5",
     "hawtio-core": "~2.0.37",
     "hawtio-extension-service": "~2.0.2",
+    "hopscotch": "~0.2.7",
     "jquery": "~2.1.4",
     "lodash": "~3.10.1",
     "messenger": "~1.4.1",
