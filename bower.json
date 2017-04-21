@@ -12,16 +12,15 @@
   "license": "Apache-2.0",
   "ignore": [
     "Gruntfile.js",
-    "package.json",
     ".bowerrc",
     ".editorconfig",
     ".gitignore",
     ".jshintrc",
+    ".travis.yml",
+    "Makefile",
+    "hack",
     "src",
-    "README.md",
-    "bower.json",
-    ".bower.json",
-    "grunt-ngdocs-index.tmpl"
+    "test"
   ],
   "repository": {
     "type": "git",

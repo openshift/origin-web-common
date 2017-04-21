@@ -1,0 +1,54 @@
+.delete-resource-modal {
+  background-color: @gray-lighter;
+  h1 {
+    font-size: 21px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    word-wrap: break-word; // firefox, IE
+    word-break: break-word; // non-standard for webkit
+    overflow-wrap: break-word; // new name as per the CSS3 spec
+    min-width: 0;          // firefox (1)
+  }
+  p {
+    font-size: @font-size-large + 1;
+  }
+  .help-block {
+    margin-top: 0px;
+    margin-bottom: 10px;
+  }
+}
+
+.dialog-btn {
+  float: right !important;
+  margin-right: 10px;
+
+  &:first-of-type {
+    margin-right: 0;
+  }
+}
+
+// Mark is used for highlighting terms like search terms. See http://getbootstrap.com/css/#type-inline-text
+mark {
+  // Remove the default padding as it makes letters jump for as-you-type updates.
+  padding: 0;
+  background-color: rgba(252, 248, 160, 0.5);
+  .ui-select-choices-row.active > span & {
+    background-color: rgba(252, 248, 160, 0.75);
+  }
+}
+
+// Within truncation directive controls spacing between content and toggle link
+.truncation-block {
+  margin-right: 10px;
+}
+
+.truncation-collapse-link {
+  margin-left: 10px;
+  white-space: nowrap;
+}
+
+.pretty-json {
+  font-family: @font-family-monospace;
+  white-space: pre-wrap;
+}
+

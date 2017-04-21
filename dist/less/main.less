@@ -1,0 +1,17 @@
+@bower-components-path: "bower_components";
+@pf-less-path: "@{bower-components-path}/patternfly/dist/less";
+@bootstrap-less-path: "@{pf-less-path}/dependencies/bootstrap";
+
+// Bootstrap
+@import "@{bootstrap-less-path}/mixins.less";
+@import "@{bootstrap-less-path}/variables.less";
+
+// PatternFly
+@import "@{pf-less-path}/color-variables.less";
+@import "@{pf-less-path}/variables.less";
+
+@import "_core.less";
+@import "_forms.less";
+@import "_guided-tour.less";
+@import "_messages.less";
+@import "_ui-select.less";
