@@ -77,7 +77,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "          ng-click=\"createProject()\"\n" +
     "          ng-disabled=\"createProjectForm.$invalid || nameTaken || disableInputs\"\n" +
     "          value=\"\">\n" +
-    "        {{submitButtonLabel}}\n" +
+    "        Create\n" +
     "      </button>\n" +
     "      <button\n" +
     "          class=\"btn btn-default btn-lg\"\n" +

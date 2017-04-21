@@ -257,7 +257,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "          ng-click=\"createProject()\"\n" +
     "          ng-disabled=\"createProjectForm.$invalid || nameTaken || disableInputs\"\n" +
     "          value=\"\">\n" +
-    "        {{submitButtonLabel}}\n" +
+    "        Create\n" +
     "      </button>\n" +
     "      <button\n" +
     "          class=\"btn btn-default btn-lg\"\n" +
@@ -411,17 +411,12 @@ angular.module("openshiftCommonUI")
       restrict: 'E',
       scope: {
         alerts: '=',
-        submitButtonLabel: '@',
         redirectAction: '&',
         onCancel: '&?',
         isDialog: '@'
       },
       templateUrl: 'src/components/create-project/createProject.html',
       controller: ["$scope", "$filter", "$location", "DataService", function($scope, $filter, $location, DataService) {
-        if(!($scope.submitButtonLabel)) {
-          $scope.submitButtonLabel = 'Create';
-        }
-
         $scope.isDialog = $scope.isDialog === 'true';
 
         $scope.createProject = function() {

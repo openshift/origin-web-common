@@ -7,17 +7,12 @@ angular.module("openshiftCommonUI")
       restrict: 'E',
       scope: {
         alerts: '=',
-        submitButtonLabel: '@',
         redirectAction: '&',
         onCancel: '&?',
         isDialog: '@'
       },
       templateUrl: 'src/components/create-project/createProject.html',
       controller: function($scope, $filter, $location, DataService) {
-        if(!($scope.submitButtonLabel)) {
-          $scope.submitButtonLabel = 'Create';
-        }
-
         $scope.isDialog = $scope.isDialog === 'true';
 
         $scope.createProject = function() {
