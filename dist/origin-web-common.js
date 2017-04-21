@@ -1266,29 +1266,19 @@ angular.module('openshiftCommonUI')
 
 angular.module('openshiftCommonUI')
   .filter("toArray", function() {
-    return function (items) {
-      if (!items) {
-        return [];
-      }
-
-      if (angular.isArray(items)) {
-        return items;
-      }
-
-      var itemsArray = [];
-      angular.forEach(items, function (item) {
-        itemsArray.push(item);
-      });
-
-      return itemsArray;
-    };
+    return _.toArray;
   })
-  .filter('hashSize', function() {
+  .filter('size', function() {
+    return _.size;
+  })
+  .filter('hashSize', ["$log", function($log) {
     return function(hash) {
-      if(!hash) { return 0; }
+      if (!hash) {
+        return 0;
+      }
       return Object.keys(hash).length;
     };
-  })
+  }])
   .filter('generateName', function() {
     return function(prefix, length) {
       if (!prefix) {
