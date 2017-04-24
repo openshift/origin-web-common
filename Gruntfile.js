@@ -41,6 +41,13 @@ module.exports = function (grunt) {
           dest: 'dist/origin-web-common.js'
         }
       },
+      copy: {
+        main: {
+          files: [
+            {expand: true, cwd: 'src/styles/', src: ['*'], dest: 'dist/less/'}
+          ]
+        }
+      },
       karma: {
         unit: {
           configFile: 'test/karma.conf.js',
@@ -112,12 +119,12 @@ module.exports = function (grunt) {
 
     // You can specify which modules to build as arguments of the build task.
     grunt.registerTask('build', 'Create bootstrap build files', function () {
-      grunt.task.run(['clean', 'ngtemplates', 'concat', 'ngAnnotate', 'less', 'uglify:build', 'test']);
+      grunt.task.run(['clean', 'ngtemplates', 'concat', 'copy', 'ngAnnotate', 'less', 'uglify:build', 'test']);
     });
 
     // Runs all the tasks of build with the exception of tests
     grunt.registerTask('deploy', 'Prepares the project for deployment. Does not run unit tests', function () {
-      grunt.task.run(['clean', 'ngtemplates', 'concat', 'ngAnnotate', 'less', 'uglify:build']);
+      grunt.task.run(['clean', 'ngtemplates', 'concat', 'copy', 'ngAnnotate', 'less', 'uglify:build']);
     });
 
     grunt.registerTask('default', ['build']);
