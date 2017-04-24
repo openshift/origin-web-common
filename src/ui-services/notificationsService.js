@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('openshiftCommonServices').provider('NotificationsService', function() {
+angular.module('openshiftCommonUI').provider('NotificationsService', function() {
   this.dismissDelay = 8000;
   this.autoDismissTypes = ['info', 'success'];
 
