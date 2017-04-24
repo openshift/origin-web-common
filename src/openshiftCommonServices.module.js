@@ -21,6 +21,7 @@ angular.module('openshiftCommonServices', ['ab-base64'])
 
     RedirectLoginServiceProvider.OAuthClientID(AUTH_CFG.oauth_client_id);
     RedirectLoginServiceProvider.OAuthAuthorizeURI(AUTH_CFG.oauth_authorize_uri);
+    RedirectLoginServiceProvider.OAuthTokenURI(AUTH_CFG.oauth_token_uri);
     RedirectLoginServiceProvider.OAuthRedirectURI(URI(AUTH_CFG.oauth_redirect_base).segment("oauth").toString());
   });
 
