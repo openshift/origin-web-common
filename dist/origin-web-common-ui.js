@@ -204,6 +204,30 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
   );
 
 
+  $templateCache.put('src/components/toast-notifications/toast-notifications.html',
+    "<div class=\"toast-notifications-list-pf\">\n" +
+    "  <div ng-repeat=\"(notificationID, notification) in notifications track by (notificationID + (notification.message || notification.details))\" ng-if=\"!notification.hidden\"\n" +
+    "       ng-mouseenter=\"setHover(notification, true)\" ng-mouseleave=\"setHover(notification, false)\">\n" +
+    "    <div class=\"toast-pf alert {{notification.type | alertStatus}}\" ng-class=\"{'alert-dismissable': !hideCloseButton}\">\n" +
+    "      <button ng-if=\"!hideCloseButton\" type=\"button\" class=\"close\" ng-click=\"close(notification)\">\n" +
+    "        <span class=\"pficon pficon-close\" aria-hidden=\"true\"></span>\n" +
+    "        <span class=\"sr-only\">Close</span>\n" +
+    "      </button>\n" +
+    "      <span class=\"{{notification.type | alertIcon}}\" aria-hidden=\"true\"></span>\n" +
+    "      <span class=\"sr-only\">{{notification.type}}</span>\n" +
+    "      <span class=\"toast-notification-message\" ng-if=\"notification.message\">{{notification.message}}</span>\n" +
+    "      <span ng-if=\"notification.details\">{{notification.details}}</span>\n" +
+    "      <span ng-repeat=\"link in notification.links\">\n" +
+    "        <a ng-if=\"!link.href\" href=\"\" ng-click=\"onClick(notification, link)\" role=\"button\">{{link.label}}</a>\n" +
+    "        <a ng-if=\"link.href\" ng-href=\"{{link.href}}\" ng-attr-target=\"{{link.target}}\">{{link.label}}</a>\n" +
+    "        <span ng-if=\"!$last\" class=\"toast-action-divider\">|</span>\n" +
+    "      </span>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('src/components/truncate-long-text/truncateLongText.html',
     "<!--\n" +
     "  Do not remove class `truncated-content` (here or below) even though it's not\n" +
@@ -246,8 +270,17 @@ angular.module("openshiftCommonUI")
         isDialog: '@'
       },
       templateUrl: 'src/components/create-project/createProject.html',
-      controller: function($scope, $filter, $location, DataService) {
+      controller: function($scope, $filter, $location, DataService, NotificationsService, displayNameFilter) {
+        if(!($scope.submitButtonLabel)) {
+          $scope.submitButtonLabel = 'Create';
+        }
+
         $scope.isDialog = $scope.isDialog === 'true';
+
+        var showAlert = function(name, alert) {
+          $scope.alerts[name] = alert;
+          NotificationsService.addNotification(alert);
+        };
 
         $scope.createProject = function() {
           $scope.disableInputs = true;
@@ -270,6 +303,10 @@ angular.module("openshiftCommonUI")
                 } else {
                   $location.path("project/" + encodeURIComponent(data.metadata.name) + "/create");
                 }
+                showAlert('created-project', {
+                  type: "success",
+                    message: "Project \'"  + displayNameFilter(data) + "\' was successfully created."
+                });
               }, function(result) {
                 $scope.disableInputs = false;
                 var data = result.data || {};
@@ -277,7 +314,7 @@ angular.module("openshiftCommonUI")
                   $scope.nameTaken = true;
                 } else {
                   var msg = data.message || 'An error occurred creating the project.';
-                  $scope.alerts['error-creating-project'] = {type: 'error', message: msg};
+                  showAlert('error-creating-project', {type: 'error', message: msg});
                 }
               });
           }
@@ -299,13 +336,13 @@ angular.module("openshiftCommonUI")
 ;'use strict';
 
 angular.module("openshiftCommonUI")
-  .directive("deleteProject", function ($uibModal, $location, $filter, $q, hashSizeFilter, APIService, DataService, AlertMessageService, Logger) {
+  .directive("deleteProject", function ($uibModal, $location, $filter, $q, hashSizeFilter, APIService, DataService, AlertMessageService, NotificationsService, Logger) {
     return {
       restrict: "E",
       scope: {
         // The name of project to delete
         projectName: "@",
-        // Alerts object for success and error alerts.
+        // Alerts object for using inline notifications for success and error alerts, notifications are also sent to enable toast notification display.
         alerts: "=",
         // Optional display name of the project to delete.
         displayName: "@",
@@ -340,6 +377,7 @@ angular.module("openshiftCommonUI")
           } else {
             AlertMessageService.addAlert(alert);
           }
+          NotificationsService.addNotification(alert.data);
         };
 
         var navigateToList = function() {
@@ -400,11 +438,13 @@ angular.module("openshiftCommonUI")
             })
             .catch(function(err) {
               // called if failure to delete
-              scope.alerts[projectName] = {
+              var alert = {
                 type: "error",
                 message: _.capitalize(formattedResource) + "\'" + " could not be deleted.",
                 details: $filter('getErrorDetails')(err)
               };
+              scope.alerts[projectName] = alert;
+              NotificationsService.addNotification(alert);
               Logger.error(formattedResource + " could not be deleted.", err);
             });
           });
@@ -446,7 +486,7 @@ angular.module("openshiftCommonUI")
         isDialog: '@'
       },
       templateUrl: 'src/components/edit-project/editProject.html',
-      controller: function($scope, $filter, $location, DataService, annotationNameFilter) {
+      controller: function($scope, $filter, $location, DataService, NotificationsService, annotationNameFilter, displayNameFilter) {
         if(!($scope.submitButtonLabel)) {
           $scope.submitButtonLabel = 'Save';
         }
@@ -483,6 +523,11 @@ angular.module("openshiftCommonUI")
           return resource;
         };
 
+        var showAlert = function(alert) {
+          $scope.alerts["update"] = alert;
+          NotificationsService.addNotification(alert);
+        };
+
         $scope.editableFields = editableFields($scope.project);
 
         $scope.update = function() {
@@ -495,20 +540,25 @@ angular.module("openshiftCommonUI")
                 cleanEditableAnnotations(mergeEditable($scope.project, $scope.editableFields)),
                 {projectName: $scope.project.name},
                 {errorNotification: false})
-              .then(function() {
+              .then(function(project) {
                 // angular is actually wrapping the redirect action :/
                 var cb = $scope.redirectAction();
                 if (cb) {
                   cb(encodeURIComponent($scope.project.metadata.name));
                 }
+
+                showAlert({
+                  type: "success",
+                  message: "Project \'"  + displayNameFilter(project) + "\' was successfully updated."
+                });
               }, function(result) {
                 $scope.disableInputs = false;
                 $scope.editableFields = editableFields($scope.project);
-                $scope.alerts["update"] = {
+                showAlert({
                   type: "error",
                   message: "An error occurred while updating the project",
                   details: $filter('getErrorDetails')(result)
-                };
+                });
               });
           }
         };
@@ -543,6 +593,55 @@ angular.module('openshiftCommonUI')
 ;'use strict';
 
 angular.module('openshiftCommonUI')
+  .directive('toastNotifications', function(NotificationsService, $timeout) {
+    return {
+      restrict: 'E',
+      scope: {},
+      templateUrl: 'src/components/toast-notifications/toast-notifications.html',
+      link: function($scope) {
+        $scope.notifications = NotificationsService.getNotifications();
+
+        $scope.close = function(notification) {
+          notification.hidden = true;
+          if (_.isFunction(notification.onClose)) {
+            notification.onClose();
+          }
+        };
+        $scope.onClick = function(notification, link) {
+          if (_.isFunction(link.onClick)) {
+            // If onClick() returns true, also hide the alert.
+            var close = link.onClick();
+            if (close) {
+              notification.hidden = true;
+            }
+          }
+        };
+        $scope.setHover = function(notification, isHover) {
+          notification.isHover = isHover;
+        };
+
+        $scope.$watch('notifications', function() {
+          _.each($scope.notifications, function(notification) {
+            if (NotificationsService.isAutoDismiss(notification) && !notification.hidden) {
+              if (!notification.timerId) {
+                notification.timerId = $timeout(function () {
+                  notification.timerId = -1;
+                  if (!notification.isHover) {
+                    notification.hidden = true;
+                  }
+                }, NotificationsService.dismissDelay);
+              } else if (notification.timerId === -1 && !notification.isHover) {
+                notification.hidden = true;
+              }
+            }
+          });
+        }, true);
+      }
+    };
+  });
+;'use strict';
+
+angular.module('openshiftCommonUI')
   // Truncates text to a length, adding a tooltip and an ellipsis if truncated.
   // Different than `text-overflow: ellipsis` because it allows for multiline text.
   .directive('truncateLongText', function(truncateFilter) {
@@ -571,6 +670,51 @@ angular.module('openshiftCommonUI')
           }
         });
       }
+    };
+  });
+;'use strict';
+
+angular.module('openshiftCommonUI')
+  .filter("alertStatus", function() {
+    return function (type) {
+      var status;
+
+      switch(type) {
+        case 'error':
+          status = 'alert-danger';
+          break;
+        case 'warning':
+          status = 'alert-warning';
+          break;
+        case 'success':
+          status = 'alert-success';
+          break;
+        default:
+          status = 'alert-info';
+      }
+
+      return status;
+    };
+  })
+  .filter('alertIcon', function() {
+    return function (type) {
+      var icon;
+
+      switch(type) {
+        case 'error':
+          icon = 'pficon pficon-error-circle-o';
+          break;
+        case 'warning':
+          icon = 'pficon pficon-warning-triangle-o';
+          break;
+        case 'success':
+          icon = 'pficon pficon-ok';
+          break;
+        default:
+          icon = 'pficon pficon-info';
+      }
+
+      return icon;
     };
   });
 ;'use strict';
@@ -1072,6 +1216,16 @@ angular.module('openshiftCommonUI')
       return Object.keys(hash).length;
     };
   })
+  // Wraps _.filter. Works with hashes, unlike ngFilter, which only works
+  // with arrays.
+  .filter('filterCollection', function() {
+    return function(collection, predicate) {
+      if (!collection || !predicate) {
+        return collection;
+      }
+      return _.filter(collection, predicate);
+    };
+  })
   .filter('generateName', function() {
     return function(prefix, length) {
       if (!prefix) {
@@ -1082,6 +1236,21 @@ angular.module('openshiftCommonUI')
       }
       var randomString = Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1);
       return prefix + randomString;
+    };
+  })
+  .filter("getErrorDetails", function(upperFirstFilter) {
+    return function(result, capitalize) {
+      var error = result.data || {};
+      if (error.message) {
+        return capitalize ? upperFirstFilter(error.message) : error.message;
+      }
+
+      var status = result.status || error.status;
+      if (status) {
+        return "Status: " + status;
+      }
+
+      return "";
     };
   });
 ;'use strict';
@@ -1217,4 +1386,76 @@ angular.module('openshiftCommonUI').factory('GuidedTourService', function() {
     startTour: startTour,
     cancelTour: cancelTour
   };
+});
+;'use strict';
+
+angular.module('openshiftCommonServices').provider('NotificationsService', function() {
+  this.dismissDelay = 8000;
+  this.autoDismissTypes = ['info', 'success'];
+
+  this.$get = function() {
+    var notifications = [];
+    var dismissDelay = this.dismissDelay;
+    var autoDismissTypes = this.autoDismissTypes;
+
+    var notificationHiddenKey = function(notificationID, namespace) {
+      if (!namespace) {
+        return 'hide/notification/' + notificationID;
+      }
+
+      return 'hide/notification/' + namespace + '/' + notificationID;
+    };
+
+    var addNotification = function (notification, notificationID, namespace) {
+      if (notificationID && isNotificationPermanentlyHidden(notificationID, namespace)) {
+        notification.hidden = true;
+      }
+
+      notifications.push(notification);
+    };
+
+    var getNotifications = function () {
+      return notifications;
+    };
+
+    var clearNotifications = function () {
+      _.take(notifications, 0);
+    };
+
+    var isNotificationPermanentlyHidden = function (notificationID, namespace) {
+      var key = notificationHiddenKey(notificationID, namespace);
+      return localStorage.getItem(key) === 'true';
+    };
+
+    var permanentlyHideNotification = function (notificationID, namespace) {
+      var key = notificationHiddenKey(notificationID, namespace);
+      localStorage.setItem(key, 'true');
+    };
+
+    var isAutoDismiss = function(notification) {
+      return _.find(autoDismissTypes, function(type) {
+        return type === notification.type;
+      });
+    };
+
+    return {
+      addNotification: addNotification,
+      getNotifications: getNotifications,
+      clearNotifications: clearNotifications,
+      isNotificationPermanentlyHidden: isNotificationPermanentlyHidden,
+      permanentlyHideNotification: permanentlyHideNotification,
+      isAutoDismiss: isAutoDismiss,
+      dismissDelay: dismissDelay,
+      autoDismissTypes: autoDismissTypes
+    };
+  };
+
+  this.setDismissDelay = function(delayInMs) {
+    this.dismissDelay = delayInMs;
+  };
+
+  this.setAutoDismissTypes = function(arrayOfTypes) {
+    this.autoDismissTypes = arrayOfTypes;
+  };
+
 });
