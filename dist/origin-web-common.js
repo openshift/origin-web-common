@@ -1817,8 +1817,10 @@ angular.module('openshiftCommonServices')
     var kinds = [];
     var rejectedKinds = Constants.AVAILABLE_KINDS_BLACKLIST;
 
-    // Legacy openshift and k8s kinds
-    _.each(API_CFG, function(api) {
+    // ignore the legacy openshift kinds, these have been migrated to api groups
+    _.each(_.pick(API_CFG, function(value, key) {
+      return key !== 'openshift';
+    }), function(api) {
       _.each(api.resources.v1, function(resource) {
         if (resource.namespaced || includeClusterScoped) {
           // Exclude subresources and any rejected kinds

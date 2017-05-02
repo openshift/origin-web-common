@@ -1,13 +1,13 @@
-describe("APIService", function(){
+describe("APIService", function() {
   var APIService;
 
   beforeEach(function(){
-    inject(function(_APIService_){
+    inject(function(_APIService_) {
       APIService = _APIService_;
     });
   });
 
-  describe("#toResourceGroupVersion", function(){
+  describe("#toResourceGroupVersion", function() {
 
     var tc = [
       // string args
@@ -62,7 +62,8 @@ describe("APIService", function(){
     }));
 
   });
-/*
+
+
   describe("#parseGroupVersion", function(){
     var tc = [
       // invalid cases
@@ -234,6 +235,78 @@ describe("APIService", function(){
       });
     }));
   });
-  */
+
+
+  describe('#availableKinds', function() {
+    var bothSample = ['Binding','ConfigMap','DeploymentConfig','Event','LimitRange','Pod','ReplicaSet','Role','Service', 'Template'];
+    var onlyClusterSample = ['ClusterResourceQuota','Namespace','OAuthAccessToken','PersistentVolume','ProjectRequest','User'];
+
+    it('should return list of kinds that are scoped to a namespace by default', function() {
+      var namespacedKinds = _.map(APIService.availableKinds(), 'kind');
+      expect( _.difference(bothSample, namespacedKinds).length ).toEqual(0);
+    });
+
+    it('should not return list cluster scoped kinds by default', function() {
+      var namespacedKinds = _.map(APIService.availableKinds(), 'kind');
+      expect( _.difference(onlyClusterSample, namespacedKinds).length ).toEqual(onlyClusterSample.length);
+    });
+
+    it('should return list of all kinds, including those that are cluster scoped, when passed a truthy argument', function() {
+      var allKinds = _.map(APIService.availableKinds(true), 'kind');
+      expect( _.difference(bothSample, allKinds).length ).toEqual(0);
+      expect( _.difference(onlyClusterSample, allKinds).length ).toEqual(0);
+    });
+
+    // kinds from the old /oapi should not be iterated at all.
+    it('should not list kinds from the old /oapi namespace (that do not have a group)', function() {
+      var allKinds = APIService.availableKinds(true);
+      var shouldNotBeFound = [];
+      // This is a sampling of items from /oapi that should no longer be listed
+      var oapiShouldNotExistSample = [
+        {kind: 'ClusterPolicy'},
+        {kind: 'ClusterRole'},
+        {kind: 'Image'},
+        {kind: 'Template'},
+        {kind: 'Project'},
+        {kind: 'User'}
+      ];
+      _.each(oapiShouldNotExistSample, function(kindToFind) {
+        var found = _.find(allKinds, function(kind) {
+          return (kind.kind === kindToFind.kind) && !_.includes(_.keys(kind), 'group');
+        });
+        if(found) {
+          shouldNotBeFound.push(found);
+        }
+      });
+      expect(shouldNotBeFound.length).toEqual(0);
+    });
+
+    // unlike the /oapi endpoint, the /api endpoint should still be listed
+    it('should list items from the k8s /api namespace (that do not have a group)', function() {
+      var allKinds = APIService.availableKinds(true);
+      var shouldBeFound = [];
+      // this is a sampling of items from /api that should still be listed,
+      // even though they do not yet have a group associated.
+      var k8sAPIStillExistsSample = [
+        {kind: 'Binding'},
+        {kind: 'ConfigMap'},
+        {kind: 'Namespace'},
+        {kind: 'PersistentVolume'},
+        {kind: 'Service'},
+        {kind: 'ServiceAccount'},
+        {kind: 'Pod'}
+      ];
+      _.each(k8sAPIStillExistsSample, function(kindToFind) {
+        var found = _.find(allKinds, function(kind) {
+          return (kind.kind === kindToFind.kind) && !_.includes(_.keys(kind), 'group');
+        });
+        if(found) {
+          shouldBeFound.push(found);
+        }
+      });
+      expect(shouldBeFound.length).toEqual(k8sAPIStillExistsSample.length);
+    });
+
+  });
 
 });

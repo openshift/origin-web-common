@@ -1,584 +1,1328 @@
 // Mocked API discovery
 window.OPENSHIFT_CONFIG.api.k8s.resources = {
-  "v1": {
-    "bindings": {
-      "name": "bindings",
-      "namespaced": true,
-      "kind": "Binding"
-    },
-    "componentstatuses": {
-      "name": "componentstatuses",
-      "namespaced": false,
-      "kind": "ComponentStatus"
-    },
-    "configmaps": {
-      "name": "configmaps",
-      "namespaced": true,
-      "kind": "ConfigMap"
-    },
-    "endpoints": {
-      "name": "endpoints",
-      "namespaced": true,
-      "kind": "Endpoints"
-    },
-    "events": {
-      "name": "events",
-      "namespaced": true,
-      "kind": "Event"
-    },
-    "limitranges": {
-      "name": "limitranges",
-      "namespaced": true,
-      "kind": "LimitRange"
-    },
-    "namespaces": {
-      "name": "namespaces",
-      "namespaced": false,
-      "kind": "Namespace"
-    },
-    "namespaces/finalize": {
-      "name": "namespaces/finalize",
-      "namespaced": false,
-      "kind": "Namespace"
-    },
-    "namespaces/status": {
-      "name": "namespaces/status",
-      "namespaced": false,
-      "kind": "Namespace"
-    },
-    "nodes": {
-      "name": "nodes",
-      "namespaced": false,
-      "kind": "Node"
-    },
-    "nodes/proxy": {
-      "name": "nodes/proxy",
-      "namespaced": false,
-      "kind": "Node"
-    },
-    "nodes/status": {
-      "name": "nodes/status",
-      "namespaced": false,
-      "kind": "Node"
-    },
-    "persistentvolumeclaims": {
-      "name": "persistentvolumeclaims",
-      "namespaced": true,
-      "kind": "PersistentVolumeClaim"
-    },
-    "persistentvolumeclaims/status": {
-      "name": "persistentvolumeclaims/status",
-      "namespaced": true,
-      "kind": "PersistentVolumeClaim"
-    },
-    "persistentvolumes": {
-      "name": "persistentvolumes",
-      "namespaced": false,
-      "kind": "PersistentVolume"
-    },
-    "persistentvolumes/status": {
-      "name": "persistentvolumes/status",
-      "namespaced": false,
-      "kind": "PersistentVolume"
-    },
-    "pods": {
-      "name": "pods",
-      "namespaced": true,
-      "kind": "Pod"
-    },
-    "pods/attach": {
-      "name": "pods/attach",
-      "namespaced": true,
-      "kind": "Pod"
-    },
-    "pods/binding": {
-      "name": "pods/binding",
-      "namespaced": true,
-      "kind": "Binding"
-    },
-    "pods/exec": {
-      "name": "pods/exec",
-      "namespaced": true,
-      "kind": "Pod"
-    },
-    "pods/log": {
-      "name": "pods/log",
-      "namespaced": true,
-      "kind": "Pod"
-    },
-    "pods/portforward": {
-      "name": "pods/portforward",
-      "namespaced": true,
-      "kind": "Pod"
-    },
-    "pods/proxy": {
-      "name": "pods/proxy",
-      "namespaced": true,
-      "kind": "Pod"
-    },
-    "pods/status": {
-      "name": "pods/status",
-      "namespaced": true,
-      "kind": "Pod"
-    },
-    "podtemplates": {
-      "name": "podtemplates",
-      "namespaced": true,
-      "kind": "PodTemplate"
-    },
-    "replicationcontrollers": {
-      "name": "replicationcontrollers",
-      "namespaced": true,
-      "kind": "ReplicationController"
-    },
-    "replicationcontrollers/scale": {
-      "name": "replicationcontrollers/scale",
-      "namespaced": true,
-      "kind": "Scale"
-    },
-    "replicationcontrollers/status": {
-      "name": "replicationcontrollers/status",
-      "namespaced": true,
-      "kind": "ReplicationController"
-    },
-    "resourcequotas": {
-      "name": "resourcequotas",
-      "namespaced": true,
-      "kind": "ResourceQuota"
-    },
-    "resourcequotas/status": {
-      "name": "resourcequotas/status",
-      "namespaced": true,
-      "kind": "ResourceQuota"
-    },
-    "secrets": {
-      "name": "secrets",
-      "namespaced": true,
-      "kind": "Secret"
-    },
-    "securitycontextconstraints": {
-      "name": "securitycontextconstraints",
-      "namespaced": false,
-      "kind": "SecurityContextConstraints"
-    },
-    "serviceaccounts": {
-      "name": "serviceaccounts",
-      "namespaced": true,
-      "kind": "ServiceAccount"
-    },
-    "services": {
-      "name": "services",
-      "namespaced": true,
-      "kind": "Service"
-    },
-    "services/proxy": {
-      "name": "services/proxy",
-      "namespaced": true,
-      "kind": "Service"
-    },
-    "services/status": {
-      "name": "services/status",
-      "namespaced": true,
-      "kind": "Service"
-    }
-  }
+   "v1":{
+      "bindings":{
+         "name":"bindings",
+         "namespaced":true,
+         "kind":"Binding"
+      },
+      "componentstatuses":{
+         "name":"componentstatuses",
+         "namespaced":false,
+         "kind":"ComponentStatus"
+      },
+      "configmaps":{
+         "name":"configmaps",
+         "namespaced":true,
+         "kind":"ConfigMap"
+      },
+      "endpoints":{
+         "name":"endpoints",
+         "namespaced":true,
+         "kind":"Endpoints"
+      },
+      "events":{
+         "name":"events",
+         "namespaced":true,
+         "kind":"Event"
+      },
+      "limitranges":{
+         "name":"limitranges",
+         "namespaced":true,
+         "kind":"LimitRange"
+      },
+      "namespaces":{
+         "name":"namespaces",
+         "namespaced":false,
+         "kind":"Namespace"
+      },
+      "namespaces/finalize":{
+         "name":"namespaces/finalize",
+         "namespaced":false,
+         "kind":"Namespace"
+      },
+      "namespaces/status":{
+         "name":"namespaces/status",
+         "namespaced":false,
+         "kind":"Namespace"
+      },
+      "nodes":{
+         "name":"nodes",
+         "namespaced":false,
+         "kind":"Node"
+      },
+      "nodes/proxy":{
+         "name":"nodes/proxy",
+         "namespaced":false,
+         "kind":"Node"
+      },
+      "nodes/status":{
+         "name":"nodes/status",
+         "namespaced":false,
+         "kind":"Node"
+      },
+      "persistentvolumeclaims":{
+         "name":"persistentvolumeclaims",
+         "namespaced":true,
+         "kind":"PersistentVolumeClaim"
+      },
+      "persistentvolumeclaims/status":{
+         "name":"persistentvolumeclaims/status",
+         "namespaced":true,
+         "kind":"PersistentVolumeClaim"
+      },
+      "persistentvolumes":{
+         "name":"persistentvolumes",
+         "namespaced":false,
+         "kind":"PersistentVolume"
+      },
+      "persistentvolumes/status":{
+         "name":"persistentvolumes/status",
+         "namespaced":false,
+         "kind":"PersistentVolume"
+      },
+      "pods":{
+         "name":"pods",
+         "namespaced":true,
+         "kind":"Pod"
+      },
+      "pods/attach":{
+         "name":"pods/attach",
+         "namespaced":true,
+         "kind":"Pod"
+      },
+      "pods/binding":{
+         "name":"pods/binding",
+         "namespaced":true,
+         "kind":"Binding"
+      },
+      "pods/eviction":{
+         "name":"pods/eviction",
+         "namespaced":true,
+         "kind":"Eviction"
+      },
+      "pods/exec":{
+         "name":"pods/exec",
+         "namespaced":true,
+         "kind":"Pod"
+      },
+      "pods/log":{
+         "name":"pods/log",
+         "namespaced":true,
+         "kind":"Pod"
+      },
+      "pods/portforward":{
+         "name":"pods/portforward",
+         "namespaced":true,
+         "kind":"Pod"
+      },
+      "pods/proxy":{
+         "name":"pods/proxy",
+         "namespaced":true,
+         "kind":"Pod"
+      },
+      "pods/status":{
+         "name":"pods/status",
+         "namespaced":true,
+         "kind":"Pod"
+      },
+      "podtemplates":{
+         "name":"podtemplates",
+         "namespaced":true,
+         "kind":"PodTemplate"
+      },
+      "replicationcontrollers":{
+         "name":"replicationcontrollers",
+         "namespaced":true,
+         "kind":"ReplicationController"
+      },
+      "replicationcontrollers/scale":{
+         "name":"replicationcontrollers/scale",
+         "namespaced":true,
+         "kind":"Scale"
+      },
+      "replicationcontrollers/status":{
+         "name":"replicationcontrollers/status",
+         "namespaced":true,
+         "kind":"ReplicationController"
+      },
+      "resourcequotas":{
+         "name":"resourcequotas",
+         "namespaced":true,
+         "kind":"ResourceQuota"
+      },
+      "resourcequotas/status":{
+         "name":"resourcequotas/status",
+         "namespaced":true,
+         "kind":"ResourceQuota"
+      },
+      "secrets":{
+         "name":"secrets",
+         "namespaced":true,
+         "kind":"Secret"
+      },
+      "securitycontextconstraints":{
+         "name":"securitycontextconstraints",
+         "namespaced":false,
+         "kind":"SecurityContextConstraints"
+      },
+      "serviceaccounts":{
+         "name":"serviceaccounts",
+         "namespaced":true,
+         "kind":"ServiceAccount"
+      },
+      "services":{
+         "name":"services",
+         "namespaced":true,
+         "kind":"Service"
+      },
+      "services/proxy":{
+         "name":"services/proxy",
+         "namespaced":true,
+         "kind":"Service"
+      },
+      "services/status":{
+         "name":"services/status",
+         "namespaced":true,
+         "kind":"Service"
+      }
+   }
 };
 
+
 window.OPENSHIFT_CONFIG.api.openshift.resources = {
-  "v1": {
-    "buildconfigs": {
-      "name": "buildconfigs",
-      "namespaced": true,
-      "kind": "BuildConfig"
-    },
-    "buildconfigs/instantiate": {
-      "name": "buildconfigs/instantiate",
-      "namespaced": true,
-      "kind": "BuildRequest"
-    },
-    "buildconfigs/instantiatebinary": {
-      "name": "buildconfigs/instantiatebinary",
-      "namespaced": true,
-      "kind": "BinaryBuildRequestOptions"
-    },
-    "buildconfigs/webhooks": {
-      "name": "buildconfigs/webhooks",
-      "namespaced": true,
-      "kind": "Status"
-    },
-    "builds": {
-      "name": "builds",
-      "namespaced": true,
-      "kind": "Build"
-    },
-    "builds/clone": {
-      "name": "builds/clone",
-      "namespaced": true,
-      "kind": "BuildRequest"
-    },
-    "builds/details": {
-      "name": "builds/details",
-      "namespaced": true,
-      "kind": "Build"
-    },
-    "builds/log": {
-      "name": "builds/log",
-      "namespaced": true,
-      "kind": "BuildLog"
-    },
-    "clusternetworks": {
-      "name": "clusternetworks",
-      "namespaced": false,
-      "kind": "ClusterNetwork"
-    },
-    "clusterpolicies": {
-      "name": "clusterpolicies",
-      "namespaced": false,
-      "kind": "ClusterPolicy"
-    },
-    "clusterpolicybindings": {
-      "name": "clusterpolicybindings",
-      "namespaced": false,
-      "kind": "ClusterPolicyBinding"
-    },
-    "clusterrolebindings": {
-      "name": "clusterrolebindings",
-      "namespaced": false,
-      "kind": "ClusterRoleBinding"
-    },
-    "clusterroles": {
-      "name": "clusterroles",
-      "namespaced": false,
-      "kind": "ClusterRole"
-    },
-    "deploymentconfigrollbacks": {
-      "name": "deploymentconfigrollbacks",
-      "namespaced": true,
-      "kind": "DeploymentConfigRollback"
-    },
-    "deploymentconfigs": {
-      "name": "deploymentconfigs",
-      "namespaced": true,
-      "kind": "DeploymentConfig"
-    },
-    "deploymentconfigs/log": {
-      "name": "deploymentconfigs/log",
-      "namespaced": true,
-      "kind": "DeploymentLog"
-    },
-    "deploymentconfigs/scale": {
-      "name": "deploymentconfigs/scale",
-      "namespaced": true,
-      "kind": "Scale"
-    },
-    "generatedeploymentconfigs": {
-      "name": "generatedeploymentconfigs",
-      "namespaced": true,
-      "kind": "DeploymentConfig"
-    },
-    "groups": {
-      "name": "groups",
-      "namespaced": false,
-      "kind": "Group"
-    },
-    "hostsubnets": {
-      "name": "hostsubnets",
-      "namespaced": false,
-      "kind": "HostSubnet"
-    },
-    "identities": {
-      "name": "identities",
-      "namespaced": false,
-      "kind": "Identity"
-    },
-    "images": {
-      "name": "images",
-      "namespaced": false,
-      "kind": "Image"
-    },
-    "imagestreamimages": {
-      "name": "imagestreamimages",
-      "namespaced": true,
-      "kind": "ImageStreamImage"
-    },
-    "imagestreamimports": {
-      "name": "imagestreamimports",
-      "namespaced": true,
-      "kind": "ImageStreamImport"
-    },
-    "imagestreammappings": {
-      "name": "imagestreammappings",
-      "namespaced": true,
-      "kind": "ImageStreamMapping"
-    },
-    "imagestreams": {
-      "name": "imagestreams",
-      "namespaced": true,
-      "kind": "ImageStream"
-    },
-    "imagestreams/secrets": {
-      "name": "imagestreams/secrets",
-      "namespaced": true,
-      "kind": "SecretList"
-    },
-    "imagestreams/status": {
-      "name": "imagestreams/status",
-      "namespaced": true,
-      "kind": "ImageStream"
-    },
-    "imagestreamtags": {
-      "name": "imagestreamtags",
-      "namespaced": true,
-      "kind": "ImageStreamTag"
-    },
-    "localresourceaccessreviews": {
-      "name": "localresourceaccessreviews",
-      "namespaced": true,
-      "kind": "LocalResourceAccessReview"
-    },
-    "localsubjectaccessreviews": {
-      "name": "localsubjectaccessreviews",
-      "namespaced": true,
-      "kind": "LocalSubjectAccessReview"
-    },
-    "netnamespaces": {
-      "name": "netnamespaces",
-      "namespaced": false,
-      "kind": "NetNamespace"
-    },
-    "oauthaccesstokens": {
-      "name": "oauthaccesstokens",
-      "namespaced": false,
-      "kind": "OAuthAccessToken"
-    },
-    "oauthauthorizetokens": {
-      "name": "oauthauthorizetokens",
-      "namespaced": false,
-      "kind": "OAuthAuthorizeToken"
-    },
-    "oauthclientauthorizations": {
-      "name": "oauthclientauthorizations",
-      "namespaced": false,
-      "kind": "OAuthClientAuthorization"
-    },
-    "oauthclients": {
-      "name": "oauthclients",
-      "namespaced": false,
-      "kind": "OAuthClient"
-    },
-    "policies": {
-      "name": "policies",
-      "namespaced": true,
-      "kind": "Policy"
-    },
-    "policybindings": {
-      "name": "policybindings",
-      "namespaced": true,
-      "kind": "PolicyBinding"
-    },
-    "processedtemplates": {
-      "name": "processedtemplates",
-      "namespaced": true,
-      "kind": "Template"
-    },
-    "projectrequests": {
-      "name": "projectrequests",
-      "namespaced": false,
-      "kind": "ProjectRequest"
-    },
-    "projects": {
-      "name": "projects",
-      "namespaced": false,
-      "kind": "Project"
-    },
-    "resourceaccessreviews": {
-      "name": "resourceaccessreviews",
-      "namespaced": true,
-      "kind": "ResourceAccessReview"
-    },
-    "rolebindings": {
-      "name": "rolebindings",
-      "namespaced": true,
-      "kind": "RoleBinding"
-    },
-    "roles": {
-      "name": "roles",
-      "namespaced": true,
-      "kind": "Role"
-    },
-    "routes": {
-      "name": "routes",
-      "namespaced": true,
-      "kind": "Route"
-    },
-    "routes/status": {
-      "name": "routes/status",
-      "namespaced": true,
-      "kind": "Route"
-    },
-    "subjectaccessreviews": {
-      "name": "subjectaccessreviews",
-      "namespaced": true,
-      "kind": "SubjectAccessReview"
-    },
-    "templates": {
-      "name": "templates",
-      "namespaced": true,
-      "kind": "Template"
-    },
-    "useridentitymappings": {
-      "name": "useridentitymappings",
-      "namespaced": false,
-      "kind": "UserIdentityMapping"
-    },
-    "users": {
-      "name": "users",
-      "namespaced": false,
-      "kind": "User"
-    }
-  }
+   "v1":{
+      "appliedclusterresourcequotas":{
+         "name":"appliedclusterresourcequotas",
+         "namespaced":true,
+         "kind":"AppliedClusterResourceQuota"
+      },
+      "buildconfigs":{
+         "name":"buildconfigs",
+         "namespaced":true,
+         "kind":"BuildConfig"
+      },
+      "buildconfigs/instantiate":{
+         "name":"buildconfigs/instantiate",
+         "namespaced":true,
+         "kind":"BuildRequest"
+      },
+      "buildconfigs/instantiatebinary":{
+         "name":"buildconfigs/instantiatebinary",
+         "namespaced":true,
+         "kind":"BinaryBuildRequestOptions"
+      },
+      "buildconfigs/webhooks":{
+         "name":"buildconfigs/webhooks",
+         "namespaced":true,
+         "kind":"Status"
+      },
+      "builds":{
+         "name":"builds",
+         "namespaced":true,
+         "kind":"Build"
+      },
+      "builds/clone":{
+         "name":"builds/clone",
+         "namespaced":true,
+         "kind":"BuildRequest"
+      },
+      "builds/details":{
+         "name":"builds/details",
+         "namespaced":true,
+         "kind":"Build"
+      },
+      "builds/log":{
+         "name":"builds/log",
+         "namespaced":true,
+         "kind":"BuildLog"
+      },
+      "clusternetworks":{
+         "name":"clusternetworks",
+         "namespaced":false,
+         "kind":"ClusterNetwork"
+      },
+      "clusterpolicies":{
+         "name":"clusterpolicies",
+         "namespaced":false,
+         "kind":"ClusterPolicy"
+      },
+      "clusterpolicybindings":{
+         "name":"clusterpolicybindings",
+         "namespaced":false,
+         "kind":"ClusterPolicyBinding"
+      },
+      "clusterresourcequotas":{
+         "name":"clusterresourcequotas",
+         "namespaced":false,
+         "kind":"ClusterResourceQuota"
+      },
+      "clusterresourcequotas/status":{
+         "name":"clusterresourcequotas/status",
+         "namespaced":false,
+         "kind":"ClusterResourceQuota"
+      },
+      "clusterrolebindings":{
+         "name":"clusterrolebindings",
+         "namespaced":false,
+         "kind":"ClusterRoleBinding"
+      },
+      "clusterroles":{
+         "name":"clusterroles",
+         "namespaced":false,
+         "kind":"ClusterRole"
+      },
+      "deploymentconfigrollbacks":{
+         "name":"deploymentconfigrollbacks",
+         "namespaced":true,
+         "kind":"DeploymentConfigRollback"
+      },
+      "deploymentconfigs":{
+         "name":"deploymentconfigs",
+         "namespaced":true,
+         "kind":"DeploymentConfig"
+      },
+      "deploymentconfigs/instantiate":{
+         "name":"deploymentconfigs/instantiate",
+         "namespaced":true,
+         "kind":"DeploymentRequest"
+      },
+      "deploymentconfigs/log":{
+         "name":"deploymentconfigs/log",
+         "namespaced":true,
+         "kind":"DeploymentLog"
+      },
+      "deploymentconfigs/rollback":{
+         "name":"deploymentconfigs/rollback",
+         "namespaced":true,
+         "kind":"DeploymentConfigRollback"
+      },
+      "deploymentconfigs/scale":{
+         "name":"deploymentconfigs/scale",
+         "namespaced":true,
+         "kind":"Scale"
+      },
+      "deploymentconfigs/status":{
+         "name":"deploymentconfigs/status",
+         "namespaced":true,
+         "kind":"DeploymentConfig"
+      },
+      "egressnetworkpolicies":{
+         "name":"egressnetworkpolicies",
+         "namespaced":true,
+         "kind":"EgressNetworkPolicy"
+      },
+      "generatedeploymentconfigs":{
+         "name":"generatedeploymentconfigs",
+         "namespaced":true,
+         "kind":"DeploymentConfig"
+      },
+      "groups":{
+         "name":"groups",
+         "namespaced":false,
+         "kind":"Group"
+      },
+      "hostsubnets":{
+         "name":"hostsubnets",
+         "namespaced":false,
+         "kind":"HostSubnet"
+      },
+      "identities":{
+         "name":"identities",
+         "namespaced":false,
+         "kind":"Identity"
+      },
+      "images":{
+         "name":"images",
+         "namespaced":false,
+         "kind":"Image"
+      },
+      "imagesignatures":{
+         "name":"imagesignatures",
+         "namespaced":false,
+         "kind":"ImageSignature"
+      },
+      "imagestreamimages":{
+         "name":"imagestreamimages",
+         "namespaced":true,
+         "kind":"ImageStreamImage"
+      },
+      "imagestreamimports":{
+         "name":"imagestreamimports",
+         "namespaced":true,
+         "kind":"ImageStreamImport"
+      },
+      "imagestreammappings":{
+         "name":"imagestreammappings",
+         "namespaced":true,
+         "kind":"ImageStreamMapping"
+      },
+      "imagestreams":{
+         "name":"imagestreams",
+         "namespaced":true,
+         "kind":"ImageStream"
+      },
+      "imagestreams/secrets":{
+         "name":"imagestreams/secrets",
+         "namespaced":true,
+         "kind":"SecretList"
+      },
+      "imagestreams/status":{
+         "name":"imagestreams/status",
+         "namespaced":true,
+         "kind":"ImageStream"
+      },
+      "imagestreamtags":{
+         "name":"imagestreamtags",
+         "namespaced":true,
+         "kind":"ImageStreamTag"
+      },
+      "localresourceaccessreviews":{
+         "name":"localresourceaccessreviews",
+         "namespaced":true,
+         "kind":"LocalResourceAccessReview"
+      },
+      "localsubjectaccessreviews":{
+         "name":"localsubjectaccessreviews",
+         "namespaced":true,
+         "kind":"LocalSubjectAccessReview"
+      },
+      "netnamespaces":{
+         "name":"netnamespaces",
+         "namespaced":false,
+         "kind":"NetNamespace"
+      },
+      "oauthaccesstokens":{
+         "name":"oauthaccesstokens",
+         "namespaced":false,
+         "kind":"OAuthAccessToken"
+      },
+      "oauthauthorizetokens":{
+         "name":"oauthauthorizetokens",
+         "namespaced":false,
+         "kind":"OAuthAuthorizeToken"
+      },
+      "oauthclientauthorizations":{
+         "name":"oauthclientauthorizations",
+         "namespaced":false,
+         "kind":"OAuthClientAuthorization"
+      },
+      "oauthclients":{
+         "name":"oauthclients",
+         "namespaced":false,
+         "kind":"OAuthClient"
+      },
+      "podsecuritypolicyreviews":{
+         "name":"podsecuritypolicyreviews",
+         "namespaced":true,
+         "kind":"PodSecurityPolicyReview"
+      },
+      "podsecuritypolicyselfsubjectreviews":{
+         "name":"podsecuritypolicyselfsubjectreviews",
+         "namespaced":true,
+         "kind":"PodSecurityPolicySelfSubjectReview"
+      },
+      "podsecuritypolicysubjectreviews":{
+         "name":"podsecuritypolicysubjectreviews",
+         "namespaced":true,
+         "kind":"PodSecurityPolicySubjectReview"
+      },
+      "policies":{
+         "name":"policies",
+         "namespaced":true,
+         "kind":"Policy"
+      },
+      "policybindings":{
+         "name":"policybindings",
+         "namespaced":true,
+         "kind":"PolicyBinding"
+      },
+      "processedtemplates":{
+         "name":"processedtemplates",
+         "namespaced":true,
+         "kind":"Template"
+      },
+      "projectrequests":{
+         "name":"projectrequests",
+         "namespaced":false,
+         "kind":"ProjectRequest"
+      },
+      "projects":{
+         "name":"projects",
+         "namespaced":false,
+         "kind":"Project"
+      },
+      "resourceaccessreviews":{
+         "name":"resourceaccessreviews",
+         "namespaced":true,
+         "kind":"ResourceAccessReview"
+      },
+      "rolebindingrestrictions":{
+         "name":"rolebindingrestrictions",
+         "namespaced":true,
+         "kind":"RoleBindingRestriction"
+      },
+      "rolebindings":{
+         "name":"rolebindings",
+         "namespaced":true,
+         "kind":"RoleBinding"
+      },
+      "roles":{
+         "name":"roles",
+         "namespaced":true,
+         "kind":"Role"
+      },
+      "routes":{
+         "name":"routes",
+         "namespaced":true,
+         "kind":"Route"
+      },
+      "routes/status":{
+         "name":"routes/status",
+         "namespaced":true,
+         "kind":"Route"
+      },
+      "selfsubjectrulesreviews":{
+         "name":"selfsubjectrulesreviews",
+         "namespaced":true,
+         "kind":"SelfSubjectRulesReview"
+      },
+      "subjectaccessreviews":{
+         "name":"subjectaccessreviews",
+         "namespaced":true,
+         "kind":"SubjectAccessReview"
+      },
+      "subjectrulesreviews":{
+         "name":"subjectrulesreviews",
+         "namespaced":true,
+         "kind":"SubjectRulesReview"
+      },
+      "templates":{
+         "name":"templates",
+         "namespaced":true,
+         "kind":"Template"
+      },
+      "useridentitymappings":{
+         "name":"useridentitymappings",
+         "namespaced":false,
+         "kind":"UserIdentityMapping"
+      },
+      "users":{
+         "name":"users",
+         "namespaced":false,
+         "kind":"User"
+      }
+   }
 };
 
 window.OPENSHIFT_CONFIG.apis.groups = {
-  "autoscaling": {
-    "name": "autoscaling",
-    "preferredVersion": "v1",
-    "versions": {
-      "v1": {
-        "version": "v1",
-        "groupVersion": "autoscaling/v1",
-        "resources": {
-          "horizontalpodautoscalers": {
-            "name": "horizontalpodautoscalers",
-            "namespaced": true,
-            "kind": "HorizontalPodAutoscaler"
-          },
-          "horizontalpodautoscalers/status": {
-            "name": "horizontalpodautoscalers/status",
-            "namespaced": true,
-            "kind": "HorizontalPodAutoscaler"
-          }
-        }
-      }
-    }
-  },
-  "batch": {
-    "name": "batch",
-    "preferredVersion": "v1",
-    "versions": {
-      "v1": {
-        "version": "v1",
-        "groupVersion": "batch/v1",
-        "resources": {
-          "jobs": {
-            "name": "jobs",
-            "namespaced": true,
-            "kind": "Job"
-          },
-          "jobs/status": {
-            "name": "jobs/status",
-            "namespaced": true,
-            "kind": "Job"
-          }
-        }
-      }
-    }
-  },
-  "extensions": {
-    "name": "extensions",
-    "preferredVersion": "v1beta1",
-    "versions": {
-      "v1beta1": {
-        "version": "v1beta1",
-        "groupVersion": "extensions/v1beta1",
-        "resources": {
-          "daemonsets": {
-            "name": "daemonsets",
-            "namespaced": true,
-            "kind": "DaemonSet"
-          },
-          "daemonsets/status": {
-            "name": "daemonsets/status",
-            "namespaced": true,
-            "kind": "DaemonSet"
-          },
-          "deployments": {
-            "name": "deployments",
-            "namespaced": true,
-            "kind": "Deployment"
-          },
-          "deployments/rollback": {
-            "name": "deployments/rollback",
-            "namespaced": true,
-            "kind": "DeploymentRollback"
-          },
-          "deployments/scale": {
-            "name": "deployments/scale",
-            "namespaced": true,
-            "kind": "Scale"
-          },
-          "deployments/status": {
-            "name": "deployments/status",
-            "namespaced": true,
-            "kind": "Deployment"
-          },
-          "horizontalpodautoscalers": {
-            "name": "horizontalpodautoscalers",
-            "namespaced": true,
-            "kind": "HorizontalPodAutoscaler"
-          },
-          "horizontalpodautoscalers/status": {
-            "name": "horizontalpodautoscalers/status",
-            "namespaced": true,
-            "kind": "HorizontalPodAutoscaler"
-          },
-          "ingresses": {
-            "name": "ingresses",
-            "namespaced": true,
-            "kind": "Ingress"
-          },
-          "ingresses/status": {
-            "name": "ingresses/status",
-            "namespaced": true,
-            "kind": "Ingress"
-          },
-          "jobs": {
-            "name": "jobs",
-            "namespaced": true,
-            "kind": "Job"
-          },
-          "jobs/status": {
-            "name": "jobs/status",
-            "namespaced": true,
-            "kind": "Job"
-          },
-          "replicasets": {
-            "name": "replicasets",
-            "namespaced": true,
-            "kind": "ReplicaSet"
-          },
-          "replicasets/scale": {
-            "name": "replicasets/scale",
-            "namespaced": true,
-            "kind": "Scale"
-          },
-          "replicasets/status": {
-            "name": "replicasets/status",
-            "namespaced": true,
-            "kind": "ReplicaSet"
-          },
-          "replicationcontrollers": {
-            "name": "replicationcontrollers",
-            "namespaced": true,
-            "kind": "ReplicationControllerDummy"
-          },
-          "replicationcontrollers/scale": {
-            "name": "replicationcontrollers/scale",
-            "namespaced": true,
-            "kind": "Scale"
-          }
-        }
-      }
-    }
-  }
+   "apps":{
+      "name":"apps",
+      "preferredVersion":"v1beta1",
+      "versions":{
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"apps/v1beta1",
+            "resources":{
+               "statefulsets":{
+                  "name":"statefulsets",
+                  "namespaced":true,
+                  "kind":"StatefulSet"
+               },
+               "statefulsets/status":{
+                  "name":"statefulsets/status",
+                  "namespaced":true,
+                  "kind":"StatefulSet"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "apps.openshift.io":{
+      "name":"apps.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"apps.openshift.io/v1",
+            "resources":{
+               "deploymentconfigs":{
+                  "name":"deploymentconfigs",
+                  "namespaced":true,
+                  "kind":"DeploymentConfig"
+               },
+               "deploymentconfigs/instantiate":{
+                  "name":"deploymentconfigs/instantiate",
+                  "namespaced":true,
+                  "kind":"DeploymentRequest"
+               },
+               "deploymentconfigs/log":{
+                  "name":"deploymentconfigs/log",
+                  "namespaced":true,
+                  "kind":"DeploymentLog"
+               },
+               "deploymentconfigs/rollback":{
+                  "name":"deploymentconfigs/rollback",
+                  "namespaced":true,
+                  "kind":"DeploymentConfigRollback"
+               },
+               "deploymentconfigs/scale":{
+                  "name":"deploymentconfigs/scale",
+                  "namespaced":true,
+                  "kind":"Scale"
+               },
+               "deploymentconfigs/status":{
+                  "name":"deploymentconfigs/status",
+                  "namespaced":true,
+                  "kind":"DeploymentConfig"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "authentication.k8s.io":{
+      "name":"authentication.k8s.io",
+      "preferredVersion":"v1beta1",
+      "versions":{
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"authentication.k8s.io/v1beta1",
+            "resources":{
+               "tokenreviews":{
+                  "name":"tokenreviews",
+                  "namespaced":false,
+                  "kind":"TokenReview"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "authorization.k8s.io":{
+      "name":"authorization.k8s.io",
+      "preferredVersion":"v1beta1",
+      "versions":{
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"authorization.k8s.io/v1beta1",
+            "resources":{
+               "localsubjectaccessreviews":{
+                  "name":"localsubjectaccessreviews",
+                  "namespaced":true,
+                  "kind":"LocalSubjectAccessReview"
+               },
+               "selfsubjectaccessreviews":{
+                  "name":"selfsubjectaccessreviews",
+                  "namespaced":false,
+                  "kind":"SelfSubjectAccessReview"
+               },
+               "subjectaccessreviews":{
+                  "name":"subjectaccessreviews",
+                  "namespaced":false,
+                  "kind":"SubjectAccessReview"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "authorization.openshift.io":{
+      "name":"authorization.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"authorization.openshift.io/v1",
+            "resources":{
+               "clusterpolicies":{
+                  "name":"clusterpolicies",
+                  "namespaced":false,
+                  "kind":"ClusterPolicy"
+               },
+               "clusterpolicybindings":{
+                  "name":"clusterpolicybindings",
+                  "namespaced":false,
+                  "kind":"ClusterPolicyBinding"
+               },
+               "clusterrolebindings":{
+                  "name":"clusterrolebindings",
+                  "namespaced":false,
+                  "kind":"ClusterRoleBinding"
+               },
+               "clusterroles":{
+                  "name":"clusterroles",
+                  "namespaced":false,
+                  "kind":"ClusterRole"
+               },
+               "localresourceaccessreviews":{
+                  "name":"localresourceaccessreviews",
+                  "namespaced":true,
+                  "kind":"LocalResourceAccessReview"
+               },
+               "localsubjectaccessreviews":{
+                  "name":"localsubjectaccessreviews",
+                  "namespaced":true,
+                  "kind":"LocalSubjectAccessReview"
+               },
+               "policies":{
+                  "name":"policies",
+                  "namespaced":true,
+                  "kind":"Policy"
+               },
+               "policybindings":{
+                  "name":"policybindings",
+                  "namespaced":true,
+                  "kind":"PolicyBinding"
+               },
+               "resourceaccessreviews":{
+                  "name":"resourceaccessreviews",
+                  "namespaced":true,
+                  "kind":"ResourceAccessReview"
+               },
+               "rolebindingrestrictions":{
+                  "name":"rolebindingrestrictions",
+                  "namespaced":true,
+                  "kind":"RoleBindingRestriction"
+               },
+               "rolebindings":{
+                  "name":"rolebindings",
+                  "namespaced":true,
+                  "kind":"RoleBinding"
+               },
+               "roles":{
+                  "name":"roles",
+                  "namespaced":true,
+                  "kind":"Role"
+               },
+               "selfsubjectrulesreviews":{
+                  "name":"selfsubjectrulesreviews",
+                  "namespaced":true,
+                  "kind":"SelfSubjectRulesReview"
+               },
+               "subjectaccessreviews":{
+                  "name":"subjectaccessreviews",
+                  "namespaced":true,
+                  "kind":"SubjectAccessReview"
+               },
+               "subjectrulesreviews":{
+                  "name":"subjectrulesreviews",
+                  "namespaced":true,
+                  "kind":"SubjectRulesReview"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "autoscaling":{
+      "name":"autoscaling",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"autoscaling/v1",
+            "resources":{
+               "horizontalpodautoscalers":{
+                  "name":"horizontalpodautoscalers",
+                  "namespaced":true,
+                  "kind":"HorizontalPodAutoscaler"
+               },
+               "horizontalpodautoscalers/status":{
+                  "name":"horizontalpodautoscalers/status",
+                  "namespaced":true,
+                  "kind":"HorizontalPodAutoscaler"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "batch":{
+      "name":"batch",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"batch/v1",
+            "resources":{
+               "jobs":{
+                  "name":"jobs",
+                  "namespaced":true,
+                  "kind":"Job"
+               },
+               "jobs/status":{
+                  "name":"jobs/status",
+                  "namespaced":true,
+                  "kind":"Job"
+               }
+            }
+         },
+         "v2alpha1":{
+            "version":"v2alpha1",
+            "groupVersion":"batch/v2alpha1",
+            "resources":{
+               "cronjobs":{
+                  "name":"cronjobs",
+                  "namespaced":true,
+                  "kind":"CronJob"
+               },
+               "cronjobs/status":{
+                  "name":"cronjobs/status",
+                  "namespaced":true,
+                  "kind":"CronJob"
+               },
+               "jobs":{
+                  "name":"jobs",
+                  "namespaced":true,
+                  "kind":"Job"
+               },
+               "jobs/status":{
+                  "name":"jobs/status",
+                  "namespaced":true,
+                  "kind":"Job"
+               },
+               "scheduledjobs":{
+                  "name":"scheduledjobs",
+                  "namespaced":true,
+                  "kind":"ScheduledJob"
+               },
+               "scheduledjobs/status":{
+                  "name":"scheduledjobs/status",
+                  "namespaced":true,
+                  "kind":"ScheduledJob"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "build.openshift.io":{
+      "name":"build.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"build.openshift.io/v1",
+            "resources":{
+               "buildconfigs":{
+                  "name":"buildconfigs",
+                  "namespaced":true,
+                  "kind":"BuildConfig"
+               },
+               "buildconfigs/instantiate":{
+                  "name":"buildconfigs/instantiate",
+                  "namespaced":true,
+                  "kind":"BuildRequest"
+               },
+               "buildconfigs/instantiatebinary":{
+                  "name":"buildconfigs/instantiatebinary",
+                  "namespaced":true,
+                  "kind":"BinaryBuildRequestOptions"
+               },
+               "buildconfigs/webhooks":{
+                  "name":"buildconfigs/webhooks",
+                  "namespaced":true,
+                  "kind":"Status"
+               },
+               "builds":{
+                  "name":"builds",
+                  "namespaced":true,
+                  "kind":"Build"
+               },
+               "builds/clone":{
+                  "name":"builds/clone",
+                  "namespaced":true,
+                  "kind":"BuildRequest"
+               },
+               "builds/details":{
+                  "name":"builds/details",
+                  "namespaced":true,
+                  "kind":"Build"
+               },
+               "builds/log":{
+                  "name":"builds/log",
+                  "namespaced":true,
+                  "kind":"BuildLog"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "certificates.k8s.io":{
+      "name":"certificates.k8s.io",
+      "preferredVersion":"v1alpha1",
+      "versions":{
+         "v1alpha1":{
+            "version":"v1alpha1",
+            "groupVersion":"certificates.k8s.io/v1alpha1",
+            "resources":{
+               "certificatesigningrequests":{
+                  "name":"certificatesigningrequests",
+                  "namespaced":false,
+                  "kind":"CertificateSigningRequest"
+               },
+               "certificatesigningrequests/approval":{
+                  "name":"certificatesigningrequests/approval",
+                  "namespaced":false,
+                  "kind":"CertificateSigningRequest"
+               },
+               "certificatesigningrequests/status":{
+                  "name":"certificatesigningrequests/status",
+                  "namespaced":false,
+                  "kind":"CertificateSigningRequest"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "extensions":{
+      "name":"extensions",
+      "preferredVersion":"v1beta1",
+      "versions":{
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"extensions/v1beta1",
+            "resources":{
+               "daemonsets":{
+                  "name":"daemonsets",
+                  "namespaced":true,
+                  "kind":"DaemonSet"
+               },
+               "daemonsets/status":{
+                  "name":"daemonsets/status",
+                  "namespaced":true,
+                  "kind":"DaemonSet"
+               },
+               "deployments":{
+                  "name":"deployments",
+                  "namespaced":true,
+                  "kind":"Deployment"
+               },
+               "deployments/rollback":{
+                  "name":"deployments/rollback",
+                  "namespaced":true,
+                  "kind":"DeploymentRollback"
+               },
+               "deployments/scale":{
+                  "name":"deployments/scale",
+                  "namespaced":true,
+                  "kind":"Scale"
+               },
+               "deployments/status":{
+                  "name":"deployments/status",
+                  "namespaced":true,
+                  "kind":"Deployment"
+               },
+               "horizontalpodautoscalers":{
+                  "name":"horizontalpodautoscalers",
+                  "namespaced":true,
+                  "kind":"HorizontalPodAutoscaler"
+               },
+               "horizontalpodautoscalers/status":{
+                  "name":"horizontalpodautoscalers/status",
+                  "namespaced":true,
+                  "kind":"HorizontalPodAutoscaler"
+               },
+               "ingresses":{
+                  "name":"ingresses",
+                  "namespaced":true,
+                  "kind":"Ingress"
+               },
+               "ingresses/status":{
+                  "name":"ingresses/status",
+                  "namespaced":true,
+                  "kind":"Ingress"
+               },
+               "jobs":{
+                  "name":"jobs",
+                  "namespaced":true,
+                  "kind":"Job"
+               },
+               "jobs/status":{
+                  "name":"jobs/status",
+                  "namespaced":true,
+                  "kind":"Job"
+               },
+               "networkpolicies":{
+                  "name":"networkpolicies",
+                  "namespaced":true,
+                  "kind":"NetworkPolicy"
+               },
+               "podsecuritypolicies":{
+                  "name":"podsecuritypolicies",
+                  "namespaced":false,
+                  "kind":"PodSecurityPolicy"
+               },
+               "replicasets":{
+                  "name":"replicasets",
+                  "namespaced":true,
+                  "kind":"ReplicaSet"
+               },
+               "replicasets/scale":{
+                  "name":"replicasets/scale",
+                  "namespaced":true,
+                  "kind":"Scale"
+               },
+               "replicasets/status":{
+                  "name":"replicasets/status",
+                  "namespaced":true,
+                  "kind":"ReplicaSet"
+               },
+               "replicationcontrollers":{
+                  "name":"replicationcontrollers",
+                  "namespaced":true,
+                  "kind":"ReplicationControllerDummy"
+               },
+               "replicationcontrollers/scale":{
+                  "name":"replicationcontrollers/scale",
+                  "namespaced":true,
+                  "kind":"Scale"
+               },
+               "thirdpartyresources":{
+                  "name":"thirdpartyresources",
+                  "namespaced":false,
+                  "kind":"ThirdPartyResource"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "image.openshift.io":{
+      "name":"image.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"image.openshift.io/v1",
+            "resources":{
+               "images":{
+                  "name":"images",
+                  "namespaced":false,
+                  "kind":"Image"
+               },
+               "imagesignatures":{
+                  "name":"imagesignatures",
+                  "namespaced":false,
+                  "kind":"ImageSignature"
+               },
+               "imagestreamimages":{
+                  "name":"imagestreamimages",
+                  "namespaced":true,
+                  "kind":"ImageStreamImage"
+               },
+               "imagestreamimports":{
+                  "name":"imagestreamimports",
+                  "namespaced":true,
+                  "kind":"ImageStreamImport"
+               },
+               "imagestreammappings":{
+                  "name":"imagestreammappings",
+                  "namespaced":true,
+                  "kind":"ImageStreamMapping"
+               },
+               "imagestreams":{
+                  "name":"imagestreams",
+                  "namespaced":true,
+                  "kind":"ImageStream"
+               },
+               "imagestreams/secrets":{
+                  "name":"imagestreams/secrets",
+                  "namespaced":true,
+                  "kind":"SecretList"
+               },
+               "imagestreams/status":{
+                  "name":"imagestreams/status",
+                  "namespaced":true,
+                  "kind":"ImageStream"
+               },
+               "imagestreamtags":{
+                  "name":"imagestreamtags",
+                  "namespaced":true,
+                  "kind":"ImageStreamTag"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "network.openshift.io":{
+      "name":"network.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"network.openshift.io/v1",
+            "resources":{
+               "clusternetworks":{
+                  "name":"clusternetworks",
+                  "namespaced":false,
+                  "kind":"ClusterNetwork"
+               },
+               "egressnetworkpolicies":{
+                  "name":"egressnetworkpolicies",
+                  "namespaced":true,
+                  "kind":"EgressNetworkPolicy"
+               },
+               "hostsubnets":{
+                  "name":"hostsubnets",
+                  "namespaced":false,
+                  "kind":"HostSubnet"
+               },
+               "netnamespaces":{
+                  "name":"netnamespaces",
+                  "namespaced":false,
+                  "kind":"NetNamespace"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "oauth.openshift.io":{
+      "name":"oauth.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"oauth.openshift.io/v1",
+            "resources":{
+               "oauthaccesstokens":{
+                  "name":"oauthaccesstokens",
+                  "namespaced":false,
+                  "kind":"OAuthAccessToken"
+               },
+               "oauthauthorizetokens":{
+                  "name":"oauthauthorizetokens",
+                  "namespaced":false,
+                  "kind":"OAuthAuthorizeToken"
+               },
+               "oauthclientauthorizations":{
+                  "name":"oauthclientauthorizations",
+                  "namespaced":false,
+                  "kind":"OAuthClientAuthorization"
+               },
+               "oauthclients":{
+                  "name":"oauthclients",
+                  "namespaced":false,
+                  "kind":"OAuthClient"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "policy":{
+      "name":"policy",
+      "preferredVersion":"v1beta1",
+      "versions":{
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"policy/v1beta1",
+            "resources":{
+               "poddisruptionbudgets":{
+                  "name":"poddisruptionbudgets",
+                  "namespaced":true,
+                  "kind":"PodDisruptionBudget"
+               },
+               "poddisruptionbudgets/status":{
+                  "name":"poddisruptionbudgets/status",
+                  "namespaced":true,
+                  "kind":"PodDisruptionBudget"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "project.openshift.io":{
+      "name":"project.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"project.openshift.io/v1",
+            "resources":{
+               "projectrequests":{
+                  "name":"projectrequests",
+                  "namespaced":false,
+                  "kind":"ProjectRequest"
+               },
+               "projects":{
+                  "name":"projects",
+                  "namespaced":false,
+                  "kind":"Project"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "quota.openshift.io":{
+      "name":"quota.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"quota.openshift.io/v1",
+            "resources":{
+               "appliedclusterresourcequotas":{
+                  "name":"appliedclusterresourcequotas",
+                  "namespaced":true,
+                  "kind":"AppliedClusterResourceQuota"
+               },
+               "clusterresourcequotas":{
+                  "name":"clusterresourcequotas",
+                  "namespaced":false,
+                  "kind":"ClusterResourceQuota"
+               },
+               "clusterresourcequotas/status":{
+                  "name":"clusterresourcequotas/status",
+                  "namespaced":false,
+                  "kind":"ClusterResourceQuota"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "route.openshift.io":{
+      "name":"route.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"route.openshift.io/v1",
+            "resources":{
+               "routes":{
+                  "name":"routes",
+                  "namespaced":true,
+                  "kind":"Route"
+               },
+               "routes/status":{
+                  "name":"routes/status",
+                  "namespaced":true,
+                  "kind":"Route"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "security.openshift.io":{
+      "name":"security.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"security.openshift.io/v1",
+            "resources":{
+               "podsecuritypolicyreviews":{
+                  "name":"podsecuritypolicyreviews",
+                  "namespaced":true,
+                  "kind":"PodSecurityPolicyReview"
+               },
+               "podsecuritypolicyselfsubjectreviews":{
+                  "name":"podsecuritypolicyselfsubjectreviews",
+                  "namespaced":true,
+                  "kind":"PodSecurityPolicySelfSubjectReview"
+               },
+               "podsecuritypolicysubjectreviews":{
+                  "name":"podsecuritypolicysubjectreviews",
+                  "namespaced":true,
+                  "kind":"PodSecurityPolicySubjectReview"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "storage.k8s.io":{
+      "name":"storage.k8s.io",
+      "preferredVersion":"v1beta1",
+      "versions":{
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"storage.k8s.io/v1beta1",
+            "resources":{
+               "storageclasses":{
+                  "name":"storageclasses",
+                  "namespaced":false,
+                  "kind":"StorageClass"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "template.openshift.io":{
+      "name":"template.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"template.openshift.io/v1",
+            "resources":{
+               "brokertemplateinstances":{
+                  "name":"brokertemplateinstances",
+                  "namespaced":false,
+                  "kind":"BrokerTemplateInstance"
+               },
+               "processedtemplates":{
+                  "name":"processedtemplates",
+                  "namespaced":true,
+                  "kind":"Template"
+               },
+               "templateinstances":{
+                  "name":"templateinstances",
+                  "namespaced":true,
+                  "kind":"TemplateInstance"
+               },
+               "templates":{
+                  "name":"templates",
+                  "namespaced":true,
+                  "kind":"Template"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "user.openshift.io":{
+      "name":"user.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"user.openshift.io/v1",
+            "resources":{
+               "groups":{
+                  "name":"groups",
+                  "namespaced":false,
+                  "kind":"Group"
+               },
+               "identities":{
+                  "name":"identities",
+                  "namespaced":false,
+                  "kind":"Identity"
+               },
+               "useridentitymappings":{
+                  "name":"useridentitymappings",
+                  "namespaced":false,
+                  "kind":"UserIdentityMapping"
+               },
+               "users":{
+                  "name":"users",
+                  "namespaced":false,
+                  "kind":"User"
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   }
 };
