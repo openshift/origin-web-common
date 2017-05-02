@@ -1,3 +1,5 @@
+// origin-web-common
+
 @bower-components-path: "bower_components";
 @pf-less-path: "@{bower-components-path}/patternfly/dist/less";
 @bootstrap-less-path: "@{pf-less-path}/dependencies/bootstrap";
@@ -10,9 +12,5 @@
 @import "@{pf-less-path}/color-variables.less";
 @import "@{pf-less-path}/variables.less";
 
-@import "_core.less";
-@import "_forms.less";
-@import "_guided-tour.less";
-@import "_messages.less";
-@import "_notifications.less";
-@import "_ui-select.less";
+// add partials to common.less
+@import "common.less";
