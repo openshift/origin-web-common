@@ -341,6 +341,17 @@ ul.messenger-theme-flat .messenger-message.alert-info .messenger-message-inner:b
   display: inline-block;
   background-color: transparent;
 }
+.word-break {
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+.word-break-all {
+  word-break: break-all;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
 .toast-action-divider {
   color: #9c9c9c;
 }
