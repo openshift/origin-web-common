@@ -1,0 +1,50 @@
+<div ng-if="!ctrl.error">
+  <div ng-if="!(ctrl.binding | isBindingReady)" class="bind-status" ng-class="{'text-center': !ctrl.progressInline, 'show-progress': !ctrl.progressInline}">
+    <div class="spinner" ng-class="{'spinner-sm': ctrl.progressInline, 'spinner-inline': ctrl.progressInline, 'spinner-lg': !ctrl.progressInline}" aria-hidden="true"></div>
+    <h3 class="bind-message">
+      <span class="sr-only">Pending</span>
+      <div class="bind-pending-message" ng-class="{'progress-inline': ctrl.progressInline}">The binding was created but is not ready yet.</div>
+    </h3>
+  </div>
+  <div ng-if="(ctrl.binding | isBindingReady)">
+    <div class="bind-status">
+      <span class="pficon pficon-ok" aria-hidden="true"></span>
+      <span class="sr-only">Success</span>
+      <h3 class="bind-message">
+        <strong>{{ctrl.serviceToBind}}</strong>
+        <span>&nbsp;has been bound</span>
+        <span ng-if="ctrl.applicationToBind">&nbsp;to <strong>{{ctrl.applicationToBind}}</strong> successfully</span>
+      </h3>
+    </div>
+    <div class="sub-title">
+      The binding operation created the secret
+      <a ng-if="ctrl.secretHref && 'secrets' | canI : 'list'"
+         ng-href="{{ctrl.secretHref}}">{{ctrl.generatedSecretName}}</a>
+      <span ng-if="!ctrl.secretHref || !('secrets' | canI : 'list')">{{ctrl.generatedSecretName}}</span>
+      that you may need to reference in your application.
+      <span ng-if="ctrl.showPodPresets">Its data will be available to your application as environment variables.</span>
+    </div>
+    <div class="alert alert-info bind-info">
+      <span class="pficon pficon-info" aria-hidden="true"></span>
+      <span class="sr-only">Info</span>
+      The binding secret will only be available to new pods. You will need to redeploy your application.
+    </div>
+  </div>
+</div>
+<div ng-if="ctrl.error">
+  <div class="bind-status">
+    <span class="pficon pficon-error-circle-o text-danger" aria-hidden="true"></span>
+    <span class="sr-only">Error</span>
+    <h3 class="bind-message">
+      <span>Binding Failed</span>
+    </h3>
+  </div>
+  <div class="sub-title">
+    <span ng-if="ctrl.error.data.message">
+      {{ctrl.error.data.message | upperFirst}}
+    </span>
+    <span ng-if="!ctrl.error.data.message">
+      An error occurred creating the binding.
+    </span>
+  </div>
+</div>
