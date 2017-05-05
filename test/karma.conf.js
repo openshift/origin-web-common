@@ -31,12 +31,15 @@ module.exports = function(config) {
       "bower_components/hawtio-core/dist/hawtio-core.js",
       "bower_components/kubernetes-container-terminal/dist/container-terminal.js",
       "bower_components/hawtio-extension-service/dist/hawtio-extension-service.js",
-      'src/config.js',
+      // load up the fixtures first
+      'test/spec/fixtures/config.js',
+      'test/spec/fixtures/constants.js',
+      'test/spec/fixtures/api-discovery.js',
+      // TODO: is this causing modules to load multiple times? see `src/**/*.js` below
       'src/**/*module.js',
       'dist/scripts/templates.js',
       'src/**/*.js',
       'test/spec/spec-helper.js',
-      'test/spec/fixtures/api-discovery.js',
       'test/spec/**/*.js'
     ],
 

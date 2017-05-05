@@ -282,7 +282,7 @@ describe("APIService", function() {
     });
 
     // unlike the /oapi endpoint, the /api endpoint should still be listed
-    it('should list items from the k8s /api namespace (that do not have a group)', function() {
+    it('should list items from the k8s /api namespace where group is an empty string', function() {
       var allKinds = APIService.availableKinds(true);
       var shouldBeFound = [];
       // this is a sampling of items from /api that should still be listed,
@@ -298,13 +298,28 @@ describe("APIService", function() {
       ];
       _.each(k8sAPIStillExistsSample, function(kindToFind) {
         var found = _.find(allKinds, function(kind) {
-          return (kind.kind === kindToFind.kind) && !_.includes(_.keys(kind), 'group');
+          return (kind.kind === kindToFind.kind) && kind.group === '';
         });
         if(found) {
           shouldBeFound.push(found);
         }
       });
       expect(shouldBeFound.length).toEqual(k8sAPIStillExistsSample.length);
+    });
+
+    it('should not return kinds from the AVAILABLE_KINDS_BLACKLIST', function() {
+      var allKinds = APIService.availableKinds(true);
+      // calculateAvailableKinds will transform strings form AVAILABLE_KINDS_BLACKLIST
+      // into objects in this same way. 
+      var blacklist = _.map(window.OPENSHIFT_CONSTANTS.AVAILABLE_KINDS_BLACKLIST, function(kind) {
+        return _.isString(kind) ?
+                { kind: kind, group: '' } :
+                kind;
+      });
+
+      _.each(blacklist, function(blacklistedKind) {
+        expect(_.find(allKinds, blacklistedKind)).toEqual(undefined);
+      });
     });
 
   });

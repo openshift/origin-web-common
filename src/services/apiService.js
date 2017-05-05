@@ -266,7 +266,12 @@ angular.module('openshiftCommonServices')
   // Returns an array of available kinds, including their group
   var calculateAvailableKinds = function(includeClusterScoped) {
     var kinds = [];
-    var rejectedKinds = Constants.AVAILABLE_KINDS_BLACKLIST;
+    var rejectedKinds = _.map(Constants.AVAILABLE_KINDS_BLACKLIST, function(kind) {
+      return _.isString(kind) ?
+              { kind: kind, group: '' } :
+              kind;
+    });
+
 
     // ignore the legacy openshift kinds, these have been migrated to api groups
     _.each(_.pick(API_CFG, function(value, key) {
@@ -275,12 +280,13 @@ angular.module('openshiftCommonServices')
       _.each(api.resources.v1, function(resource) {
         if (resource.namespaced || includeClusterScoped) {
           // Exclude subresources and any rejected kinds
-          if (resource.name.indexOf("/") >= 0 || _.contains(rejectedKinds, resource.kind)) {
+          if (_.contains(resource.name, '/') || _.find(rejectedKinds, { kind: resource.kind, group: '' })) {
             return;
           }
 
           kinds.push({
-            kind: resource.kind
+            kind: resource.kind,
+            group:  ''
           });
         }
       });
@@ -292,7 +298,7 @@ angular.module('openshiftCommonServices')
       var preferredVersion = defaultVersion[group.name] || group.preferredVersion;
       _.each(group.versions[preferredVersion].resources, function(resource) {
         // Exclude subresources and any rejected kinds
-        if (resource.name.indexOf("/") >= 0 || _.contains(rejectedKinds, resource.kind)) {
+        if (_.contains(resource.name, '/') || _.find(rejectedKinds, {kind: resource.kind, group: group.name})) {
           return;
         }
 
