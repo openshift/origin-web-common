@@ -507,14 +507,12 @@ angular.module("openshiftCommonUI")
 ;'use strict';
 
 angular.module("openshiftCommonUI")
-  .directive("deleteProject", ["$uibModal", "$location", "$filter", "$q", "hashSizeFilter", "APIService", "DataService", "AlertMessageService", "NotificationsService", "Logger", function ($uibModal, $location, $filter, $q, hashSizeFilter, APIService, DataService, AlertMessageService, NotificationsService, Logger) {
+  .directive("deleteProject", ["$uibModal", "$location", "$filter", "$q", "hashSizeFilter", "APIService", "DataService", "NotificationsService", "Logger", function ($uibModal, $location, $filter, $q, hashSizeFilter, APIService, DataService, NotificationsService, Logger) {
     return {
       restrict: "E",
       scope: {
         // The name of project to delete
         projectName: "@",
-        // Alerts object for using inline notifications for success and error alerts, notifications are also sent to enable toast notification display.
-        alerts: "=",
         // Optional display name of the project to delete.
         displayName: "@",
         // Set to true to disable the delete button.
@@ -543,11 +541,6 @@ angular.module("openshiftCommonUI")
       replace: true,
       link: function(scope, element, attrs) {
         var showAlert = function(alert) {
-          if (scope.stayOnCurrentPage) {
-            scope.alerts[alert.name] = alert.data;
-          } else {
-            AlertMessageService.addAlert(alert);
-          }
           NotificationsService.addNotification(alert.data);
         };
 
@@ -614,7 +607,6 @@ angular.module("openshiftCommonUI")
                 message: _.capitalize(formattedResource) + "\'" + " could not be deleted.",
                 details: $filter('getErrorDetails')(err)
               };
-              scope.alerts[projectName] = alert;
               NotificationsService.addNotification(alert);
               Logger.error(formattedResource + " could not be deleted.", err);
             });
