@@ -6,3 +6,20 @@
   font-weight: 700;
   margin-right: 5px;
 }
+
+.toast-notifications-list-pf {
+  top: 28px;
+  > div {
+    &.ng-enter {
+      animation: toastSlideIn .2s ease-out;
+    }
+    &.ng-leave {
+      animation: toastSlideOut .2s ease-in;
+    }
+    .toast-pf {
+      border-color: @color-pf-white;
+      margin-bottom: 5px;
+      width: 100%;
+    }
+  }
+}
