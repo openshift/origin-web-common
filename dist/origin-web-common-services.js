@@ -1146,14 +1146,18 @@ angular.module('openshiftCommonServices')
     var deferred = $q.defer();
     var self = this;
     var data, headers = {};
+    var data = {
+      kind: "DeleteOptions",
+      apiVersion: "v1",
+      // Default to "Foreground" (cascading) if no propagationPolicy was given.
+      propagationPolicy: opts.propagationPolicy || "Foreground"
+    };
+    var headers = {
+      'Content-Type': 'application/json'
+    };
     // Differentiate between 0 and undefined
     if (_.has(opts, 'gracePeriodSeconds')) {
-      data = {
-        kind: "DeleteOptions",
-        apiVersion: "v1",
-        gracePeriodSeconds: opts.gracePeriodSeconds
-      };
-      headers['Content-Type'] = 'application/json';
+      data.gracePeriodSeconds = opts.gracePeriodSeconds;
     }
     this._getNamespace(resource, context, opts).then(function(ns){
       $http(angular.extend({
