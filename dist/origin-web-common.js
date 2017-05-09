@@ -4576,11 +4576,13 @@ angular.module('openshiftCommonUI').factory('GuidedTourService', function() {
 angular.module('openshiftCommonUI').provider('NotificationsService', function() {
   this.dismissDelay = 8000;
   this.autoDismissTypes = ['info', 'success'];
+  this.hiddenTypes = ['success'];
 
   this.$get = function() {
     var notifications = [];
     var dismissDelay = this.dismissDelay;
     var autoDismissTypes = this.autoDismissTypes;
+    var hiddenTypes = this.hiddenTypes;
 
     var notificationHiddenKey = function(notificationID, namespace) {
       if (!namespace) {
@@ -4591,7 +4593,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
     };
 
     var addNotification = function (notification, notificationID, namespace) {
-      if (notificationID && isNotificationPermanentlyHidden(notificationID, namespace)) {
+      if (isTypeHidden(notification) || (notificationID && isNotificationPermanentlyHidden(notificationID, namespace))) {
         notification.hidden = true;
       }
 
@@ -4622,6 +4624,12 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
       });
     };
 
+    var isTypeHidden = function(notification) {
+      return _.find(hiddenTypes, function(type) {
+        return type === notification.type;
+      });
+    };
+
     return {
       addNotification: addNotification,
       getNotifications: getNotifications,
@@ -4630,7 +4638,8 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
       permanentlyHideNotification: permanentlyHideNotification,
       isAutoDismiss: isAutoDismiss,
       dismissDelay: dismissDelay,
-      autoDismissTypes: autoDismissTypes
+      autoDismissTypes: autoDismissTypes,
+      hiddenTypes: hiddenTypes
     };
   };
 
@@ -4642,4 +4651,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
     this.autoDismissTypes = arrayOfTypes;
   };
 
+  this.setHiddenTypes = function(arrayOfTypes) {
+    this.hiddenTypes = arrayOfTypes;
+  };
 });
