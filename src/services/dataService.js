@@ -2,7 +2,7 @@
 /* jshint eqeqeq: false, unused: false, expr: true */
 
 angular.module('openshiftCommonServices')
-.factory('DataService', function($cacheFactory, $http, $ws, $rootScope, $q, API_CFG, APIService, Notification, Logger, $timeout, base64, base64util) {
+.factory('DataService', function($cacheFactory, $http, $ws, $rootScope, $q, API_CFG, APIService, Logger, $timeout, base64, base64util) {
 
   function Data(array) {
     this._data = {};
@@ -410,7 +410,12 @@ angular.module('openshiftCommonServices')
             if (status !== 0) {
               msg += " (" + status + ")";
             }
-            Notification.error(msg);
+            // Use `$rootScope.$emit` instead of NotificationsService directly
+            // so that DataService doesn't add a dependency on `openshiftCommonUI`
+            $rootScope.$emit('addNotification', {
+              type: 'error',
+              message: msg
+            });
           }
           deferred.reject({
             data: data,
@@ -950,7 +955,12 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
           if (status !== 0) {
             msg += " (" + status + ")";
           }
-          Notification.error(msg);
+          // Use `$rootScope.$emit` instead of NotificationsService directly
+          // so that DataService doesn't add a dependency on `openshiftCommonUI`
+          $rootScope.$emit('addNotification', {
+            type: 'error',
+            message: msg
+          });
         });
       });
     }
@@ -976,7 +986,12 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
         if (status !== 0) {
           msg += " (" + status + ")";
         }
-        Notification.error(msg);
+        // Use `$rootScope.$emit` instead of NotificationsService directly
+        // so that DataService doesn't add a dependency on `openshiftCommonUI`
+        $rootScope.$emit('addNotification', {
+          type: 'error',
+          message: msg
+        });
       });
     }
   };
@@ -1161,12 +1176,18 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
     if (this._isTooManyWebsocketRetries(key)) {
       // Show an error notication unless disabled in opts.
       if (_.get(opts, 'errorNotification', true)) {
-        Notification.error("Server connection interrupted.", {
-          id: "websocket_retry_halted",
-          mustDismiss: true,
-          actions: {
-            refresh: {label: "Refresh", action: function() { window.location.reload(); }}
-          }
+        // Use `$rootScope.$emit` instead of NotificationsService directly
+        // so that DataService doesn't add a dependency on `openshiftCommonUI`
+        $rootScope.$emit('addNotification', {
+          id: 'websocket_retry_halted',
+          type: 'error',
+          message: 'Server connection interrupted.',
+          links: [{
+            label: 'Refresh',
+            onClick: function() {
+              window.location.reload();
+            }
+          }]
         });
       }
       return;

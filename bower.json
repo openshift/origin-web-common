@@ -35,7 +35,6 @@
     "hopscotch": "~0.2.7",
     "jquery": "~2.1.4",
     "lodash": "~3.10.1",
-    "messenger": "~1.4.1",
     "patternfly": "~3.21.0",
     "uri.js": "~1.18.0"
   },

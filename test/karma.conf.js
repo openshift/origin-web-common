@@ -22,7 +22,6 @@ module.exports = function(config) {
       'bower_components/angular-mocks/angular-mocks.js',
       "bower_components/angular-sanitize/angular-sanitize.js",
       "bower_components/js-logger/src/logger.js",
-      "bower_components/messenger/build/js/messenger.js",
       "bower_components/angular-utf8-base64/angular-utf8-base64.js",
       "bower_components/uri.js/src/URI.js",
       "bower_components/uri.js/src/URITemplate.js",

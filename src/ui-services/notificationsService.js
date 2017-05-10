@@ -4,7 +4,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
   this.dismissDelay = 8000;
   this.autoDismissTypes = ['info', 'success'];
 
-  this.$get = function() {
+  this.$get = function($rootScope) {
     var notifications = [];
     var dismissDelay = this.dismissDelay;
     var autoDismissTypes = this.autoDismissTypes;
@@ -17,9 +17,9 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
       return 'hide/notification/' + namespace + '/' + notificationID;
     };
 
-    var addNotification = function (notification, notificationID, namespace) {
-      if (notificationID && isNotificationPermanentlyHidden(notificationID, namespace)) {
-        notification.hidden = true;
+    var addNotification = function (notification) {
+      if (isNotificationPermanentlyHidden(notification) || isNotificationVisible(notification)) {
+        return;
       }
 
       notifications.push(notification);
@@ -33,8 +33,12 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
       _.take(notifications, 0);
     };
 
-    var isNotificationPermanentlyHidden = function (notificationID, namespace) {
-      var key = notificationHiddenKey(notificationID, namespace);
+    var isNotificationPermanentlyHidden = function (notification) {
+      if (!notification.id) {
+        return false;
+      }
+
+      var key = notificationHiddenKey(notification.id, notification.namespace);
       return localStorage.getItem(key) === 'true';
     };
 
@@ -43,11 +47,27 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
       localStorage.setItem(key, 'true');
     };
 
+    // Is there a visible toast notification with the same ID right now?
+    var isNotificationVisible = function (notification) {
+      if (!notification.id) {
+        return false;
+      }
+
+      return _.some(notifications, function(next) {
+        return !next.hidden && notification.id === next.id;
+      });
+    };
+
     var isAutoDismiss = function(notification) {
       return _.find(autoDismissTypes, function(type) {
         return type === notification.type;
       });
     };
+
+    // Also handle `addNotification` events on $rootScope, which is used by DataService.
+    $rootScope.$on('addNotification', function(event, data) {
+      addNotification(data);
+    });
 
     return {
       addNotification: addNotification,

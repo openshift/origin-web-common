@@ -2307,7 +2307,7 @@ angular.module('openshiftCommonServices')
 /* jshint eqeqeq: false, unused: false, expr: true */
 
 angular.module('openshiftCommonServices')
-.factory('DataService', ["$cacheFactory", "$http", "$ws", "$rootScope", "$q", "API_CFG", "APIService", "Notification", "Logger", "$timeout", "base64", "base64util", function($cacheFactory, $http, $ws, $rootScope, $q, API_CFG, APIService, Notification, Logger, $timeout, base64, base64util) {
+.factory('DataService', ["$cacheFactory", "$http", "$ws", "$rootScope", "$q", "API_CFG", "APIService", "Logger", "$timeout", "base64", "base64util", function($cacheFactory, $http, $ws, $rootScope, $q, API_CFG, APIService, Logger, $timeout, base64, base64util) {
 
   function Data(array) {
     this._data = {};
@@ -2715,7 +2715,12 @@ angular.module('openshiftCommonServices')
             if (status !== 0) {
               msg += " (" + status + ")";
             }
-            Notification.error(msg);
+            // Use `$rootScope.$emit` instead of NotificationsService directly
+            // so that DataService doesn't add a dependency on `openshiftCommonUI`
+            $rootScope.$emit('addNotification', {
+              type: 'error',
+              message: msg
+            });
           }
           deferred.reject({
             data: data,
@@ -3255,7 +3260,12 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
           if (status !== 0) {
             msg += " (" + status + ")";
           }
-          Notification.error(msg);
+          // Use `$rootScope.$emit` instead of NotificationsService directly
+          // so that DataService doesn't add a dependency on `openshiftCommonUI`
+          $rootScope.$emit('addNotification', {
+            type: 'error',
+            message: msg
+          });
         });
       });
     }
@@ -3281,7 +3291,12 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
         if (status !== 0) {
           msg += " (" + status + ")";
         }
-        Notification.error(msg);
+        // Use `$rootScope.$emit` instead of NotificationsService directly
+        // so that DataService doesn't add a dependency on `openshiftCommonUI`
+        $rootScope.$emit('addNotification', {
+          type: 'error',
+          message: msg
+        });
       });
     }
   };
@@ -3466,12 +3481,18 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
     if (this._isTooManyWebsocketRetries(key)) {
       // Show an error notication unless disabled in opts.
       if (_.get(opts, 'errorNotification', true)) {
-        Notification.error("Server connection interrupted.", {
-          id: "websocket_retry_halted",
-          mustDismiss: true,
-          actions: {
-            refresh: {label: "Refresh", action: function() { window.location.reload(); }}
-          }
+        // Use `$rootScope.$emit` instead of NotificationsService directly
+        // so that DataService doesn't add a dependency on `openshiftCommonUI`
+        $rootScope.$emit('addNotification', {
+          id: 'websocket_retry_halted',
+          type: 'error',
+          message: 'Server connection interrupted.',
+          links: [{
+            label: 'Refresh',
+            onClick: function() {
+              window.location.reload();
+            }
+          }]
         });
       }
       return;
@@ -3943,68 +3964,6 @@ angular.module('openshiftCommonServices')
     };
   }];
 });
-;'use strict';
-/* jshint unused: false */
-
-angular.module('openshiftCommonServices')
-.factory('Notification', ["$rootScope", function($rootScope) {
-  function Notification() {
-    this.messenger = Messenger({
-      extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
-      theme: 'flat',
-      messageDefaults: {
-        showCloseButton: true,
-        hideAfter: 10
-      }
-    });
-
-    var self = this;
-    $rootScope.$on( "$routeChangeStart", function(event, next, current) {
-      self.clear();
-    });
-  }
-
-  // Opts:
-  //    id - if an id is passed only one message with this id will ever be shown
-  //    mustDismiss - the user must explicitly dismiss the message, it will not auto-hide
-  Notification.prototype.notify = function(type, message, opts) {
-    opts = opts || {};
-    var notifyOpts = {
-      type: type,
-      // TODO report this issue upstream to messenger, they don't handle messages with invalid html
-      // they should be escaping it
-      message: $('<div/>').text(message).html(),
-      id: opts.id,
-      actions: opts.actions
-    };
-    if (opts.mustDismiss) {
-      notifyOpts.hideAfter = false;
-    }
-    this.messenger.post(notifyOpts);
-  };
-
-  Notification.prototype.success = function(message, opts) {
-    this.notify("success", message, opts);
-  };
-
-  Notification.prototype.info = function(message, opts) {
-    this.notify("info", message, opts);
-  };
-
-  Notification.prototype.error = function(message, opts) {
-    this.notify("error", message, opts);
-  };
-
-  Notification.prototype.warning = function(message, opts) {
-    this.notify("warning", message, opts);
-  };
-
-  Notification.prototype.clear = function() {
-    this.messenger.hideAll();
-  };
-
-  return new Notification();
-}]);
 ;'use strict';
 
 angular.module('openshiftCommonServices')
@@ -4537,7 +4496,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
   this.dismissDelay = 8000;
   this.autoDismissTypes = ['info', 'success'];
 
-  this.$get = function() {
+  this.$get = ["$rootScope", function($rootScope) {
     var notifications = [];
     var dismissDelay = this.dismissDelay;
     var autoDismissTypes = this.autoDismissTypes;
@@ -4550,9 +4509,9 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
       return 'hide/notification/' + namespace + '/' + notificationID;
     };
 
-    var addNotification = function (notification, notificationID, namespace) {
-      if (notificationID && isNotificationPermanentlyHidden(notificationID, namespace)) {
-        notification.hidden = true;
+    var addNotification = function (notification) {
+      if (isNotificationPermanentlyHidden(notification) || isNotificationVisible(notification)) {
+        return;
       }
 
       notifications.push(notification);
@@ -4566,8 +4525,12 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
       _.take(notifications, 0);
     };
 
-    var isNotificationPermanentlyHidden = function (notificationID, namespace) {
-      var key = notificationHiddenKey(notificationID, namespace);
+    var isNotificationPermanentlyHidden = function (notification) {
+      if (!notification.id) {
+        return false;
+      }
+
+      var key = notificationHiddenKey(notification.id, notification.namespace);
       return localStorage.getItem(key) === 'true';
     };
 
@@ -4576,11 +4539,27 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
       localStorage.setItem(key, 'true');
     };
 
+    // Is there a visible toast notification with the same ID right now?
+    var isNotificationVisible = function (notification) {
+      if (!notification.id) {
+        return false;
+      }
+
+      return _.some(notifications, function(next) {
+        return !next.hidden && notification.id === next.id;
+      });
+    };
+
     var isAutoDismiss = function(notification) {
       return _.find(autoDismissTypes, function(type) {
         return type === notification.type;
       });
     };
+
+    // Also handle `addNotification` events on $rootScope, which is used by DataService.
+    $rootScope.$on('addNotification', function(event, data) {
+      addNotification(data);
+    });
 
     return {
       addNotification: addNotification,
@@ -4592,7 +4571,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
       dismissDelay: dismissDelay,
       autoDismissTypes: autoDismissTypes
     };
-  };
+  }];
 
   this.setDismissDelay = function(delayInMs) {
     this.dismissDelay = delayInMs;
