@@ -419,7 +419,7 @@ angular.module("openshiftCommonUI")
                 name: projectName,
                 data: {
                   type: "success",
-                  message: _.capitalize(formattedResource) + " was marked for deletion."
+                  message: formattedResource + " was marked for deletion."
                 }
               });
 
@@ -433,7 +433,7 @@ angular.module("openshiftCommonUI")
               // called if failure to delete
               var alert = {
                 type: "error",
-                message: _.capitalize(formattedResource) + "\'" + " could not be deleted.",
+                message: formattedResource + " could not be deleted.",
                 details: $filter('getErrorDetails')(err)
               };
               NotificationsService.addNotification(alert);
