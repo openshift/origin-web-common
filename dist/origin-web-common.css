@@ -1,3 +1,23 @@
+@keyframes toastSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(150px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes toastSlideOut {
+  0% {
+    opacity: .75;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(150px);
+  }
+}
 .delete-resource-modal {
   background-color: #f1f1f1;
 }
@@ -188,6 +208,20 @@ div.hopscotch-bubble .hopscotch-nav-button.prev {
 .toast-notification-message {
   font-weight: 700;
   margin-right: 5px;
+}
+.toast-notifications-list-pf {
+  top: 28px;
+}
+.toast-notifications-list-pf > div.ng-enter {
+  animation: toastSlideIn 0.2s ease-out;
+}
+.toast-notifications-list-pf > div.ng-leave {
+  animation: toastSlideOut 0.2s ease-in;
+}
+.toast-notifications-list-pf > div .toast-pf {
+  border-color: #fff;
+  margin-bottom: 5px;
+  width: 100%;
 }
 /* Fix some styles with the angular-ui-select bootstrap theme that isn't right when combined with all of our styles */
 .ui-select-bootstrap {
