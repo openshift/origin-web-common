@@ -17,7 +17,7 @@
           <input type="radio" ng-model="ctrl.serviceToBind" value="">
           Do not bind at this time.
         </label>
-        <div class="bind-description">
+        <div ng-if="ctrl.allowNoBinding" class="bind-description">
           <span class="help-block service-instance-name">
             You can create the binding later from your project.
           </span>
