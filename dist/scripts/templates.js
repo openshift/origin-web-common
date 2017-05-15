@@ -21,7 +21,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "          <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" value=\"\">\n" +
     "          Do not bind at this time.\n" +
     "        </label>\n" +
-    "        <div class=\"bind-description\">\n" +
+    "        <div ng-if=\"ctrl.allowNoBinding\" class=\"bind-description\">\n" +
     "          <span class=\"help-block service-instance-name\">\n" +
     "            You can create the binding later from your project.\n" +
     "          </span>\n" +
