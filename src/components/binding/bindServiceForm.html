@@ -1,0 +1,52 @@
+<div class="bind-form">
+  <form>
+    <div class="form-group">
+        <label>
+          <h3>Bind <strong>{{ctrl.serviceClass.osbMetadata.displayName || ctrl.serviceClassName}}</strong> to an existing application</strong></h3>
+        </label>
+        <span class="help-block">Binding to a provisioned service will create a secret containing the information necessary for your application to use the service.</span>
+    </div>
+  </form>
+
+  <form name="ctrl.formName" class="mar-bottom-lg">
+    <fieldset>
+      <div class="radio">
+        <label class="bind-choice">
+          <input type="radio" ng-model="ctrl.shouldBindToApp" value="true">
+          Bind to an application
+        </label>
+        <div class="application-select">
+          <ui-select ng-model="ctrl.appToBind"
+                     ng-disabled="ctrl.shouldBindToApp !== 'true'"
+                     ng-required="ctrl.shouldBindToApp === 'true'">
+            <ui-select-match placeholder="Select an application">
+            <span>
+              {{$select.selected.metadata.name}}
+              <small class="text-muted">&ndash; {{$select.selected.kind | humanizeKind : true}}</small>
+            </span>
+            </ui-select-match>
+            <ui-select-choices
+              repeat="application in (ctrl.applications) | filter : { metadata: { name: $select.search } } track by (application | uid)"
+              group-by="ctrl.groupByKind">
+              <span ng-bind-html="application.metadata.name | highlight : $select.search"></span>
+            </ui-select-choices>
+          </ui-select>
+        </div>
+        <label class="bind-choice">
+          <input type="radio" ng-model="ctrl.shouldBindToApp" value="false">
+          Create a secret in my project
+        </label>
+        <div class="help-block bind-description">
+          You can reference this secret later from any application either as environment variables or configuration files mounted as volumes.
+        </div>
+        <label ng-if="ctrl.allowNoBinding" class="bind-choice">
+          <input type="radio" ng-model="ctrl.shouldBindToApp" value="none">
+          Do not bind at this time
+        </label>
+        <div ng-if="ctrl.allowNoBinding" class="help-block bind-description">
+          You can create the binding later from your project.
+        </div>
+      </div>
+    </fieldset>
+  </form>
+</div>

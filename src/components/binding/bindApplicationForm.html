@@ -1,0 +1,45 @@
+<div class="bind-form">
+  <form>
+    <div class="form-group">
+      <label>
+        <h3>Bind a service to <strong>{{ctrl.applicationName}}</strong></h3>
+      </label>
+      <span class="help-block">
+        Binding to a provisioned service will create a secret containing the information necessary for your application to use the service.
+      </span>
+    </div>
+  </form>
+
+  <form name="ctrl.formName">
+    <fieldset>
+      <div class="radio">
+        <label ng-if="ctrl.allowNoBinding">
+          <input type="radio" ng-model="ctrl.serviceToBind" value="">
+          Do not bind at this time.
+        </label>
+        <div class="bind-description">
+          <span class="help-block service-instance-name">
+            You can create the binding later from your project.
+          </span>
+        </div>
+        <div ng-repeat="serviceInstance in ctrl.serviceInstances">
+          <label>
+            <input type="radio" ng-model="ctrl.serviceToBind" value="{{serviceInstance.metadata.name}}">
+            {{ctrl.serviceClasses[serviceInstance.spec.serviceClassName].osbMetadata.displayName || serviceInstance.spec.serviceClassName}}
+          </label>
+          <div class="bind-description">
+            <span class="pficon pficon-info"
+                  ng-if="!(serviceInstance | isServiceInstanceReady)"
+                  data-content="This service is not yet ready. If you bind to it, then the binding will be pending until the service is ready."
+                  data-toggle="popover"
+                  data-trigger="hover">
+            </span>
+            <span class="help-block service-instance-name">
+              {{serviceInstance.metadata.name}}
+            </span>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+</div>

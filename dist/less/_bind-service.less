@@ -1,0 +1,76 @@
+.bind-form {
+  h3 {
+    margin-top: 0;
+  }
+
+  .application-select {
+    margin-top: 10px;
+    padding-left: 20px;
+  }
+
+  .bind-description {
+    padding-left: 20px;
+  }
+
+  .bind-choice {
+    margin-top: 10px;
+    &:first-of-type {
+      margin-top: 0;
+    }
+  }
+
+  .help-block {
+    &.service-instance-name {
+      display: inline-block;
+      margin-top: 0;
+    }
+  }
+
+  .radio label[disabled] {
+    cursor: not-allowed;
+  }
+}
+
+.bind-info {
+  margin-bottom: 20px;
+  margin-top: 30px;
+}
+
+.bind-status {
+  display: flex;
+  font-size: 16px;
+  margin-top: 0;
+
+  .bind-message {
+    flex: 1;
+    line-height: 1.4;
+    margin-top: 0;
+    padding-left: 10px;
+  }
+
+  .pficon {
+    margin-top: 3px;
+  }
+
+  &.show-progress {
+    display: block;
+    .bind-message {
+      padding-left: 0;
+    }
+  }
+
+  .spinner.spinner-sm {
+    height: 16px;
+    margin-right: 0;
+    margin-top: 3px;
+    width: 16px;
+  }
+}
+
+
+.bind-pending-message {
+  margin-top: 15px;
+  &.progress-inline {
+    margin-top: 0;
+  }
+}

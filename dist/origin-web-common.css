@@ -18,6 +18,65 @@
     transform: translateX(150px);
   }
 }
+.bind-form h3 {
+  margin-top: 0;
+}
+.bind-form .application-select {
+  margin-top: 10px;
+  padding-left: 20px;
+}
+.bind-form .bind-description {
+  padding-left: 20px;
+}
+.bind-form .bind-choice {
+  margin-top: 10px;
+}
+.bind-form .bind-choice:first-of-type {
+  margin-top: 0;
+}
+.bind-form .help-block.service-instance-name {
+  display: inline-block;
+  margin-top: 0;
+}
+.bind-form .radio label[disabled] {
+  cursor: not-allowed;
+}
+.bind-info {
+  margin-bottom: 20px;
+  margin-top: 30px;
+}
+.bind-status {
+  display: flex;
+  font-size: 16px;
+  margin-top: 0;
+}
+.bind-status .bind-message {
+  flex: 1;
+  line-height: 1.4;
+  margin-top: 0;
+  padding-left: 10px;
+}
+.bind-status .pficon {
+  margin-top: 3px;
+}
+.bind-status.show-progress {
+  display: block;
+}
+.bind-status.show-progress .bind-message {
+  padding-left: 0;
+}
+.bind-status .spinner.spinner-sm {
+  height: 16px;
+  margin-right: 0;
+  margin-top: 3px;
+  width: 16px;
+}
+.bind-pending-message {
+  margin-top: 15px;
+}
+.bind-pending-message.progress-inline {
+  margin-top: 0;
+}
 .delete-resource-modal {
   background-color: #f1f1f1;
 }
