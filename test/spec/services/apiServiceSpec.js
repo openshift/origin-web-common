@@ -130,7 +130,7 @@ describe("APIService", function() {
       ["Policy",          "policies"],
       // special cases
       ["Endpoints",                  "endpoints"],
-      ["SecurityContextConstraints", "securitycontextconstraints"],
+      ["SecurityContextConstraints", "securitycontextconstraints"]
     ];
     angular.forEach(tc, _.spread(function(kind, resource) {
       it('should result in ' + JSON.stringify(resource) + ' when called with ' + JSON.stringify(kind), function() {
@@ -310,7 +310,7 @@ describe("APIService", function() {
     it('should not return kinds from the AVAILABLE_KINDS_BLACKLIST', function() {
       var allKinds = APIService.availableKinds(true);
       // calculateAvailableKinds will transform strings form AVAILABLE_KINDS_BLACKLIST
-      // into objects in this same way. 
+      // into objects in this same way.
       var blacklist = _.map(window.OPENSHIFT_CONSTANTS.AVAILABLE_KINDS_BLACKLIST, function(kind) {
         return _.isString(kind) ?
                 { kind: kind, group: '' } :

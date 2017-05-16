@@ -1749,46 +1749,49 @@ angular.module("openshiftCommonServices")
   });
 ;'use strict';
 
-// ResourceGroupVersion represents a fully qualified resource
-function ResourceGroupVersion(resource, group, version) {
-  this.resource = resource;
-  this.group    = group;
-  this.version  = version;
-  return this;
-}
-// toString() includes the group and version information if present
-ResourceGroupVersion.prototype.toString = function() {
-  var s = this.resource;
-  if (this.group)   { s += "/" + this.group;   }
-  if (this.version) { s += "/" + this.version; }
-  return s;
-};
-// primaryResource() returns the resource with any subresources removed
-ResourceGroupVersion.prototype.primaryResource = function() {
-  if (!this.resource) { return ""; }
-  var i = this.resource.indexOf('/');
-  if (i === -1) { return this.resource; }
-  return this.resource.substring(0,i);
-};
-// subresources() returns a (possibly empty) list of subresource segments
-ResourceGroupVersion.prototype.subresources = function() {
-  var segments = (this.resource || '').split("/");
-  segments.shift();
-  return segments;
-};
-// equals() returns true if the given resource, group, and version match.
-// If omitted, group and version are not compared.
-ResourceGroupVersion.prototype.equals = function(resource, group, version) {
-  if (this.resource !== resource) { return false; }
-  if (arguments.length === 1)     { return true;  }
-  if (this.group !== group)       { return false; }
-  if (arguments.length === 2)     { return true;  }
-  if (this.version !== version)   { return false; }
-  return true;
-};
-
 angular.module('openshiftCommonServices')
-.factory('APIService', ["API_CFG", "APIS_CFG", "AuthService", "Constants", "Logger", "$q", "$http", "$filter", "$window", function(API_CFG,
+.factory('ResourceGroupVersion', function() {
+  // ResourceGroupVersion represents a fully qualified resource
+  function ResourceGroupVersion(resource, group, version) {
+    this.resource = resource;
+    this.group    = group;
+    this.version  = version;
+    return this;
+  }
+  // toString() includes the group and version information if present
+  ResourceGroupVersion.prototype.toString = function() {
+    var s = this.resource;
+    if (this.group)   { s += "/" + this.group;   }
+    if (this.version) { s += "/" + this.version; }
+    return s;
+  };
+  // primaryResource() returns the resource with any subresources removed
+  ResourceGroupVersion.prototype.primaryResource = function() {
+    if (!this.resource) { return ""; }
+    var i = this.resource.indexOf('/');
+    if (i === -1) { return this.resource; }
+    return this.resource.substring(0,i);
+  };
+  // subresources() returns a (possibly empty) list of subresource segments
+  ResourceGroupVersion.prototype.subresources = function() {
+    var segments = (this.resource || '').split("/");
+    segments.shift();
+    return segments;
+  };
+  // equals() returns true if the given resource, group, and version match.
+  // If omitted, group and version are not compared.
+  ResourceGroupVersion.prototype.equals = function(resource, group, version) {
+    if (this.resource !== resource) { return false; }
+    if (arguments.length === 1)     { return true;  }
+    if (this.group !== group)       { return false; }
+    if (arguments.length === 2)     { return true;  }
+    if (this.version !== version)   { return false; }
+    return true;
+  };
+
+  return ResourceGroupVersion;
+})
+.factory('APIService', ["API_CFG", "APIS_CFG", "AuthService", "Constants", "Logger", "$q", "$http", "$filter", "$window", "ResourceGroupVersion", function(API_CFG,
                                 APIS_CFG,
                                 AuthService,
                                 Constants,
@@ -1796,7 +1799,8 @@ angular.module('openshiftCommonServices')
                                 $q,
                                 $http,
                                 $filter,
-                                $window) {
+                                $window,
+                                ResourceGroupVersion) {
   // Set the default api versions the console will use if otherwise unspecified
   var defaultVersion = {
     "":           "v1",
