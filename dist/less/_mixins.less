@@ -20,10 +20,14 @@
 // DESCRIPTION: Breaks long non-breaking strings under the following circumstances:
 // - if within a table not set to table-layout: fixed (but have a very good reason for doing so!  otherwise, see .table-layout-fixed)
 // - fieldset
-// - flex container
+// - flex container where a flexed child CANNOT use .word-break() and flex: 1 1 0% (note that exact combo is required on the child)
 // EXAMPLE:
 // <div style="display:flex">
 //   <div class="word-break-all">...
+// </div>
+// INSTEAD OF:
+// <div style="display:flex">
+//   <div class="word-break" style="flex: 1 1 0%">...
 // </div>
 // Guarantees the string will wrap. word-break: break-all; is used by firefox and IE to break in the usage cases.
 // https://bugzilla.mozilla.org/show_bug.cgi?id=587438, https://bugzilla.mozilla.org/show_bug.cgi?id=1136818
