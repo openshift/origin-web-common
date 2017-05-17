@@ -1,5 +1,17 @@
 // origin-web-common mixins
 
+// DESCRIPTION: Limits text to x number of lines and adds an ellipsis to the
+// end of the truncated line in webkit-based browsers
+.line-clamp(@lines: 1, @line-height: @line-height-base) {
+  display: -webkit-box;
+  line-height: @line-height;
+  max-height: (1em * @line-height * @lines);
+  overflow: hidden;
+  padding: 0 !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: @lines;
+}
+
 // word-break and word-break-all test cases http://codepen.io/sg00dwin/pen/WwKMmP
 //
 // DESCRIPTION: Breaks long non-breaking strings within a div or a flexed item that is within a flex container
