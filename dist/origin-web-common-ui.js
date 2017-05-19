@@ -4,7 +4,15 @@
  * @description
  *   Base module for openshiftCommonUI.
  */
-angular.module('openshiftCommonUI', []);
+angular.module('openshiftCommonUI', [])
+// DNS1123 subdomain patterns are used for name validation of many resources,
+// including persistent volume claims, config maps, and secrets.
+// See https://github.com/kubernetes/kubernetes/blob/master/pkg/api/validation/validation.go
+.constant('DNS1123_SUBDOMAIN_VALIDATION', {
+  pattern: /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/,
+  maxlength: 253,
+  description: 'Name must consist of lower-case letters, numbers, periods, and hyphens. It must start and end with a letter or a number.'
+});
 
 
 hawtioPluginLoader.addModule('openshiftCommonUI');
@@ -82,8 +90,8 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "    <div class=\"sub-title\">\n" +
     "      The binding operation created the secret\n" +
     "      <a ng-if=\"ctrl.secretHref && 'secrets' | canI : 'list'\"\n" +
-    "         ng-href=\"{{ctrl.secretHref}}\">{{ctrl.generatedSecretName}}</a>\n" +
-    "      <span ng-if=\"!ctrl.secretHref || !('secrets' | canI : 'list')\">{{ctrl.generatedSecretName}}</span>\n" +
+    "         ng-href=\"{{ctrl.secretHref}}\">{{ctrl.binding.spec.secretName}}</a>\n" +
+    "      <span ng-if=\"!ctrl.secretHref || !('secrets' | canI : 'list')\">{{ctrl.binding.spec.secretName}}</span>\n" +
     "      that you may need to reference in your application.\n" +
     "      <span ng-if=\"ctrl.showPodPresets\">Its data will be available to your application as environment variables.</span>\n" +
     "    </div>\n" +
@@ -443,7 +451,6 @@ angular.module('openshiftCommonUI').component('bindResults', {
     progressInline: '@',
     serviceToBind: '<',
     applicationToBind: '<',
-    generatedSecretName: '<',
     showPodPresets: '<',
     secretHref: '<'
   },
