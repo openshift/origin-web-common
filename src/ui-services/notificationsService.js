@@ -25,6 +25,18 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
       notifications.push(notification);
     };
 
+    var hideNotification = function (notificationID) {
+      if (!notificationID) {
+        return;
+      }
+
+      _.each(notifications, function(notification) {
+        if (notification.id === notificationID) {
+          notification.hidden = true;
+        }
+      });
+    };
+
     var getNotifications = function () {
       return notifications;
     };
@@ -59,9 +71,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
     };
 
     var isAutoDismiss = function(notification) {
-      return _.find(autoDismissTypes, function(type) {
-        return type === notification.type;
-      });
+      return _.includes(autoDismissTypes, notification.type);
     };
 
     // Also handle `addNotification` events on $rootScope, which is used by DataService.
@@ -71,6 +81,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
 
     return {
       addNotification: addNotification,
+      hideNotification: hideNotification,
       getNotifications: getNotifications,
       clearNotifications: clearNotifications,
       isNotificationPermanentlyHidden: isNotificationPermanentlyHidden,
