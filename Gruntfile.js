@@ -52,7 +52,10 @@ module.exports = function (grunt) {
         unit: {
           configFile: 'test/karma.conf.js',
           singleRun: true,
-          browsers: ['PhantomJS']
+          // grunt test --browsers=Chrome,Firefox,Safari
+          browsers: grunt.option('browsers') ?
+                      grunt.option('browsers').split(',') :
+                      ['Firefox']
         }
       },
       less: {
