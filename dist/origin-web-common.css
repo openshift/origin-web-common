@@ -282,6 +282,16 @@ div.hopscotch-bubble .hopscotch-nav-button.prev {
   margin-bottom: 5px;
   width: 100%;
 }
+.tile-click {
+  cursor: pointer;
+  position: relative;
+}
+.tile-click:hover .tile-target {
+  color: #00659c;
+}
+.tile-click:hover .tile-target:hover {
+  text-decoration: none;
+}
 /* Fix some styles with the angular-ui-select bootstrap theme that isn't right when combined with all of our styles */
 .ui-select-bootstrap {
   /* Fixes ui-select's input box extending to 100% page width if the page has been resized after page-load
