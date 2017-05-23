@@ -365,7 +365,15 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "      <span class=\"{{notification.type | alertIcon}}\" aria-hidden=\"true\"></span>\n" +
     "      <span class=\"sr-only\">{{notification.type}}</span>\n" +
     "      <span class=\"toast-notification-message\" ng-if=\"notification.message\">{{notification.message}}</span>\n" +
-    "      <span ng-if=\"notification.details\">{{notification.details}}</span>\n" +
+    "      <span ng-if=\"notification.details\">\n" +
+    "        <truncate-long-text\n" +
+    "          limit=\"200\"\n" +
+    "          content=\"notification.details\"\n" +
+    "          use-word-boundary=\"true\"\n" +
+    "          expandable=\"true\"\n" +
+    "          hide-collapse=\"true\">\n" +
+    "        </truncate-long-text>\n" +
+    "      </span>\n" +
     "      <span ng-repeat=\"link in notification.links\">\n" +
     "        <a ng-if=\"!link.href\" href=\"\" ng-click=\"onClick(notification, link)\" role=\"button\">{{link.label}}</a>\n" +
     "        <a ng-if=\"link.href\" ng-href=\"{{link.href}}\" ng-attr-target=\"{{link.target}}\">{{link.label}}</a>\n" +
@@ -393,11 +401,11 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "  </span>\n" +
     "  <span ng-if=\"toggles.expanded\">\n" +
     "    <div ng-if=\"prettifyJson\" class=\"well\">\n" +
-    "      <span class=\"pull-right\" style=\"margin-top: -10px;\"><a href=\"\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a></span>\n" +
+    "      <span ng-if=\"!hideCollapse\" class=\"pull-right\" style=\"margin-top: -10px;\"><a href=\"\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a></span>\n" +
     "      <span ng-bind-html=\"content | prettifyJSON | highlightKeywords : keywords\" class=\"pretty-json truncated-content\"></span>\n" +
     "    </div>\n" +
     "    <span ng-if=\"!prettifyJson\">\n" +
-    "      <span class=\"pull-right\"><a href=\"\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a></span>\n" +
+    "      <span ng-if=\"!hideCollapse\" class=\"pull-right\"><a href=\"\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a></span>\n" +
     "      <span ng-bind-html=\"content | highlightKeywords : keywords\" class=\"truncated-content\"></span>\n" +
     "    </span>\n" +
     "  </span>\n" +

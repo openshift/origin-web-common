@@ -13,11 +13,11 @@
   </span>
   <span ng-if="toggles.expanded">
     <div ng-if="prettifyJson" class="well">
-      <span class="pull-right" style="margin-top: -10px;"><a href="" ng-click="toggles.expanded = false" class="truncation-collapse-link">Collapse</a></span>
+      <span ng-if="!hideCollapse" class="pull-right" style="margin-top: -10px;"><a href="" ng-click="toggles.expanded = false" class="truncation-collapse-link">Collapse</a></span>
       <span ng-bind-html="content | prettifyJSON | highlightKeywords : keywords" class="pretty-json truncated-content"></span>
     </div>
     <span ng-if="!prettifyJson">
-      <span class="pull-right"><a href="" ng-click="toggles.expanded = false" class="truncation-collapse-link">Collapse</a></span>
+      <span ng-if="!hideCollapse" class="pull-right"><a href="" ng-click="toggles.expanded = false" class="truncation-collapse-link">Collapse</a></span>
       <span ng-bind-html="content | highlightKeywords : keywords" class="truncated-content"></span>
     </span>
   </span>

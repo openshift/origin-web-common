@@ -383,7 +383,15 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "      <span class=\"{{notification.type | alertIcon}}\" aria-hidden=\"true\"></span>\n" +
     "      <span class=\"sr-only\">{{notification.type}}</span>\n" +
     "      <span class=\"toast-notification-message\" ng-if=\"notification.message\">{{notification.message}}</span>\n" +
-    "      <span ng-if=\"notification.details\">{{notification.details}}</span>\n" +
+    "      <span ng-if=\"notification.details\">\n" +
+    "        <truncate-long-text\n" +
+    "          limit=\"200\"\n" +
+    "          content=\"notification.details\"\n" +
+    "          use-word-boundary=\"true\"\n" +
+    "          expandable=\"true\"\n" +
+    "          hide-collapse=\"true\">\n" +
+    "        </truncate-long-text>\n" +
+    "      </span>\n" +
     "      <span ng-repeat=\"link in notification.links\">\n" +
     "        <a ng-if=\"!link.href\" href=\"\" ng-click=\"onClick(notification, link)\" role=\"button\">{{link.label}}</a>\n" +
     "        <a ng-if=\"link.href\" ng-href=\"{{link.href}}\" ng-attr-target=\"{{link.target}}\">{{link.label}}</a>\n" +
@@ -411,11 +419,11 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "  </span>\n" +
     "  <span ng-if=\"toggles.expanded\">\n" +
     "    <div ng-if=\"prettifyJson\" class=\"well\">\n" +
-    "      <span class=\"pull-right\" style=\"margin-top: -10px;\"><a href=\"\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a></span>\n" +
+    "      <span ng-if=\"!hideCollapse\" class=\"pull-right\" style=\"margin-top: -10px;\"><a href=\"\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a></span>\n" +
     "      <span ng-bind-html=\"content | prettifyJSON | highlightKeywords : keywords\" class=\"pretty-json truncated-content\"></span>\n" +
     "    </div>\n" +
     "    <span ng-if=\"!prettifyJson\">\n" +
-    "      <span class=\"pull-right\"><a href=\"\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a></span>\n" +
+    "      <span ng-if=\"!hideCollapse\" class=\"pull-right\"><a href=\"\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a></span>\n" +
     "      <span ng-bind-html=\"content | highlightKeywords : keywords\" class=\"truncated-content\"></span>\n" +
     "    </span>\n" +
     "  </span>\n" +
@@ -949,6 +957,8 @@ angular.module('openshiftCommonUI')
         newlineLimit: '=',
         useWordBoundary: '=',
         expandable: '=',
+        // When expandable is on, optionally hide the collapse link so text can only be expanded. (Used for toast notifications.)
+        hideCollapse: '=',
         keywords: '=highlightKeywords',  // optional keywords to highlight using the `highlightKeywords` filter
         prettifyJson: '='                // prettifies JSON blobs when expanded, only used if expandable is true
       },
@@ -1729,6 +1739,18 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
       notifications.push(notification);
     };
 
+    var hideNotification = function (notificationID) {
+      if (!notificationID) {
+        return;
+      }
+
+      _.each(notifications, function(notification) {
+        if (notification.id === notificationID) {
+          notification.hidden = true;
+        }
+      });
+    };
+
     var getNotifications = function () {
       return notifications;
     };
@@ -1763,9 +1785,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
     };
 
     var isAutoDismiss = function(notification) {
-      return _.find(autoDismissTypes, function(type) {
-        return type === notification.type;
-      });
+      return _.includes(autoDismissTypes, notification.type);
     };
 
     // Also handle `addNotification` events on $rootScope, which is used by DataService.
@@ -1775,6 +1795,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
 
     return {
       addNotification: addNotification,
+      hideNotification: hideNotification,
       getNotifications: getNotifications,
       clearNotifications: clearNotifications,
       isNotificationPermanentlyHidden: isNotificationPermanentlyHidden,
