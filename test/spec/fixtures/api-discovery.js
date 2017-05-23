@@ -4,187 +4,473 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       "bindings":{
          "name":"bindings",
          "namespaced":true,
-         "kind":"Binding"
+         "kind":"Binding",
+         "verbs":[
+            "create"
+         ]
       },
       "componentstatuses":{
          "name":"componentstatuses",
          "namespaced":false,
-         "kind":"ComponentStatus"
+         "kind":"ComponentStatus",
+         "verbs":[
+            "get",
+            "list"
+         ],
+         "shortNames":[
+            "cs"
+         ]
       },
       "configmaps":{
          "name":"configmaps",
          "namespaced":true,
-         "kind":"ConfigMap"
+         "kind":"ConfigMap",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ],
+         "shortNames":[
+            "cm"
+         ]
       },
       "endpoints":{
          "name":"endpoints",
          "namespaced":true,
-         "kind":"Endpoints"
+         "kind":"Endpoints",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ],
+         "shortNames":[
+            "ep"
+         ]
       },
       "events":{
          "name":"events",
          "namespaced":true,
-         "kind":"Event"
+         "kind":"Event",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ],
+         "shortNames":[
+            "ev"
+         ]
       },
       "limitranges":{
          "name":"limitranges",
          "namespaced":true,
-         "kind":"LimitRange"
+         "kind":"LimitRange",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ],
+         "shortNames":[
+            "limits"
+         ]
       },
       "namespaces":{
          "name":"namespaces",
          "namespaced":false,
-         "kind":"Namespace"
+         "kind":"Namespace",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ],
+         "shortNames":[
+            "ns"
+         ]
       },
       "namespaces/finalize":{
          "name":"namespaces/finalize",
          "namespaced":false,
-         "kind":"Namespace"
+         "kind":"Namespace",
+         "verbs":[
+            "update"
+         ]
       },
       "namespaces/status":{
          "name":"namespaces/status",
          "namespaced":false,
-         "kind":"Namespace"
+         "kind":"Namespace",
+         "verbs":[
+            "get",
+            "patch",
+            "update"
+         ]
       },
       "nodes":{
          "name":"nodes",
          "namespaced":false,
-         "kind":"Node"
+         "kind":"Node",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "proxy",
+            "update",
+            "watch"
+         ],
+         "shortNames":[
+            "no"
+         ]
       },
       "nodes/proxy":{
          "name":"nodes/proxy",
          "namespaced":false,
-         "kind":"Node"
+         "kind":"Node",
+         "verbs":[
+
+         ]
       },
       "nodes/status":{
          "name":"nodes/status",
          "namespaced":false,
-         "kind":"Node"
+         "kind":"Node",
+         "verbs":[
+            "get",
+            "patch",
+            "update"
+         ]
       },
       "persistentvolumeclaims":{
          "name":"persistentvolumeclaims",
          "namespaced":true,
-         "kind":"PersistentVolumeClaim"
+         "kind":"PersistentVolumeClaim",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ],
+         "shortNames":[
+            "pvc"
+         ]
       },
       "persistentvolumeclaims/status":{
          "name":"persistentvolumeclaims/status",
          "namespaced":true,
-         "kind":"PersistentVolumeClaim"
+         "kind":"PersistentVolumeClaim",
+         "verbs":[
+            "get",
+            "patch",
+            "update"
+         ]
       },
       "persistentvolumes":{
          "name":"persistentvolumes",
          "namespaced":false,
-         "kind":"PersistentVolume"
+         "kind":"PersistentVolume",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ],
+         "shortNames":[
+            "pv"
+         ]
       },
       "persistentvolumes/status":{
          "name":"persistentvolumes/status",
          "namespaced":false,
-         "kind":"PersistentVolume"
+         "kind":"PersistentVolume",
+         "verbs":[
+            "get",
+            "patch",
+            "update"
+         ]
       },
       "pods":{
          "name":"pods",
          "namespaced":true,
-         "kind":"Pod"
+         "kind":"Pod",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "proxy",
+            "update",
+            "watch"
+         ],
+         "shortNames":[
+            "po"
+         ]
       },
       "pods/attach":{
          "name":"pods/attach",
          "namespaced":true,
-         "kind":"Pod"
+         "kind":"Pod",
+         "verbs":[
+
+         ]
       },
       "pods/binding":{
          "name":"pods/binding",
          "namespaced":true,
-         "kind":"Binding"
+         "kind":"Binding",
+         "verbs":[
+            "create"
+         ]
       },
       "pods/eviction":{
          "name":"pods/eviction",
          "namespaced":true,
-         "kind":"Eviction"
+         "kind":"Eviction",
+         "verbs":[
+            "create"
+         ]
       },
       "pods/exec":{
          "name":"pods/exec",
          "namespaced":true,
-         "kind":"Pod"
+         "kind":"Pod",
+         "verbs":[
+
+         ]
       },
       "pods/log":{
          "name":"pods/log",
          "namespaced":true,
-         "kind":"Pod"
+         "kind":"Pod",
+         "verbs":[
+            "get"
+         ]
       },
       "pods/portforward":{
          "name":"pods/portforward",
          "namespaced":true,
-         "kind":"Pod"
+         "kind":"Pod",
+         "verbs":[
+
+         ]
       },
       "pods/proxy":{
          "name":"pods/proxy",
          "namespaced":true,
-         "kind":"Pod"
+         "kind":"Pod",
+         "verbs":[
+
+         ]
       },
       "pods/status":{
          "name":"pods/status",
          "namespaced":true,
-         "kind":"Pod"
+         "kind":"Pod",
+         "verbs":[
+            "get",
+            "patch",
+            "update"
+         ]
       },
       "podtemplates":{
          "name":"podtemplates",
          "namespaced":true,
-         "kind":"PodTemplate"
+         "kind":"PodTemplate",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "replicationcontrollers":{
          "name":"replicationcontrollers",
          "namespaced":true,
-         "kind":"ReplicationController"
+         "kind":"ReplicationController",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ],
+         "shortNames":[
+            "rc"
+         ]
       },
       "replicationcontrollers/scale":{
          "name":"replicationcontrollers/scale",
          "namespaced":true,
-         "kind":"Scale"
+         "kind":"Scale",
+         "verbs":[
+            "get",
+            "patch",
+            "update"
+         ]
       },
       "replicationcontrollers/status":{
          "name":"replicationcontrollers/status",
          "namespaced":true,
-         "kind":"ReplicationController"
+         "kind":"ReplicationController",
+         "verbs":[
+            "get",
+            "patch",
+            "update"
+         ]
       },
       "resourcequotas":{
          "name":"resourcequotas",
          "namespaced":true,
-         "kind":"ResourceQuota"
+         "kind":"ResourceQuota",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ],
+         "shortNames":[
+            "quota"
+         ]
       },
       "resourcequotas/status":{
          "name":"resourcequotas/status",
          "namespaced":true,
-         "kind":"ResourceQuota"
+         "kind":"ResourceQuota",
+         "verbs":[
+            "get",
+            "patch",
+            "update"
+         ]
       },
       "secrets":{
          "name":"secrets",
          "namespaced":true,
-         "kind":"Secret"
+         "kind":"Secret",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "securitycontextconstraints":{
          "name":"securitycontextconstraints",
          "namespaced":false,
-         "kind":"SecurityContextConstraints"
+         "kind":"SecurityContextConstraints",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ],
+         "shortNames":[
+            "scc"
+         ]
       },
       "serviceaccounts":{
          "name":"serviceaccounts",
          "namespaced":true,
-         "kind":"ServiceAccount"
+         "kind":"ServiceAccount",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ],
+         "shortNames":[
+            "sa"
+         ]
       },
       "services":{
          "name":"services",
          "namespaced":true,
-         "kind":"Service"
+         "kind":"Service",
+         "verbs":[
+            "create",
+            "delete",
+            "get",
+            "list",
+            "patch",
+            "proxy",
+            "update",
+            "watch"
+         ]
       },
       "services/proxy":{
          "name":"services/proxy",
          "namespaced":true,
-         "kind":"Service"
+         "kind":"Service",
+         "verbs":[
+
+         ]
       },
       "services/status":{
          "name":"services/status",
          "namespaced":true,
-         "kind":"Service"
+         "kind":"Service",
+         "verbs":[
+            "get",
+            "patch",
+            "update"
+         ]
       }
    }
 };
@@ -195,397 +481,753 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       "appliedclusterresourcequotas":{
          "name":"appliedclusterresourcequotas",
          "namespaced":true,
-         "kind":"AppliedClusterResourceQuota"
+         "kind":"AppliedClusterResourceQuota",
+         "verbs":[
+            "get",
+            "list"
+         ]
       },
       "buildconfigs":{
          "name":"buildconfigs",
          "namespaced":true,
-         "kind":"BuildConfig"
+         "kind":"BuildConfig",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "buildconfigs/instantiate":{
          "name":"buildconfigs/instantiate",
          "namespaced":true,
-         "kind":"BuildRequest"
+         "kind":"BuildRequest",
+         "verbs":[
+            "create"
+         ]
       },
       "buildconfigs/instantiatebinary":{
          "name":"buildconfigs/instantiatebinary",
          "namespaced":true,
-         "kind":"BinaryBuildRequestOptions"
+         "kind":"BinaryBuildRequestOptions",
+         "verbs":[
+
+         ]
       },
       "buildconfigs/webhooks":{
          "name":"buildconfigs/webhooks",
          "namespaced":true,
-         "kind":"Status"
+         "kind":"Build",
+         "verbs":[
+
+         ]
       },
       "builds":{
          "name":"builds",
          "namespaced":true,
-         "kind":"Build"
+         "kind":"Build",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "builds/clone":{
          "name":"builds/clone",
          "namespaced":true,
-         "kind":"BuildRequest"
+         "kind":"BuildRequest",
+         "verbs":[
+            "create"
+         ]
       },
       "builds/details":{
          "name":"builds/details",
          "namespaced":true,
-         "kind":"Build"
+         "kind":"Build",
+         "verbs":[
+            "update"
+         ]
       },
       "builds/log":{
          "name":"builds/log",
          "namespaced":true,
-         "kind":"BuildLog"
+         "kind":"BuildLog",
+         "verbs":[
+            "get"
+         ]
       },
       "clusternetworks":{
          "name":"clusternetworks",
          "namespaced":false,
-         "kind":"ClusterNetwork"
+         "kind":"ClusterNetwork",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "clusterpolicies":{
          "name":"clusterpolicies",
          "namespaced":false,
-         "kind":"ClusterPolicy"
+         "kind":"ClusterPolicy",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "clusterpolicybindings":{
          "name":"clusterpolicybindings",
          "namespaced":false,
-         "kind":"ClusterPolicyBinding"
+         "kind":"ClusterPolicyBinding",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "clusterresourcequotas":{
          "name":"clusterresourcequotas",
          "namespaced":false,
-         "kind":"ClusterResourceQuota"
+         "kind":"ClusterResourceQuota",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "clusterresourcequotas/status":{
          "name":"clusterresourcequotas/status",
          "namespaced":false,
-         "kind":"ClusterResourceQuota"
+         "kind":"ClusterResourceQuota",
+         "verbs":[
+            "get",
+            "patch",
+            "update"
+         ]
       },
       "clusterrolebindings":{
          "name":"clusterrolebindings",
          "namespaced":false,
-         "kind":"ClusterRoleBinding"
+         "kind":"ClusterRoleBinding",
+         "verbs":[
+            "create",
+            "delete",
+            "get",
+            "list",
+            "patch",
+            "update"
+         ]
       },
       "clusterroles":{
          "name":"clusterroles",
          "namespaced":false,
-         "kind":"ClusterRole"
+         "kind":"ClusterRole",
+         "verbs":[
+            "create",
+            "delete",
+            "get",
+            "list",
+            "patch",
+            "update"
+         ]
       },
       "deploymentconfigrollbacks":{
          "name":"deploymentconfigrollbacks",
          "namespaced":true,
-         "kind":"DeploymentConfigRollback"
+         "kind":"DeploymentConfigRollback",
+         "verbs":[
+            "create"
+         ]
       },
       "deploymentconfigs":{
          "name":"deploymentconfigs",
          "namespaced":true,
-         "kind":"DeploymentConfig"
+         "kind":"DeploymentConfig",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "deploymentconfigs/instantiate":{
          "name":"deploymentconfigs/instantiate",
          "namespaced":true,
-         "kind":"DeploymentRequest"
+         "kind":"DeploymentRequest",
+         "verbs":[
+            "create"
+         ]
       },
       "deploymentconfigs/log":{
          "name":"deploymentconfigs/log",
          "namespaced":true,
-         "kind":"DeploymentLog"
+         "kind":"DeploymentLog",
+         "verbs":[
+            "get"
+         ]
       },
       "deploymentconfigs/rollback":{
          "name":"deploymentconfigs/rollback",
          "namespaced":true,
-         "kind":"DeploymentConfigRollback"
+         "kind":"DeploymentConfigRollback",
+         "verbs":[
+            "create"
+         ]
       },
       "deploymentconfigs/scale":{
          "name":"deploymentconfigs/scale",
          "namespaced":true,
-         "kind":"Scale"
+         "kind":"Scale",
+         "verbs":[
+            "get",
+            "patch",
+            "update"
+         ]
       },
       "deploymentconfigs/status":{
          "name":"deploymentconfigs/status",
          "namespaced":true,
-         "kind":"DeploymentConfig"
+         "kind":"DeploymentConfig",
+         "verbs":[
+            "get",
+            "patch",
+            "update"
+         ]
       },
       "egressnetworkpolicies":{
          "name":"egressnetworkpolicies",
          "namespaced":true,
-         "kind":"EgressNetworkPolicy"
+         "kind":"EgressNetworkPolicy",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "generatedeploymentconfigs":{
          "name":"generatedeploymentconfigs",
          "namespaced":true,
-         "kind":"DeploymentConfig"
+         "kind":"DeploymentConfig",
+         "verbs":[
+
+         ]
       },
       "groups":{
          "name":"groups",
          "namespaced":false,
-         "kind":"Group"
+         "kind":"Group",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "hostsubnets":{
          "name":"hostsubnets",
          "namespaced":false,
-         "kind":"HostSubnet"
+         "kind":"HostSubnet",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "identities":{
          "name":"identities",
          "namespaced":false,
-         "kind":"Identity"
+         "kind":"Identity",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "images":{
          "name":"images",
          "namespaced":false,
-         "kind":"Image"
+         "kind":"Image",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "imagesignatures":{
          "name":"imagesignatures",
          "namespaced":false,
-         "kind":"ImageSignature"
+         "kind":"ImageSignature",
+         "verbs":[
+            "create",
+            "delete"
+         ]
       },
       "imagestreamimages":{
          "name":"imagestreamimages",
          "namespaced":true,
-         "kind":"ImageStreamImage"
+         "kind":"ImageStreamImage",
+         "verbs":[
+            "get"
+         ]
       },
       "imagestreamimports":{
          "name":"imagestreamimports",
          "namespaced":true,
-         "kind":"ImageStreamImport"
+         "kind":"ImageStreamImport",
+         "verbs":[
+            "create"
+         ]
       },
       "imagestreammappings":{
          "name":"imagestreammappings",
          "namespaced":true,
-         "kind":"ImageStreamMapping"
+         "kind":"ImageStreamMapping",
+         "verbs":[
+            "create"
+         ]
       },
       "imagestreams":{
          "name":"imagestreams",
          "namespaced":true,
-         "kind":"ImageStream"
+         "kind":"ImageStream",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "imagestreams/secrets":{
          "name":"imagestreams/secrets",
          "namespaced":true,
-         "kind":"SecretList"
+         "kind":"SecretList",
+         "verbs":[
+            "get"
+         ]
       },
       "imagestreams/status":{
          "name":"imagestreams/status",
          "namespaced":true,
-         "kind":"ImageStream"
+         "kind":"ImageStream",
+         "verbs":[
+            "get",
+            "patch",
+            "update"
+         ]
       },
       "imagestreamtags":{
          "name":"imagestreamtags",
          "namespaced":true,
-         "kind":"ImageStreamTag"
+         "kind":"ImageStreamTag",
+         "verbs":[
+            "create",
+            "delete",
+            "get",
+            "list",
+            "patch",
+            "update"
+         ]
       },
       "localresourceaccessreviews":{
          "name":"localresourceaccessreviews",
          "namespaced":true,
-         "kind":"LocalResourceAccessReview"
+         "kind":"LocalResourceAccessReview",
+         "verbs":[
+            "create"
+         ]
       },
       "localsubjectaccessreviews":{
          "name":"localsubjectaccessreviews",
          "namespaced":true,
-         "kind":"LocalSubjectAccessReview"
+         "kind":"LocalSubjectAccessReview",
+         "verbs":[
+            "create"
+         ]
       },
       "netnamespaces":{
          "name":"netnamespaces",
          "namespaced":false,
-         "kind":"NetNamespace"
+         "kind":"NetNamespace",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "oauthaccesstokens":{
          "name":"oauthaccesstokens",
          "namespaced":false,
-         "kind":"OAuthAccessToken"
+         "kind":"OAuthAccessToken",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "oauthauthorizetokens":{
          "name":"oauthauthorizetokens",
          "namespaced":false,
-         "kind":"OAuthAuthorizeToken"
+         "kind":"OAuthAuthorizeToken",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "oauthclientauthorizations":{
          "name":"oauthclientauthorizations",
          "namespaced":false,
-         "kind":"OAuthClientAuthorization"
+         "kind":"OAuthClientAuthorization",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "oauthclients":{
          "name":"oauthclients",
          "namespaced":false,
-         "kind":"OAuthClient"
+         "kind":"OAuthClient",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "podsecuritypolicyreviews":{
          "name":"podsecuritypolicyreviews",
          "namespaced":true,
-         "kind":"PodSecurityPolicyReview"
+         "kind":"PodSecurityPolicyReview",
+         "verbs":[
+            "create"
+         ]
       },
       "podsecuritypolicyselfsubjectreviews":{
          "name":"podsecuritypolicyselfsubjectreviews",
          "namespaced":true,
-         "kind":"PodSecurityPolicySelfSubjectReview"
+         "kind":"PodSecurityPolicySelfSubjectReview",
+         "verbs":[
+            "create"
+         ]
       },
       "podsecuritypolicysubjectreviews":{
          "name":"podsecuritypolicysubjectreviews",
          "namespaced":true,
-         "kind":"PodSecurityPolicySubjectReview"
+         "kind":"PodSecurityPolicySubjectReview",
+         "verbs":[
+            "create"
+         ]
       },
       "policies":{
          "name":"policies",
          "namespaced":true,
-         "kind":"Policy"
+         "kind":"Policy",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "policybindings":{
          "name":"policybindings",
          "namespaced":true,
-         "kind":"PolicyBinding"
+         "kind":"PolicyBinding",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "processedtemplates":{
          "name":"processedtemplates",
          "namespaced":true,
-         "kind":"Template"
+         "kind":"Template",
+         "verbs":[
+            "create"
+         ]
       },
       "projectrequests":{
          "name":"projectrequests",
          "namespaced":false,
-         "kind":"ProjectRequest"
+         "kind":"ProjectRequest",
+         "verbs":[
+            "create",
+            "list"
+         ]
       },
       "projects":{
          "name":"projects",
          "namespaced":false,
-         "kind":"Project"
+         "kind":"Project",
+         "verbs":[
+            "create",
+            "delete",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "resourceaccessreviews":{
          "name":"resourceaccessreviews",
          "namespaced":true,
-         "kind":"ResourceAccessReview"
+         "kind":"ResourceAccessReview",
+         "verbs":[
+            "create"
+         ]
       },
       "rolebindingrestrictions":{
          "name":"rolebindingrestrictions",
          "namespaced":true,
-         "kind":"RoleBindingRestriction"
+         "kind":"RoleBindingRestriction",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "rolebindings":{
          "name":"rolebindings",
          "namespaced":true,
-         "kind":"RoleBinding"
+         "kind":"RoleBinding",
+         "verbs":[
+            "create",
+            "delete",
+            "get",
+            "list",
+            "patch",
+            "update"
+         ]
       },
       "roles":{
          "name":"roles",
          "namespaced":true,
-         "kind":"Role"
+         "kind":"Role",
+         "verbs":[
+            "create",
+            "delete",
+            "get",
+            "list",
+            "patch",
+            "update"
+         ]
       },
       "routes":{
          "name":"routes",
          "namespaced":true,
-         "kind":"Route"
+         "kind":"Route",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "routes/status":{
          "name":"routes/status",
          "namespaced":true,
-         "kind":"Route"
+         "kind":"Route",
+         "verbs":[
+            "get",
+            "patch",
+            "update"
+         ]
       },
       "selfsubjectrulesreviews":{
          "name":"selfsubjectrulesreviews",
          "namespaced":true,
-         "kind":"SelfSubjectRulesReview"
+         "kind":"SelfSubjectRulesReview",
+         "verbs":[
+            "create"
+         ]
       },
       "subjectaccessreviews":{
          "name":"subjectaccessreviews",
          "namespaced":true,
-         "kind":"SubjectAccessReview"
+         "kind":"SubjectAccessReview",
+         "verbs":[
+            "create"
+         ]
       },
       "subjectrulesreviews":{
          "name":"subjectrulesreviews",
          "namespaced":true,
-         "kind":"SubjectRulesReview"
+         "kind":"SubjectRulesReview",
+         "verbs":[
+            "create"
+         ]
       },
       "templates":{
          "name":"templates",
          "namespaced":true,
-         "kind":"Template"
+         "kind":"Template",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       },
       "useridentitymappings":{
          "name":"useridentitymappings",
          "namespaced":false,
-         "kind":"UserIdentityMapping"
+         "kind":"UserIdentityMapping",
+         "verbs":[
+            "create",
+            "delete",
+            "get",
+            "patch",
+            "update"
+         ]
       },
       "users":{
          "name":"users",
          "namespaced":false,
-         "kind":"User"
+         "kind":"User",
+         "verbs":[
+            "create",
+            "delete",
+            "deletecollection",
+            "get",
+            "list",
+            "patch",
+            "update",
+            "watch"
+         ]
       }
    }
 };
 
 window.OPENSHIFT_CONFIG.apis.groups = {
-   "apps":{
-      "name":"apps",
-      "preferredVersion":"v1beta1",
-      "versions":{
-         "v1beta1":{
-            "version":"v1beta1",
-            "groupVersion":"apps/v1beta1",
-            "resources":{
-               "statefulsets":{
-                  "name":"statefulsets",
-                  "namespaced":true,
-                  "kind":"StatefulSet"
-               },
-               "statefulsets/status":{
-                  "name":"statefulsets/status",
-                  "namespaced":true,
-                  "kind":"StatefulSet"
-               }
-            }
-         }
-      },
-      "hostPrefix":null
-   },
-   "apps.openshift.io":{
-      "name":"apps.openshift.io",
+   "authentication.k8s.io":{
+      "name":"authentication.k8s.io",
       "preferredVersion":"v1",
       "versions":{
          "v1":{
             "version":"v1",
-            "groupVersion":"apps.openshift.io/v1",
+            "groupVersion":"authentication.k8s.io/v1",
             "resources":{
-               "deploymentconfigs":{
-                  "name":"deploymentconfigs",
-                  "namespaced":true,
-                  "kind":"DeploymentConfig"
-               },
-               "deploymentconfigs/instantiate":{
-                  "name":"deploymentconfigs/instantiate",
-                  "namespaced":true,
-                  "kind":"DeploymentRequest"
-               },
-               "deploymentconfigs/log":{
-                  "name":"deploymentconfigs/log",
-                  "namespaced":true,
-                  "kind":"DeploymentLog"
-               },
-               "deploymentconfigs/rollback":{
-                  "name":"deploymentconfigs/rollback",
-                  "namespaced":true,
-                  "kind":"DeploymentConfigRollback"
-               },
-               "deploymentconfigs/scale":{
-                  "name":"deploymentconfigs/scale",
-                  "namespaced":true,
-                  "kind":"Scale"
-               },
-               "deploymentconfigs/status":{
-                  "name":"deploymentconfigs/status",
-                  "namespaced":true,
-                  "kind":"DeploymentConfig"
+               "tokenreviews":{
+                  "name":"tokenreviews",
+                  "namespaced":false,
+                  "kind":"TokenReview",
+                  "verbs":[
+                     "create"
+                  ]
                }
             }
-         }
-      },
-      "hostPrefix":null
-   },
-   "authentication.k8s.io":{
-      "name":"authentication.k8s.io",
-      "preferredVersion":"v1beta1",
-      "versions":{
+         },
          "v1beta1":{
             "version":"v1beta1",
             "groupVersion":"authentication.k8s.io/v1beta1",
@@ -593,7 +1235,10 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                "tokenreviews":{
                   "name":"tokenreviews",
                   "namespaced":false,
-                  "kind":"TokenReview"
+                  "kind":"TokenReview",
+                  "verbs":[
+                     "create"
+                  ]
                }
             }
          }
@@ -602,8 +1247,38 @@ window.OPENSHIFT_CONFIG.apis.groups = {
    },
    "authorization.k8s.io":{
       "name":"authorization.k8s.io",
-      "preferredVersion":"v1beta1",
+      "preferredVersion":"v1",
       "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"authorization.k8s.io/v1",
+            "resources":{
+               "localsubjectaccessreviews":{
+                  "name":"localsubjectaccessreviews",
+                  "namespaced":true,
+                  "kind":"LocalSubjectAccessReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "selfsubjectaccessreviews":{
+                  "name":"selfsubjectaccessreviews",
+                  "namespaced":false,
+                  "kind":"SelfSubjectAccessReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "subjectaccessreviews":{
+                  "name":"subjectaccessreviews",
+                  "namespaced":false,
+                  "kind":"SubjectAccessReview",
+                  "verbs":[
+                     "create"
+                  ]
+               }
+            }
+         },
          "v1beta1":{
             "version":"v1beta1",
             "groupVersion":"authorization.k8s.io/v1beta1",
@@ -611,105 +1286,26 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                "localsubjectaccessreviews":{
                   "name":"localsubjectaccessreviews",
                   "namespaced":true,
-                  "kind":"LocalSubjectAccessReview"
+                  "kind":"LocalSubjectAccessReview",
+                  "verbs":[
+                     "create"
+                  ]
                },
                "selfsubjectaccessreviews":{
                   "name":"selfsubjectaccessreviews",
                   "namespaced":false,
-                  "kind":"SelfSubjectAccessReview"
+                  "kind":"SelfSubjectAccessReview",
+                  "verbs":[
+                     "create"
+                  ]
                },
                "subjectaccessreviews":{
                   "name":"subjectaccessreviews",
                   "namespaced":false,
-                  "kind":"SubjectAccessReview"
-               }
-            }
-         }
-      },
-      "hostPrefix":null
-   },
-   "authorization.openshift.io":{
-      "name":"authorization.openshift.io",
-      "preferredVersion":"v1",
-      "versions":{
-         "v1":{
-            "version":"v1",
-            "groupVersion":"authorization.openshift.io/v1",
-            "resources":{
-               "clusterpolicies":{
-                  "name":"clusterpolicies",
-                  "namespaced":false,
-                  "kind":"ClusterPolicy"
-               },
-               "clusterpolicybindings":{
-                  "name":"clusterpolicybindings",
-                  "namespaced":false,
-                  "kind":"ClusterPolicyBinding"
-               },
-               "clusterrolebindings":{
-                  "name":"clusterrolebindings",
-                  "namespaced":false,
-                  "kind":"ClusterRoleBinding"
-               },
-               "clusterroles":{
-                  "name":"clusterroles",
-                  "namespaced":false,
-                  "kind":"ClusterRole"
-               },
-               "localresourceaccessreviews":{
-                  "name":"localresourceaccessreviews",
-                  "namespaced":true,
-                  "kind":"LocalResourceAccessReview"
-               },
-               "localsubjectaccessreviews":{
-                  "name":"localsubjectaccessreviews",
-                  "namespaced":true,
-                  "kind":"LocalSubjectAccessReview"
-               },
-               "policies":{
-                  "name":"policies",
-                  "namespaced":true,
-                  "kind":"Policy"
-               },
-               "policybindings":{
-                  "name":"policybindings",
-                  "namespaced":true,
-                  "kind":"PolicyBinding"
-               },
-               "resourceaccessreviews":{
-                  "name":"resourceaccessreviews",
-                  "namespaced":true,
-                  "kind":"ResourceAccessReview"
-               },
-               "rolebindingrestrictions":{
-                  "name":"rolebindingrestrictions",
-                  "namespaced":true,
-                  "kind":"RoleBindingRestriction"
-               },
-               "rolebindings":{
-                  "name":"rolebindings",
-                  "namespaced":true,
-                  "kind":"RoleBinding"
-               },
-               "roles":{
-                  "name":"roles",
-                  "namespaced":true,
-                  "kind":"Role"
-               },
-               "selfsubjectrulesreviews":{
-                  "name":"selfsubjectrulesreviews",
-                  "namespaced":true,
-                  "kind":"SelfSubjectRulesReview"
-               },
-               "subjectaccessreviews":{
-                  "name":"subjectaccessreviews",
-                  "namespaced":true,
-                  "kind":"SubjectAccessReview"
-               },
-               "subjectrulesreviews":{
-                  "name":"subjectrulesreviews",
-                  "namespaced":true,
-                  "kind":"SubjectRulesReview"
+                  "kind":"SubjectAccessReview",
+                  "verbs":[
+                     "create"
+                  ]
                }
             }
          }
@@ -727,12 +1323,64 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                "horizontalpodautoscalers":{
                   "name":"horizontalpodautoscalers",
                   "namespaced":true,
-                  "kind":"HorizontalPodAutoscaler"
+                  "kind":"HorizontalPodAutoscaler",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "hpa"
+                  ]
                },
                "horizontalpodautoscalers/status":{
                   "name":"horizontalpodautoscalers/status",
                   "namespaced":true,
-                  "kind":"HorizontalPodAutoscaler"
+                  "kind":"HorizontalPodAutoscaler",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               }
+            }
+         },
+         "v2alpha1":{
+            "version":"v2alpha1",
+            "groupVersion":"autoscaling/v2alpha1",
+            "resources":{
+               "horizontalpodautoscalers":{
+                  "name":"horizontalpodautoscalers",
+                  "namespaced":true,
+                  "kind":"HorizontalPodAutoscaler",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "hpa"
+                  ]
+               },
+               "horizontalpodautoscalers/status":{
+                  "name":"horizontalpodautoscalers/status",
+                  "namespaced":true,
+                  "kind":"HorizontalPodAutoscaler",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                }
             }
          }
@@ -750,12 +1398,27 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                "jobs":{
                   "name":"jobs",
                   "namespaced":true,
-                  "kind":"Job"
+                  "kind":"Job",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
                },
                "jobs/status":{
                   "name":"jobs/status",
                   "namespaced":true,
-                  "kind":"Job"
+                  "kind":"Job",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                }
             }
          },
@@ -766,85 +1429,52 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                "cronjobs":{
                   "name":"cronjobs",
                   "namespaced":true,
-                  "kind":"CronJob"
+                  "kind":"CronJob",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
                },
                "cronjobs/status":{
                   "name":"cronjobs/status",
                   "namespaced":true,
-                  "kind":"CronJob"
-               },
-               "jobs":{
-                  "name":"jobs",
-                  "namespaced":true,
-                  "kind":"Job"
-               },
-               "jobs/status":{
-                  "name":"jobs/status",
-                  "namespaced":true,
-                  "kind":"Job"
+                  "kind":"CronJob",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                },
                "scheduledjobs":{
                   "name":"scheduledjobs",
                   "namespaced":true,
-                  "kind":"ScheduledJob"
+                  "kind":"ScheduledJob",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
                },
                "scheduledjobs/status":{
                   "name":"scheduledjobs/status",
                   "namespaced":true,
-                  "kind":"ScheduledJob"
-               }
-            }
-         }
-      },
-      "hostPrefix":null
-   },
-   "build.openshift.io":{
-      "name":"build.openshift.io",
-      "preferredVersion":"v1",
-      "versions":{
-         "v1":{
-            "version":"v1",
-            "groupVersion":"build.openshift.io/v1",
-            "resources":{
-               "buildconfigs":{
-                  "name":"buildconfigs",
-                  "namespaced":true,
-                  "kind":"BuildConfig"
-               },
-               "buildconfigs/instantiate":{
-                  "name":"buildconfigs/instantiate",
-                  "namespaced":true,
-                  "kind":"BuildRequest"
-               },
-               "buildconfigs/instantiatebinary":{
-                  "name":"buildconfigs/instantiatebinary",
-                  "namespaced":true,
-                  "kind":"BinaryBuildRequestOptions"
-               },
-               "buildconfigs/webhooks":{
-                  "name":"buildconfigs/webhooks",
-                  "namespaced":true,
-                  "kind":"Status"
-               },
-               "builds":{
-                  "name":"builds",
-                  "namespaced":true,
-                  "kind":"Build"
-               },
-               "builds/clone":{
-                  "name":"builds/clone",
-                  "namespaced":true,
-                  "kind":"BuildRequest"
-               },
-               "builds/details":{
-                  "name":"builds/details",
-                  "namespaced":true,
-                  "kind":"Build"
-               },
-               "builds/log":{
-                  "name":"builds/log",
-                  "namespaced":true,
-                  "kind":"BuildLog"
+                  "kind":"ScheduledJob",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                }
             }
          }
@@ -853,26 +1483,45 @@ window.OPENSHIFT_CONFIG.apis.groups = {
    },
    "certificates.k8s.io":{
       "name":"certificates.k8s.io",
-      "preferredVersion":"v1alpha1",
+      "preferredVersion":"v1beta1",
       "versions":{
-         "v1alpha1":{
-            "version":"v1alpha1",
-            "groupVersion":"certificates.k8s.io/v1alpha1",
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"certificates.k8s.io/v1beta1",
             "resources":{
                "certificatesigningrequests":{
                   "name":"certificatesigningrequests",
                   "namespaced":false,
-                  "kind":"CertificateSigningRequest"
+                  "kind":"CertificateSigningRequest",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "csr"
+                  ]
                },
                "certificatesigningrequests/approval":{
                   "name":"certificatesigningrequests/approval",
                   "namespaced":false,
-                  "kind":"CertificateSigningRequest"
+                  "kind":"CertificateSigningRequest",
+                  "verbs":[
+                     "update"
+                  ]
                },
                "certificatesigningrequests/status":{
                   "name":"certificatesigningrequests/status",
                   "namespaced":false,
-                  "kind":"CertificateSigningRequest"
+                  "kind":"CertificateSigningRequest",
+                  "verbs":[
+                     "update"
+                  ]
                }
             }
          }
@@ -890,226 +1539,236 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                "daemonsets":{
                   "name":"daemonsets",
                   "namespaced":true,
-                  "kind":"DaemonSet"
+                  "kind":"DaemonSet",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "ds"
+                  ]
                },
                "daemonsets/status":{
                   "name":"daemonsets/status",
                   "namespaced":true,
-                  "kind":"DaemonSet"
+                  "kind":"DaemonSet",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                },
                "deployments":{
                   "name":"deployments",
                   "namespaced":true,
-                  "kind":"Deployment"
+                  "kind":"Deployment",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "deploy"
+                  ]
                },
                "deployments/rollback":{
                   "name":"deployments/rollback",
                   "namespaced":true,
-                  "kind":"DeploymentRollback"
+                  "kind":"DeploymentRollback",
+                  "verbs":[
+                     "create"
+                  ]
                },
                "deployments/scale":{
                   "name":"deployments/scale",
                   "namespaced":true,
-                  "kind":"Scale"
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                },
                "deployments/status":{
                   "name":"deployments/status",
                   "namespaced":true,
-                  "kind":"Deployment"
+                  "kind":"Deployment",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                },
                "horizontalpodautoscalers":{
                   "name":"horizontalpodautoscalers",
                   "namespaced":true,
-                  "kind":"HorizontalPodAutoscaler"
+                  "kind":"HorizontalPodAutoscaler",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "hpa"
+                  ]
                },
                "horizontalpodautoscalers/status":{
                   "name":"horizontalpodautoscalers/status",
                   "namespaced":true,
-                  "kind":"HorizontalPodAutoscaler"
+                  "kind":"HorizontalPodAutoscaler",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                },
                "ingresses":{
                   "name":"ingresses",
                   "namespaced":true,
-                  "kind":"Ingress"
+                  "kind":"Ingress",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "ing"
+                  ]
                },
                "ingresses/status":{
                   "name":"ingresses/status",
                   "namespaced":true,
-                  "kind":"Ingress"
-               },
-               "jobs":{
-                  "name":"jobs",
-                  "namespaced":true,
-                  "kind":"Job"
-               },
-               "jobs/status":{
-                  "name":"jobs/status",
-                  "namespaced":true,
-                  "kind":"Job"
+                  "kind":"Ingress",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                },
                "networkpolicies":{
                   "name":"networkpolicies",
                   "namespaced":true,
-                  "kind":"NetworkPolicy"
+                  "kind":"NetworkPolicy",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
                },
                "podsecuritypolicies":{
                   "name":"podsecuritypolicies",
                   "namespaced":false,
-                  "kind":"PodSecurityPolicy"
+                  "kind":"PodSecurityPolicy",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "psp"
+                  ]
                },
                "replicasets":{
                   "name":"replicasets",
                   "namespaced":true,
-                  "kind":"ReplicaSet"
+                  "kind":"ReplicaSet",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "rs"
+                  ]
                },
                "replicasets/scale":{
                   "name":"replicasets/scale",
                   "namespaced":true,
-                  "kind":"Scale"
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                },
                "replicasets/status":{
                   "name":"replicasets/status",
                   "namespaced":true,
-                  "kind":"ReplicaSet"
+                  "kind":"ReplicaSet",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                },
                "replicationcontrollers":{
                   "name":"replicationcontrollers",
                   "namespaced":true,
-                  "kind":"ReplicationControllerDummy"
+                  "kind":"ReplicationControllerDummy",
+                  "verbs":[
+
+                  ]
                },
                "replicationcontrollers/scale":{
                   "name":"replicationcontrollers/scale",
                   "namespaced":true,
-                  "kind":"Scale"
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                },
                "thirdpartyresources":{
                   "name":"thirdpartyresources",
                   "namespaced":false,
-                  "kind":"ThirdPartyResource"
-               }
-            }
-         }
-      },
-      "hostPrefix":null
-   },
-   "image.openshift.io":{
-      "name":"image.openshift.io",
-      "preferredVersion":"v1",
-      "versions":{
-         "v1":{
-            "version":"v1",
-            "groupVersion":"image.openshift.io/v1",
-            "resources":{
-               "images":{
-                  "name":"images",
-                  "namespaced":false,
-                  "kind":"Image"
-               },
-               "imagesignatures":{
-                  "name":"imagesignatures",
-                  "namespaced":false,
-                  "kind":"ImageSignature"
-               },
-               "imagestreamimages":{
-                  "name":"imagestreamimages",
-                  "namespaced":true,
-                  "kind":"ImageStreamImage"
-               },
-               "imagestreamimports":{
-                  "name":"imagestreamimports",
-                  "namespaced":true,
-                  "kind":"ImageStreamImport"
-               },
-               "imagestreammappings":{
-                  "name":"imagestreammappings",
-                  "namespaced":true,
-                  "kind":"ImageStreamMapping"
-               },
-               "imagestreams":{
-                  "name":"imagestreams",
-                  "namespaced":true,
-                  "kind":"ImageStream"
-               },
-               "imagestreams/secrets":{
-                  "name":"imagestreams/secrets",
-                  "namespaced":true,
-                  "kind":"SecretList"
-               },
-               "imagestreams/status":{
-                  "name":"imagestreams/status",
-                  "namespaced":true,
-                  "kind":"ImageStream"
-               },
-               "imagestreamtags":{
-                  "name":"imagestreamtags",
-                  "namespaced":true,
-                  "kind":"ImageStreamTag"
-               }
-            }
-         }
-      },
-      "hostPrefix":null
-   },
-   "network.openshift.io":{
-      "name":"network.openshift.io",
-      "preferredVersion":"v1",
-      "versions":{
-         "v1":{
-            "version":"v1",
-            "groupVersion":"network.openshift.io/v1",
-            "resources":{
-               "clusternetworks":{
-                  "name":"clusternetworks",
-                  "namespaced":false,
-                  "kind":"ClusterNetwork"
-               },
-               "egressnetworkpolicies":{
-                  "name":"egressnetworkpolicies",
-                  "namespaced":true,
-                  "kind":"EgressNetworkPolicy"
-               },
-               "hostsubnets":{
-                  "name":"hostsubnets",
-                  "namespaced":false,
-                  "kind":"HostSubnet"
-               },
-               "netnamespaces":{
-                  "name":"netnamespaces",
-                  "namespaced":false,
-                  "kind":"NetNamespace"
-               }
-            }
-         }
-      },
-      "hostPrefix":null
-   },
-   "oauth.openshift.io":{
-      "name":"oauth.openshift.io",
-      "preferredVersion":"v1",
-      "versions":{
-         "v1":{
-            "version":"v1",
-            "groupVersion":"oauth.openshift.io/v1",
-            "resources":{
-               "oauthaccesstokens":{
-                  "name":"oauthaccesstokens",
-                  "namespaced":false,
-                  "kind":"OAuthAccessToken"
-               },
-               "oauthauthorizetokens":{
-                  "name":"oauthauthorizetokens",
-                  "namespaced":false,
-                  "kind":"OAuthAuthorizeToken"
-               },
-               "oauthclientauthorizations":{
-                  "name":"oauthclientauthorizations",
-                  "namespaced":false,
-                  "kind":"OAuthClientAuthorization"
-               },
-               "oauthclients":{
-                  "name":"oauthclients",
-                  "namespaced":false,
-                  "kind":"OAuthClient"
+                  "kind":"ThirdPartyResource",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
                }
             }
          }
@@ -1127,86 +1786,270 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                "poddisruptionbudgets":{
                   "name":"poddisruptionbudgets",
                   "namespaced":true,
-                  "kind":"PodDisruptionBudget"
+                  "kind":"PodDisruptionBudget",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "pdb"
+                  ]
                },
                "poddisruptionbudgets/status":{
                   "name":"poddisruptionbudgets/status",
                   "namespaced":true,
-                  "kind":"PodDisruptionBudget"
+                  "kind":"PodDisruptionBudget",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                }
             }
          }
       },
       "hostPrefix":null
    },
-   "project.openshift.io":{
-      "name":"project.openshift.io",
-      "preferredVersion":"v1",
+   "rbac.authorization.k8s.io":{
+      "name":"rbac.authorization.k8s.io",
+      "preferredVersion":"v1beta1",
       "versions":{
-         "v1":{
-            "version":"v1",
-            "groupVersion":"project.openshift.io/v1",
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"rbac.authorization.k8s.io/v1beta1",
             "resources":{
-               "projectrequests":{
-                  "name":"projectrequests",
+               "clusterrolebindings":{
+                  "name":"clusterrolebindings",
                   "namespaced":false,
-                  "kind":"ProjectRequest"
+                  "kind":"ClusterRoleBinding",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
                },
-               "projects":{
-                  "name":"projects",
+               "clusterroles":{
+                  "name":"clusterroles",
                   "namespaced":false,
-                  "kind":"Project"
+                  "kind":"ClusterRole",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "rolebindings":{
+                  "name":"rolebindings",
+                  "namespaced":true,
+                  "kind":"RoleBinding",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "roles":{
+                  "name":"roles",
+                  "namespaced":true,
+                  "kind":"Role",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
                }
             }
          }
       },
       "hostPrefix":null
    },
-   "quota.openshift.io":{
-      "name":"quota.openshift.io",
-      "preferredVersion":"v1",
+   "settings.k8s.io":{
+      "name":"settings.k8s.io",
+      "preferredVersion":"v1alpha1",
       "versions":{
-         "v1":{
-            "version":"v1",
-            "groupVersion":"quota.openshift.io/v1",
+         "v1alpha1":{
+            "version":"v1alpha1",
+            "groupVersion":"settings.k8s.io/v1alpha1",
             "resources":{
-               "appliedclusterresourcequotas":{
-                  "name":"appliedclusterresourcequotas",
+               "podpresets":{
+                  "name":"podpresets",
                   "namespaced":true,
-                  "kind":"AppliedClusterResourceQuota"
-               },
-               "clusterresourcequotas":{
-                  "name":"clusterresourcequotas",
-                  "namespaced":false,
-                  "kind":"ClusterResourceQuota"
-               },
-               "clusterresourcequotas/status":{
-                  "name":"clusterresourcequotas/status",
-                  "namespaced":false,
-                  "kind":"ClusterResourceQuota"
+                  "kind":"PodPreset",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
                }
             }
          }
       },
       "hostPrefix":null
    },
-   "route.openshift.io":{
-      "name":"route.openshift.io",
+   "storage.k8s.io":{
+      "name":"storage.k8s.io",
       "preferredVersion":"v1",
       "versions":{
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"storage.k8s.io/v1beta1",
+            "resources":{
+               "storageclasses":{
+                  "name":"storageclasses",
+                  "namespaced":false,
+                  "kind":"StorageClass",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "sc"
+                  ]
+               }
+            }
+         },
          "v1":{
             "version":"v1",
-            "groupVersion":"route.openshift.io/v1",
+            "groupVersion":"storage.k8s.io/v1",
             "resources":{
-               "routes":{
-                  "name":"routes",
+               "storageclasses":{
+                  "name":"storageclasses",
+                  "namespaced":false,
+                  "kind":"StorageClass",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "sc"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "apps":{
+      "name":"apps",
+      "preferredVersion":"v1beta1",
+      "versions":{
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"apps/v1beta1",
+            "resources":{
+               "deployments":{
+                  "name":"deployments",
                   "namespaced":true,
-                  "kind":"Route"
+                  "kind":"Deployment",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "deploy"
+                  ]
                },
-               "routes/status":{
-                  "name":"routes/status",
+               "deployments/rollback":{
+                  "name":"deployments/rollback",
                   "namespaced":true,
-                  "kind":"Route"
+                  "kind":"DeploymentRollback",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "deployments/scale":{
+                  "name":"deployments/scale",
+                  "namespaced":true,
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "deployments/status":{
+                  "name":"deployments/status",
+                  "namespaced":true,
+                  "kind":"Deployment",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "statefulsets":{
+                  "name":"statefulsets",
+                  "namespaced":true,
+                  "kind":"StatefulSet",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "statefulsets/status":{
+                  "name":"statefulsets/status",
+                  "namespaced":true,
+                  "kind":"StatefulSet",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                }
             }
          }
@@ -1224,68 +2067,679 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                "podsecuritypolicyreviews":{
                   "name":"podsecuritypolicyreviews",
                   "namespaced":true,
-                  "kind":"PodSecurityPolicyReview"
+                  "kind":"PodSecurityPolicyReview",
+                  "verbs":[
+                     "create"
+                  ]
                },
                "podsecuritypolicyselfsubjectreviews":{
                   "name":"podsecuritypolicyselfsubjectreviews",
                   "namespaced":true,
-                  "kind":"PodSecurityPolicySelfSubjectReview"
+                  "kind":"PodSecurityPolicySelfSubjectReview",
+                  "verbs":[
+                     "create"
+                  ]
                },
                "podsecuritypolicysubjectreviews":{
                   "name":"podsecuritypolicysubjectreviews",
                   "namespaced":true,
-                  "kind":"PodSecurityPolicySubjectReview"
+                  "kind":"PodSecurityPolicySubjectReview",
+                  "verbs":[
+                     "create"
+                  ]
                }
             }
          }
       },
       "hostPrefix":null
    },
-   "storage.k8s.io":{
-      "name":"storage.k8s.io",
-      "preferredVersion":"v1beta1",
-      "versions":{
-         "v1beta1":{
-            "version":"v1beta1",
-            "groupVersion":"storage.k8s.io/v1beta1",
-            "resources":{
-               "storageclasses":{
-                  "name":"storageclasses",
-                  "namespaced":false,
-                  "kind":"StorageClass"
-               }
-            }
-         }
-      },
-      "hostPrefix":null
-   },
-   "template.openshift.io":{
-      "name":"template.openshift.io",
+   "network.openshift.io":{
+      "name":"network.openshift.io",
       "preferredVersion":"v1",
       "versions":{
          "v1":{
             "version":"v1",
-            "groupVersion":"template.openshift.io/v1",
+            "groupVersion":"network.openshift.io/v1",
             "resources":{
-               "brokertemplateinstances":{
-                  "name":"brokertemplateinstances",
+               "clusternetworks":{
+                  "name":"clusternetworks",
                   "namespaced":false,
-                  "kind":"BrokerTemplateInstance"
+                  "kind":"ClusterNetwork",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
                },
-               "processedtemplates":{
-                  "name":"processedtemplates",
+               "egressnetworkpolicies":{
+                  "name":"egressnetworkpolicies",
                   "namespaced":true,
-                  "kind":"Template"
+                  "kind":"EgressNetworkPolicy",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
                },
-               "templateinstances":{
-                  "name":"templateinstances",
-                  "namespaced":true,
-                  "kind":"TemplateInstance"
+               "hostsubnets":{
+                  "name":"hostsubnets",
+                  "namespaced":false,
+                  "kind":"HostSubnet",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
                },
-               "templates":{
-                  "name":"templates",
+               "netnamespaces":{
+                  "name":"netnamespaces",
+                  "namespaced":false,
+                  "kind":"NetNamespace",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "route.openshift.io":{
+      "name":"route.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"route.openshift.io/v1",
+            "resources":{
+               "routes":{
+                  "name":"routes",
                   "namespaced":true,
-                  "kind":"Template"
+                  "kind":"Route",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "routes/status":{
+                  "name":"routes/status",
+                  "namespaced":true,
+                  "kind":"Route",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "image.openshift.io":{
+      "name":"image.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"image.openshift.io/v1",
+            "resources":{
+               "images":{
+                  "name":"images",
+                  "namespaced":false,
+                  "kind":"Image",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "imagesignatures":{
+                  "name":"imagesignatures",
+                  "namespaced":false,
+                  "kind":"ImageSignature",
+                  "verbs":[
+                     "create",
+                     "delete"
+                  ]
+               },
+               "imagestreamimages":{
+                  "name":"imagestreamimages",
+                  "namespaced":true,
+                  "kind":"ImageStreamImage",
+                  "verbs":[
+                     "get"
+                  ]
+               },
+               "imagestreamimports":{
+                  "name":"imagestreamimports",
+                  "namespaced":true,
+                  "kind":"ImageStreamImport",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "imagestreammappings":{
+                  "name":"imagestreammappings",
+                  "namespaced":true,
+                  "kind":"ImageStreamMapping",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "imagestreams":{
+                  "name":"imagestreams",
+                  "namespaced":true,
+                  "kind":"ImageStream",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "imagestreams/secrets":{
+                  "name":"imagestreams/secrets",
+                  "namespaced":true,
+                  "kind":"SecretList",
+                  "verbs":[
+                     "get"
+                  ]
+               },
+               "imagestreams/status":{
+                  "name":"imagestreams/status",
+                  "namespaced":true,
+                  "kind":"ImageStream",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "imagestreamtags":{
+                  "name":"imagestreamtags",
+                  "namespaced":true,
+                  "kind":"ImageStreamTag",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "get",
+                     "list",
+                     "patch",
+                     "update"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "authorization.openshift.io":{
+      "name":"authorization.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"authorization.openshift.io/v1",
+            "resources":{
+               "clusterpolicies":{
+                  "name":"clusterpolicies",
+                  "namespaced":false,
+                  "kind":"ClusterPolicy",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "clusterpolicybindings":{
+                  "name":"clusterpolicybindings",
+                  "namespaced":false,
+                  "kind":"ClusterPolicyBinding",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "clusterrolebindings":{
+                  "name":"clusterrolebindings",
+                  "namespaced":false,
+                  "kind":"ClusterRoleBinding",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "get",
+                     "list",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "clusterroles":{
+                  "name":"clusterroles",
+                  "namespaced":false,
+                  "kind":"ClusterRole",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "get",
+                     "list",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "localresourceaccessreviews":{
+                  "name":"localresourceaccessreviews",
+                  "namespaced":true,
+                  "kind":"LocalResourceAccessReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "localsubjectaccessreviews":{
+                  "name":"localsubjectaccessreviews",
+                  "namespaced":true,
+                  "kind":"LocalSubjectAccessReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "policies":{
+                  "name":"policies",
+                  "namespaced":true,
+                  "kind":"Policy",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "policybindings":{
+                  "name":"policybindings",
+                  "namespaced":true,
+                  "kind":"PolicyBinding",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "resourceaccessreviews":{
+                  "name":"resourceaccessreviews",
+                  "namespaced":true,
+                  "kind":"ResourceAccessReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "rolebindingrestrictions":{
+                  "name":"rolebindingrestrictions",
+                  "namespaced":true,
+                  "kind":"RoleBindingRestriction",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "rolebindings":{
+                  "name":"rolebindings",
+                  "namespaced":true,
+                  "kind":"RoleBinding",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "get",
+                     "list",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "roles":{
+                  "name":"roles",
+                  "namespaced":true,
+                  "kind":"Role",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "get",
+                     "list",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "selfsubjectrulesreviews":{
+                  "name":"selfsubjectrulesreviews",
+                  "namespaced":true,
+                  "kind":"SelfSubjectRulesReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "subjectaccessreviews":{
+                  "name":"subjectaccessreviews",
+                  "namespaced":true,
+                  "kind":"SubjectAccessReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "subjectrulesreviews":{
+                  "name":"subjectrulesreviews",
+                  "namespaced":true,
+                  "kind":"SubjectRulesReview",
+                  "verbs":[
+                     "create"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "oauth.openshift.io":{
+      "name":"oauth.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"oauth.openshift.io/v1",
+            "resources":{
+               "oauthaccesstokens":{
+                  "name":"oauthaccesstokens",
+                  "namespaced":false,
+                  "kind":"OAuthAccessToken",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "oauthauthorizetokens":{
+                  "name":"oauthauthorizetokens",
+                  "namespaced":false,
+                  "kind":"OAuthAuthorizeToken",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "oauthclientauthorizations":{
+                  "name":"oauthclientauthorizations",
+                  "namespaced":false,
+                  "kind":"OAuthClientAuthorization",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "oauthclients":{
+                  "name":"oauthclients",
+                  "namespaced":false,
+                  "kind":"OAuthClient",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "project.openshift.io":{
+      "name":"project.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"project.openshift.io/v1",
+            "resources":{
+               "projectrequests":{
+                  "name":"projectrequests",
+                  "namespaced":false,
+                  "kind":"ProjectRequest",
+                  "verbs":[
+                     "create",
+                     "list"
+                  ]
+               },
+               "projects":{
+                  "name":"projects",
+                  "namespaced":false,
+                  "kind":"Project",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "build.openshift.io":{
+      "name":"build.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"build.openshift.io/v1",
+            "resources":{
+               "buildconfigs":{
+                  "name":"buildconfigs",
+                  "namespaced":true,
+                  "kind":"BuildConfig",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "buildconfigs/instantiate":{
+                  "name":"buildconfigs/instantiate",
+                  "namespaced":true,
+                  "kind":"BuildRequest",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "buildconfigs/instantiatebinary":{
+                  "name":"buildconfigs/instantiatebinary",
+                  "namespaced":true,
+                  "kind":"BinaryBuildRequestOptions",
+                  "verbs":[
+
+                  ]
+               },
+               "buildconfigs/webhooks":{
+                  "name":"buildconfigs/webhooks",
+                  "namespaced":true,
+                  "kind":"Build",
+                  "verbs":[
+
+                  ]
+               },
+               "builds":{
+                  "name":"builds",
+                  "namespaced":true,
+                  "kind":"Build",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "builds/clone":{
+                  "name":"builds/clone",
+                  "namespaced":true,
+                  "kind":"BuildRequest",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "builds/details":{
+                  "name":"builds/details",
+                  "namespaced":true,
+                  "kind":"Build",
+                  "verbs":[
+                     "update"
+                  ]
+               },
+               "builds/log":{
+                  "name":"builds/log",
+                  "namespaced":true,
+                  "kind":"BuildLog",
+                  "verbs":[
+                     "get"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "quota.openshift.io":{
+      "name":"quota.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"quota.openshift.io/v1",
+            "resources":{
+               "appliedclusterresourcequotas":{
+                  "name":"appliedclusterresourcequotas",
+                  "namespaced":true,
+                  "kind":"AppliedClusterResourceQuota",
+                  "verbs":[
+                     "get",
+                     "list"
+                  ]
+               },
+               "clusterresourcequotas":{
+                  "name":"clusterresourcequotas",
+                  "namespaced":false,
+                  "kind":"ClusterResourceQuota",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "clusterresourcequotas/status":{
+                  "name":"clusterresourcequotas/status",
+                  "namespaced":false,
+                  "kind":"ClusterResourceQuota",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                }
             }
          }
@@ -1303,22 +2757,167 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                "groups":{
                   "name":"groups",
                   "namespaced":false,
-                  "kind":"Group"
+                  "kind":"Group",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
                },
                "identities":{
                   "name":"identities",
                   "namespaced":false,
-                  "kind":"Identity"
+                  "kind":"Identity",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
                },
                "useridentitymappings":{
                   "name":"useridentitymappings",
                   "namespaced":false,
-                  "kind":"UserIdentityMapping"
+                  "kind":"UserIdentityMapping",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "get",
+                     "patch",
+                     "update"
+                  ]
                },
                "users":{
                   "name":"users",
                   "namespaced":false,
-                  "kind":"User"
+                  "kind":"User",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "apps.openshift.io":{
+      "name":"apps.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"apps.openshift.io/v1",
+            "resources":{
+               "deploymentconfigs":{
+                  "name":"deploymentconfigs",
+                  "namespaced":true,
+                  "kind":"DeploymentConfig",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "deploymentconfigs/instantiate":{
+                  "name":"deploymentconfigs/instantiate",
+                  "namespaced":true,
+                  "kind":"DeploymentRequest",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "deploymentconfigs/log":{
+                  "name":"deploymentconfigs/log",
+                  "namespaced":true,
+                  "kind":"DeploymentLog",
+                  "verbs":[
+                     "get"
+                  ]
+               },
+               "deploymentconfigs/rollback":{
+                  "name":"deploymentconfigs/rollback",
+                  "namespaced":true,
+                  "kind":"DeploymentConfigRollback",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "deploymentconfigs/scale":{
+                  "name":"deploymentconfigs/scale",
+                  "namespaced":true,
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "deploymentconfigs/status":{
+                  "name":"deploymentconfigs/status",
+                  "namespaced":true,
+                  "kind":"DeploymentConfig",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "template.openshift.io":{
+      "name":"template.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"template.openshift.io/v1",
+            "resources":{
+               "processedtemplates":{
+                  "name":"processedtemplates",
+                  "namespaced":true,
+                  "kind":"Template",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "templates":{
+                  "name":"templates",
+                  "namespaced":true,
+                  "kind":"Template",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
                }
             }
          }

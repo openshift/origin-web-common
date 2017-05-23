@@ -63,6 +63,77 @@ describe("APIService", function() {
 
   });
 
+  describe('#kindToResourceGroupVersion', function() {
+    var kinds = [
+      [{kind: 'ServiceAccount', group: ''}, {"resource":"serviceaccounts","group":"","version":"v1"}],
+      [{kind: 'PodTemplate', group: ''}, {"resource":"podtemplates","group":"","version":"v1"}],
+      [{kind: 'HorizontalPodAutoscaler', group: 'autoscaling'}, {"resource":"horizontalpodautoscalers","group":"autoscaling","version":"v1"}],
+      [{kind: 'DaemonSet', group: 'extensions'}, {"resource":"daemonsets","group":"extensions","version":"v1beta1"}],
+      [{kind: 'RoleBinding', group: 'rbac.authorization.k8s.io'}, {"resource":"rolebindings","group":"rbac.authorization.k8s.io","version":"v1beta1"}],
+      [{kind: 'PodPreset', group: 'settings.k8s.io'}, {"resource":"podpresets","group":"settings.k8s.io","version":"v1alpha1"}],
+      [{kind: 'Policy', group: 'authorization.openshift.io'}, {"resource":"policies","group":"authorization.openshift.io","version":"v1"}],
+      [{kind: 'Template', group: 'template.openshift.io'}, {"resource":"templates","group":"template.openshift.io","version":"v1"}],
+      [{kind: 'NetworkPolicy', group: 'extensions'}, {"resource":"networkpolicies","group":"extensions","version":"v1beta1"}],
+      [{kind: 'EgressNetworkPolicy', group: 'network.openshift.io'}, {"resource":"egressnetworkpolicies","group":"network.openshift.io","version":"v1"}],
+      [{kind: 'LocalResourceAccessReview', group: 'authorization.openshift.io'}, {"resource":"localresourceaccessreviews","group":"authorization.openshift.io","version":"v1"}],
+      [{kind: 'SelfSubjectRulesReview', group: 'authorization.openshift.io'}, {"resource":"selfsubjectrulesreviews","group":"authorization.openshift.io","version":"v1"}],
+      [{kind: 'ReplicationControllerDummy', group: 'extensions'}, {"resource":"replicationcontrollerdummies","group":"extensions","version":"v1beta1"}]
+    ];
+    _.each(kinds, _.spread(function(kind, expectedRGV) {
+      it('should result in ' + JSON.stringify(expectedRGV) + ' when called with ' + JSON.stringify(kind), function() {
+        var actualRGV = APIService.kindToResourceGroupVersion(kind);
+        expect(expectedRGV.resource).toEqual(actualRGV.resource);
+        expect(expectedRGV.group).toEqual(actualRGV.group);
+        expect(expectedRGV.version).toEqual(actualRGV.version);
+      });
+    }));
+  });
+
+
+  describe('#apiInfo', function() {
+    var rgvs = [
+      [
+        {"resource":"serviceaccounts","group":"","version":"v1"},
+        {resource: 'serviceaccounts', version: 'v1', hostPort: 'localhost:8443', prefix: '/api', namespaced: true, verbs: ['create', 'delete', 'deletecollection', 'get', 'list', 'patch', 'update', 'watch']}
+      ],
+      [
+        {"resource":"horizontalpodautoscalers","group":"autoscaling","version":"v1"},
+        {resource: 'horizontalpodautoscalers', group: 'autoscaling', version: 'v1', protocol: undefined, hostPort: 'localhost:8443', prefix: '/apis', namespaced: true, verbs: ['create', 'delete', 'deletecollection', 'get', 'list', 'patch', 'update', 'watch']}
+      ],
+      [
+        {"resource":"templates","group":"template.openshift.io","version":"v1"},
+        {resource: 'templates', group: 'template.openshift.io', version: 'v1', protocol: undefined, hostPort: 'localhost:8443', prefix: '/apis', namespaced: true, verbs: ['create', 'delete', 'deletecollection', 'get', 'list', 'patch', 'update', 'watch']}
+      ],
+      [
+        {"resource":"policies","group":"authorization.openshift.io","version":"v1"},
+        {resource: 'policies', group: 'authorization.openshift.io', version: 'v1', protocol: undefined, hostPort: 'localhost:8443', prefix: '/apis', namespaced: true, verbs: ['create', 'delete', 'deletecollection', 'get', 'list', 'patch', 'update', 'watch']}
+      ],
+      [
+        {"resource":"selfsubjectrulesreviews","group":"authorization.openshift.io","version":"v1"},
+        {resource: 'selfsubjectrulesreviews', group: 'authorization.openshift.io', version: 'v1', protocol: undefined, hostPort: 'localhost:8443', prefix: '/apis', namespaced: true, verbs: ['create']}
+      ],
+      [
+        {"resource":"replicationcontrollerdummies","group":"extensions","version":"v1beta1"},
+        undefined
+      ]
+    ];
+    _.each(rgvs, _.spread(function(rgv, expectedAPIInfo) {
+      it('should result in ' + JSON.stringify(expectedAPIInfo) + ' when called with ' + JSON.stringify(rgv), function() {
+        var actualAPIInfo = APIService.apiInfo(rgv);
+        if(actualAPIInfo) {
+          expect(actualAPIInfo.resource).toEqual(expectedAPIInfo.resource);
+          expect(actualAPIInfo.group).toEqual(expectedAPIInfo.group);
+          expect(actualAPIInfo.version).toEqual(expectedAPIInfo.version);
+          expect(actualAPIInfo.hostPort).toEqual(expectedAPIInfo.hostPort);
+          expect(actualAPIInfo.prefix).toEqual(expectedAPIInfo.prefix);
+          expect(actualAPIInfo.namespaced).toEqual(expectedAPIInfo.namespaced);
+          expect(actualAPIInfo.verbs).toEqual(expectedAPIInfo.verbs);
+        } else {
+          expect(actualAPIInfo).toEqual(expectedAPIInfo);
+        }
+      });
+    }));
+  });
 
   describe("#parseGroupVersion", function(){
     var tc = [
@@ -310,7 +381,7 @@ describe("APIService", function() {
     it('should not return kinds from the AVAILABLE_KINDS_BLACKLIST', function() {
       var allKinds = APIService.availableKinds(true);
       // calculateAvailableKinds will transform strings form AVAILABLE_KINDS_BLACKLIST
-      // into objects in this same way. 
+      // into objects in this same way.
       var blacklist = _.map(window.OPENSHIFT_CONSTANTS.AVAILABLE_KINDS_BLACKLIST, function(kind) {
         return _.isString(kind) ?
                 { kind: kind, group: '' } :
