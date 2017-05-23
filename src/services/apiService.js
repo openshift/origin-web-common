@@ -188,6 +188,13 @@ angular.module('openshiftCommonServices')
     return resource;
   }
 
+  function kindToResourceGroupVersion(kind) {
+    return toResourceGroupVersion({
+      resource: kindToResource(kind.kind),
+      group: kind.group
+    });
+  }
+
   // apiInfo returns the host/port, prefix, group, and version for the given resource,
   // or undefined if the specified resource/group/version is known not to exist.
   var apiInfo = function(resource) {
@@ -220,12 +227,14 @@ angular.module('openshiftCommonServices')
       }
       var hostPrefixObj = _.get(APIS_CFG, ["groups", resource.group, 'hostPrefix']) || APIS_CFG;
       return {
+        resource: resource.resource,
+        group:    resource.group,
+        version:  resource.version,
         protocol: hostPrefixObj.protocol,
         hostPort: hostPrefixObj.hostPort,
         prefix:   hostPrefixObj.prefix,
-        group:    resource.group,
-        version:  resource.version,
-        namespaced: discoveredResource.namespaced
+        namespaced: discoveredResource.namespaced,
+        verbs: discoveredResource.verbs
       };
     }
 
@@ -239,10 +248,12 @@ angular.module('openshiftCommonServices')
         continue;
       }
       return {
+        resource: resource.resource,
+        version:  resource.version,
         hostPort: api.hostPort,
         prefix:   api.prefix,
-        version:  resource.version,
-        namespaced: discoveredResource.namespaced
+        namespaced: discoveredResource.namespaced,
+        verbs: discoveredResource.verbs
       };
     }
     return undefined;
@@ -341,6 +352,8 @@ angular.module('openshiftCommonServices')
     deriveTargetResource: deriveTargetResource,
 
     kindToResource: kindToResource,
+
+    kindToResourceGroupVersion: kindToResourceGroupVersion,
 
     apiInfo: apiInfo,
 

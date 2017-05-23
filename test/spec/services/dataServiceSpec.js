@@ -85,7 +85,7 @@ describe("DataService", function(){
       [{resource:'nodes',  version:'unknown'}, null],
 
       // Different API groups
-      [{resource:'jobs',  group: 'extensions', version:'v1beta1', namespace:"foo"}, "http://localhost:8443/apis/extensions/v1beta1/namespaces/foo/jobs"]
+      [{resource:'jobs',  group: 'batch', version:'v1', namespace:"foo"}, "http://localhost:8443/apis/batch/v1/namespaces/foo/jobs"]
     ];
 
     angular.forEach(tc, function(item) {
