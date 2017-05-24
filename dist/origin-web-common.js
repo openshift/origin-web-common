@@ -307,19 +307,19 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "  <form name=\"ctrl.formName\" class=\"mar-bottom-lg\">\n" +
     "    <fieldset>\n" +
     "      <div class=\"radio\">\n" +
-    "        <label class=\"bind-choice\">\n" +
-    "          <input type=\"radio\" ng-model=\"ctrl.shouldBindToApp\" value=\"true\">\n" +
+    "        <label class=\"bind-choice\" ng-disabled=\"!$ctrl.applications.length\">\n" +
+    "          <input type=\"radio\" ng-model=\"ctrl.shouldBindToApp\" value=\"true\" ng-disabled=\"!$ctrl.applications.length\">\n" +
     "          Bind to an application\n" +
     "        </label>\n" +
     "        <div class=\"application-select\">\n" +
     "          <ui-select ng-model=\"ctrl.appToBind\"\n" +
     "                     ng-disabled=\"ctrl.shouldBindToApp !== 'true'\"\n" +
     "                     ng-required=\"ctrl.shouldBindToApp === 'true'\">\n" +
-    "            <ui-select-match placeholder=\"Select an application\">\n" +
-    "            <span>\n" +
-    "              {{$select.selected.metadata.name}}\n" +
-    "              <small class=\"text-muted\">&ndash; {{$select.selected.kind | humanizeKind : true}}</small>\n" +
-    "            </span>\n" +
+    "            <ui-select-match placeholder=\"{{$ctrl.applications.length ? 'Select an application' : 'There are no applications in this project'}}\">\n" +
+    "              <span>\n" +
+    "                {{$select.selected.metadata.name}}\n" +
+    "                <small class=\"text-muted\">&ndash; {{$select.selected.kind | humanizeKind : true}}</small>\n" +
+    "              </span>\n" +
     "            </ui-select-match>\n" +
     "            <ui-select-choices\n" +
     "              repeat=\"application in (ctrl.applications) | filter : { metadata: { name: $select.search } } track by (application | uid)\"\n" +
