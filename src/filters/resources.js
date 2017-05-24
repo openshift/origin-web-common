@@ -133,4 +133,15 @@ angular.module('openshiftCommonUI')
   })
   .filter('isBindingReady', function(isServiceInstanceReadyFilter) {
     return isServiceInstanceReadyFilter;
-  });
+  })
+  .filter('hasDeployment', function(annotationFilter) {
+    return function(object) {
+      return !!annotationFilter(object, 'deployment.kubernetes.io/revision');
+    };
+  })
+  .filter('hasDeploymentConfig', function(annotationFilter) {
+    return function(deployment) {
+      return !!annotationFilter(deployment, 'deploymentConfig');
+    };
+  })
+;

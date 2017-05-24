@@ -1592,7 +1592,18 @@ angular.module('openshiftCommonUI')
   }])
   .filter('isBindingReady', ["isServiceInstanceReadyFilter", function(isServiceInstanceReadyFilter) {
     return isServiceInstanceReadyFilter;
-  }]);
+  }])
+  .filter('hasDeployment', ["annotationFilter", function(annotationFilter) {
+    return function(object) {
+      return !!annotationFilter(object, 'deployment.kubernetes.io/revision');
+    };
+  }])
+  .filter('hasDeploymentConfig', ["annotationFilter", function(annotationFilter) {
+    return function(deployment) {
+      return !!annotationFilter(deployment, 'deploymentConfig');
+    };
+  }])
+;
 ;'use strict';
 angular.module('openshiftCommonUI')
   .filter('camelToLower', function() {
