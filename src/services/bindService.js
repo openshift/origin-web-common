@@ -32,6 +32,22 @@ angular.module("openshiftCommonServices")
 
         // TODO: Use appToBind to bind the service to the application
         return DataService.create(bindingResource, null, newBinding, context);
+      },
+      isServiceBindable: function(serviceInstance, serviceClasses) {
+        if (serviceClasses && serviceInstance) {
+          var serviceClass = serviceClasses[serviceInstance.spec.serviceClassName];
+          if (serviceClass) {
+            var plan = _.find(serviceClass.plans, {name: serviceInstance.spec.planName});
+            if (plan.bindable === false) {
+              return false;
+            } else if (plan.bindable === true) {
+              return true;
+            } else {
+              return serviceClass.bindable;
+            }
+          }
+        }
+        return !!serviceInstance;
       }
     };
   });
