@@ -44,7 +44,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "            You can create the binding later from your project.\n" +
     "          </span>\n" +
     "        </div>\n" +
-    "        <div ng-repeat=\"serviceInstance in ctrl.serviceInstances\">\n" +
+    "        <div ng-repeat=\"serviceInstance in ctrl.bindableServiceInstances\">\n" +
     "          <label>\n" +
     "            <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" value=\"{{serviceInstance.metadata.name}}\">\n" +
     "            {{ctrl.serviceClasses[serviceInstance.spec.serviceClassName].osbMetadata.displayName || serviceInstance.spec.serviceClassName}}\n" +
@@ -61,6 +61,12 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "            </span>\n" +
     "          </div>\n" +
     "        </div>\n" +
+    "        <h4 ng-if=\"!ctrl.bindableServiceInstances.length\">\n" +
+    "          <span class=\"pficon pficon-info\" aria-hidden=\"true\"></span>\n" +
+    "          <span class=\"help-block service-instance-name\">\n" +
+    "            There are no bindable services in this project\n" +
+    "          </span>\n" +
+    "        </h4>\n" +
     "      </div>\n" +
     "    </fieldset>\n" +
     "  </form>\n" +
@@ -136,15 +142,15 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "  <form name=\"ctrl.formName\" class=\"mar-bottom-lg\">\n" +
     "    <fieldset>\n" +
     "      <div class=\"radio\">\n" +
-    "        <label class=\"bind-choice\" ng-disabled=\"!$ctrl.applications.length\">\n" +
-    "          <input type=\"radio\" ng-model=\"ctrl.shouldBindToApp\" value=\"true\" ng-disabled=\"!$ctrl.applications.length\">\n" +
+    "        <label class=\"bind-choice\" ng-disabled=\"!ctrl.applications.length\">\n" +
+    "          <input type=\"radio\" ng-model=\"ctrl.shouldBindToApp\" value=\"true\" ng-disabled=\"!ctrl.applications.length\">\n" +
     "          Bind to an application\n" +
     "        </label>\n" +
     "        <div class=\"application-select\">\n" +
     "          <ui-select ng-model=\"ctrl.appToBind\"\n" +
     "                     ng-disabled=\"ctrl.shouldBindToApp !== 'true'\"\n" +
     "                     ng-required=\"ctrl.shouldBindToApp === 'true'\">\n" +
-    "            <ui-select-match placeholder=\"{{$ctrl.applications.length ? 'Select an application' : 'There are no applications in this project'}}\">\n" +
+    "            <ui-select-match placeholder=\"{{ctrl.applications.length ? 'Select an application' : 'There are no applications in this project'}}\">\n" +
     "              <span>\n" +
     "                {{$select.selected.metadata.name}}\n" +
     "                <small class=\"text-muted\">&ndash; {{$select.selected.kind | humanizeKind : true}}</small>\n" +
@@ -445,8 +451,17 @@ angular.module('openshiftCommonUI').component('bindApplicationForm', {
     serviceToBind: '='
   },
   templateUrl: 'src/components/binding/bindApplicationForm.html',
-  controller: function () {
+  controller: function (BindingService) {
     var ctrl = this;
+    ctrl.$onChanges = function (changeObj) {
+      if (changeObj.serviceInstances || changeObj.serviceClasses) {
+        ctrl.bindableServiceInstances = _.filter(ctrl.serviceInstances, isBindable);
+      }
+    };
+
+    function isBindable(serviceInstance) {
+      return BindingService.isServiceBindable(serviceInstance, ctrl.serviceClasses);
+    }
   }
 });
 ;'use strict';

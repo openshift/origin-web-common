@@ -12,7 +12,16 @@ angular.module('openshiftCommonUI').component('bindApplicationForm', {
     serviceToBind: '='
   },
   templateUrl: 'src/components/binding/bindApplicationForm.html',
-  controller: function () {
+  controller: function (BindingService) {
     var ctrl = this;
+    ctrl.$onChanges = function (changeObj) {
+      if (changeObj.serviceInstances || changeObj.serviceClasses) {
+        ctrl.bindableServiceInstances = _.filter(ctrl.serviceInstances, isBindable);
+      }
+    };
+
+    function isBindable(serviceInstance) {
+      return BindingService.isServiceBindable(serviceInstance, ctrl.serviceClasses);
+    }
   }
 });

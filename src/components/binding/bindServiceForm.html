@@ -11,15 +11,15 @@
   <form name="ctrl.formName" class="mar-bottom-lg">
     <fieldset>
       <div class="radio">
-        <label class="bind-choice" ng-disabled="!$ctrl.applications.length">
-          <input type="radio" ng-model="ctrl.shouldBindToApp" value="true" ng-disabled="!$ctrl.applications.length">
+        <label class="bind-choice" ng-disabled="!ctrl.applications.length">
+          <input type="radio" ng-model="ctrl.shouldBindToApp" value="true" ng-disabled="!ctrl.applications.length">
           Bind to an application
         </label>
         <div class="application-select">
           <ui-select ng-model="ctrl.appToBind"
                      ng-disabled="ctrl.shouldBindToApp !== 'true'"
                      ng-required="ctrl.shouldBindToApp === 'true'">
-            <ui-select-match placeholder="{{$ctrl.applications.length ? 'Select an application' : 'There are no applications in this project'}}">
+            <ui-select-match placeholder="{{ctrl.applications.length ? 'Select an application' : 'There are no applications in this project'}}">
               <span>
                 {{$select.selected.metadata.name}}
                 <small class="text-muted">&ndash; {{$select.selected.kind | humanizeKind : true}}</small>
