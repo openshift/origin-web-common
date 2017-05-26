@@ -6,9 +6,9 @@ angular.module('openshiftCommonUI')
       restrict: 'AC',
       link: function($scope, element) {
         $(element).click(function (evt) {
-          // Don't trigger tile target if the user clicked directly on a link or button inside the tile.
+          // Don't trigger tile target if the user clicked directly on a link or button inside the tile or any child of a .tile-click-prevent element.
           var t = $(evt.target);
-          if (t && (t.closest("a", element).length || t.closest("button", element).length)) {
+          if (t && (t.closest("a", element).length || t.closest("button", element).length) || t.closest(".tile-click-prevent", element).length) {
             return;
           }
           $('a.tile-target', element).trigger("click");
