@@ -176,6 +176,15 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
  *   Base module for openshiftCommonUI.
  */
 angular.module('openshiftCommonUI', [])
+// Sometimes we need to know the css breakpoints, make sure to update this
+// if they ever change!
+.constant("BREAKPOINTS", {
+  screenXsMin:  480,   // screen-xs
+  screenSmMin:  768,   // screen-sm
+  screenMdMin:  992,   // screen-md
+  screenLgMin:  1200,  // screen-lg
+  screenXlgMin: 1600   // screen-xlg
+})
 // DNS1123 subdomain patterns are used for name validation of many resources,
 // including persistent volume claims, config maps, and secrets.
 // See https://github.com/kubernetes/kubernetes/blob/master/pkg/api/validation/validation.go
@@ -1431,6 +1440,21 @@ angular.module('openshiftCommonUI')
       return result;
     };
   }]);
+;'use strict';
+
+angular.module('openshiftCommonUI')
+// Usage: <span ng-bind-html="text | linkify : '_blank'"></span>
+//
+// Prefer this to the AngularJS `linky` filter since it only matches http and
+// https URLs. We've had issues with incorretly matching email addresses.
+//
+// https://github.com/openshift/origin-web-console/issues/315
+// See also HTMLService.linkify
+.filter('linkify', ["HTMLService", function(HTMLService) {
+  return function(text, target, alreadyEscaped) {
+    return HTMLService.linkify(text, target, alreadyEscaped);
+  };
+}]);
 ;'use strict';
 
 angular.module('openshiftCommonUI')
@@ -4863,6 +4887,66 @@ angular.module('openshiftCommonUI').factory('GuidedTourService', function() {
     cancelTour: cancelTour
   };
 });
+;'use strict';
+
+angular.module("openshiftCommonUI")
+  .factory("HTMLService",
+           ["BREAKPOINTS", function(BREAKPOINTS) {
+    return {
+      // Ge the breakpoint for the current screen width.
+      getBreakpoint: function() {
+        if (window.innerWidth < BREAKPOINTS.screenXsMin) {
+          return 'xxs';
+        }
+
+        if (window.innerWidth < BREAKPOINTS.screenSmMin) {
+          return 'xs';
+        }
+
+        if (window.innerWidth < BREAKPOINTS.screenMdMin) {
+          return 'sm';
+        }
+
+        if (window.innerWidth < BREAKPOINTS.screenLgMin) {
+          return 'md';
+        }
+
+        return 'lg';
+      },
+
+      // Based on https://github.com/drudru/ansi_up/blob/v1.3.0/ansi_up.js#L93-L97
+      // and https://github.com/angular/angular.js/blob/v1.5.8/src/ngSanitize/filter/linky.js#L131-L132
+      // The AngularJS `linky` regex will avoid matching special characters like `"` at
+      // the end of the URL.
+      //
+      // text:            The text to linkify. Assumes `text` is NOT HTML-escaped unless
+      //                  `alreadyEscaped` is true.
+      // target:          The optional link target (for instance, '_blank')
+      // alreadyEscaped:  `true` if the text has already been HTML escaped
+      //                  (like log content that has been run through ansi_up.ansi_to_html)
+      //
+      // Returns an HTML escaped string with http:// and https:// URLs changed to clickable links.
+      linkify: function(text, target, alreadyEscaped) {
+        if (!text) {
+          return text;
+        }
+
+        // First HTML escape the content.
+        if (!alreadyEscaped) {
+          text = _.escape(text);
+        }
+
+        // Replace any URLs with links.
+        return text.replace(/https?:\/\/[A-Za-z0-9._%+-]+\S*[^\s.;,(){}<>"\u201d\u2019]/gm, function(str) {
+          if (target) {
+            return "<a href=\"" + str + "\" target=\"" + target + "\">" + str + "</a>";
+          }
+
+          return "<a href=\"" + str + "\">" + str + "</a>";
+        });
+      }
+    };
+  }]);
 ;'use strict';
 
 angular.module('openshiftCommonUI').provider('NotificationsService', function() {
