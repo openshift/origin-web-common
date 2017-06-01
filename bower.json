@@ -1,6 +1,6 @@
 {
   "name": "origin-web-common",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "main": [
     "dist/origin-web-common.js",
     "dist/origin-web-common.css"
