@@ -5,16 +5,19 @@ angular.module('openshiftCommonUI').component('bindServiceForm', {
   bindings: {
     serviceClass: '<',
     serviceClassName: '<',
-    formName: '=',
     applications: '<',
-    appToBind: '=',
-    createBinding: '=?',
+    formName: '=',
     allowNoBinding: '<?',
-    shouldBindToApp: '=',
-    groupByKind: '<'
+    bindType: '=', // One of: 'none', 'application', 'secret-only'
+    appToBind: '=' // only applicable to 'application' bindType
   },
   templateUrl: 'src/components/binding/bindServiceForm.html',
-  controller: function () {
+  controller: function ($filter) {
     var ctrl = this;
+
+    var humanizeKind = $filter('humanizeKind');
+    ctrl.groupByKind = function(object) {
+      return humanizeKind(object.kind);
+    };
   }
 });

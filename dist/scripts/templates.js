@@ -71,8 +71,8 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "      <span class=\"sr-only\">Success</span>\n" +
     "      <h3 class=\"bind-message\">\n" +
     "        <strong>{{ctrl.serviceToBind}}</strong>\n" +
-    "        <span>&nbsp;has been bound</span>\n" +
-    "        <span ng-if=\"ctrl.applicationToBind\">&nbsp;to <strong>{{ctrl.applicationToBind}}</strong> successfully</span>\n" +
+    "        <span>has been bound</span>\n" +
+    "        <span ng-if=\"ctrl.bindType === 'application'\"> to <strong>{{ctrl.applicationToBind}}</strong> successfully</span>\n" +
     "      </h3>\n" +
     "    </div>\n" +
     "    <div class=\"sub-title\">\n" +
@@ -125,13 +125,13 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "    <fieldset>\n" +
     "      <div class=\"radio\">\n" +
     "        <label class=\"bind-choice\" ng-disabled=\"!ctrl.applications.length\">\n" +
-    "          <input type=\"radio\" ng-model=\"ctrl.shouldBindToApp\" value=\"true\" ng-disabled=\"!ctrl.applications.length\">\n" +
+    "          <input type=\"radio\" ng-model=\"ctrl.bindType\" value=\"application\" ng-disabled=\"!ctrl.applications.length\">\n" +
     "          Bind to an application\n" +
     "        </label>\n" +
     "        <div class=\"application-select\">\n" +
     "          <ui-select ng-model=\"ctrl.appToBind\"\n" +
-    "                     ng-disabled=\"ctrl.shouldBindToApp !== 'true'\"\n" +
-    "                     ng-required=\"ctrl.shouldBindToApp === 'true'\">\n" +
+    "                     ng-disabled=\"ctrl.bindType !== 'application'\"\n" +
+    "                     ng-required=\"ctrl.bindType === 'application'\">\n" +
     "            <ui-select-match placeholder=\"{{ctrl.applications.length ? 'Select an application' : 'There are no applications in this project'}}\">\n" +
     "              <span>\n" +
     "                {{$select.selected.metadata.name}}\n" +
@@ -146,14 +146,14 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "          </ui-select>\n" +
     "        </div>\n" +
     "        <label class=\"bind-choice\">\n" +
-    "          <input type=\"radio\" ng-model=\"ctrl.shouldBindToApp\" value=\"false\">\n" +
+    "          <input type=\"radio\" ng-model=\"ctrl.bindType\" value=\"secret-only\">\n" +
     "          Create a secret in my project\n" +
     "        </label>\n" +
     "        <div class=\"help-block bind-description\">\n" +
     "          You can reference this secret later from any application either as environment variables or configuration files mounted as volumes.\n" +
     "        </div>\n" +
     "        <label ng-if=\"ctrl.allowNoBinding\" class=\"bind-choice\">\n" +
-    "          <input type=\"radio\" ng-model=\"ctrl.shouldBindToApp\" value=\"none\">\n" +
+    "          <input type=\"radio\" ng-model=\"ctrl.bindType\" value=\"none\">\n" +
     "          Do not bind at this time\n" +
     "        </label>\n" +
     "        <div ng-if=\"ctrl.allowNoBinding\" class=\"help-block bind-description\">\n" +
