@@ -315,9 +315,7 @@ angular.module('openshiftCommonServices')
 
         // Exclude duplicate kinds we know about that map to the same storage as another group/kind
         // This is unusual, so we are special casing these
-        if (group.name === "extensions" && resource.kind === "HorizontalPodAutoscaler" ||
-            group.name === "batch" && resource.kind === "Job"
-        ) {
+        if (group.name === "extensions" && resource.kind === "HorizontalPodAutoscaler") {
           return;
         }
 

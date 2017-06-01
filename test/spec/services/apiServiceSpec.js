@@ -309,15 +309,15 @@ describe("APIService", function() {
 
 
   describe('#availableKinds', function() {
-    var bothSample = ['Binding','ConfigMap','DeploymentConfig','Event','LimitRange','Pod','ReplicaSet','Role','Service', 'Template'];
+    var bothSample = ['Binding','ConfigMap','DeploymentConfig','Event','LimitRange','Pod','ReplicaSet','Role','Service', 'Template', 'Job'];
     var onlyClusterSample = ['ClusterResourceQuota','Namespace','OAuthAccessToken','PersistentVolume','ProjectRequest','User'];
 
-    it('should return list of kinds that are scoped to a namespace by default', function() {
+    it('should return a list of kinds that are scoped to a namespace by default', function() {
       var namespacedKinds = _.map(APIService.availableKinds(), 'kind');
       expect( _.difference(bothSample, namespacedKinds).length ).toEqual(0);
     });
 
-    it('should not return list cluster scoped kinds by default', function() {
+    it('should not return a list of cluster scoped kinds by default', function() {
       var namespacedKinds = _.map(APIService.availableKinds(), 'kind');
       expect( _.difference(onlyClusterSample, namespacedKinds).length ).toEqual(onlyClusterSample.length);
     });
@@ -327,6 +327,7 @@ describe("APIService", function() {
       expect( _.difference(bothSample, allKinds).length ).toEqual(0);
       expect( _.difference(onlyClusterSample, allKinds).length ).toEqual(0);
     });
+
 
     // kinds from the old /oapi should not be iterated at all.
     it('should not list kinds from the old /oapi namespace (that do not have a group)', function() {
@@ -390,6 +391,21 @@ describe("APIService", function() {
 
       _.each(blacklist, function(blacklistedKind) {
         expect(_.find(allKinds, blacklistedKind)).toEqual(undefined);
+      });
+    });
+
+    // this tests a hard-coded filter list within calculateAvailableKinds
+    it('should not return duplicate kinds that map to the same storage as another group/kind', function() {
+      var allKinds = APIService.availableKinds(true);
+      var kindsToExclude = [{kind: 'HorizontalPodAutoscaler', group: 'extensions'}];
+      // the same as above, but in the correct group, validating that we do still list these kinds
+      var matchingKindsToInclude = [{kind: 'HorizontalPodAutoscaler', group: 'autoscaling'}];
+
+      _.each(kindsToExclude, function(kind) {
+        expect(_.find(allKinds, kind)).toEqual(undefined);
+      });
+      _.each(matchingKindsToInclude, function(kind) {
+        expect(_.find(allKinds, kind)).toEqual(kind);
       });
     });
 
