@@ -12,8 +12,8 @@
       <span class="sr-only">Success</span>
       <h3 class="bind-message">
         <strong>{{ctrl.serviceToBind}}</strong>
-        <span>&nbsp;has been bound</span>
-        <span ng-if="ctrl.applicationToBind">&nbsp;to <strong>{{ctrl.applicationToBind}}</strong> successfully</span>
+        <span>has been bound</span>
+        <span ng-if="ctrl.bindType === 'application'"> to <strong>{{ctrl.applicationToBind}}</strong> successfully</span>
       </h3>
     </div>
     <div class="sub-title">

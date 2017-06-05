@@ -7,6 +7,7 @@ angular.module('openshiftCommonUI').component('bindResults', {
     binding: '<',
     progressInline: '@',
     serviceToBind: '<',
+    bindType: '@',
     applicationToBind: '<',
     showPodPresets: '<',
     secretHref: '<'

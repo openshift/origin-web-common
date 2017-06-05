@@ -12,13 +12,13 @@
     <fieldset>
       <div class="radio">
         <label class="bind-choice" ng-disabled="!ctrl.applications.length">
-          <input type="radio" ng-model="ctrl.shouldBindToApp" value="true" ng-disabled="!ctrl.applications.length">
+          <input type="radio" ng-model="ctrl.bindType" value="application" ng-disabled="!ctrl.applications.length">
           Bind to an application
         </label>
         <div class="application-select">
           <ui-select ng-model="ctrl.appToBind"
-                     ng-disabled="ctrl.shouldBindToApp !== 'true'"
-                     ng-required="ctrl.shouldBindToApp === 'true'">
+                     ng-disabled="ctrl.bindType !== 'application'"
+                     ng-required="ctrl.bindType === 'application'">
             <ui-select-match placeholder="{{ctrl.applications.length ? 'Select an application' : 'There are no applications in this project'}}">
               <span>
                 {{$select.selected.metadata.name}}
@@ -33,14 +33,14 @@
           </ui-select>
         </div>
         <label class="bind-choice">
-          <input type="radio" ng-model="ctrl.shouldBindToApp" value="false">
+          <input type="radio" ng-model="ctrl.bindType" value="secret-only">
           Create a secret in my project
         </label>
         <div class="help-block bind-description">
           You can reference this secret later from any application either as environment variables or configuration files mounted as volumes.
         </div>
         <label ng-if="ctrl.allowNoBinding" class="bind-choice">
-          <input type="radio" ng-model="ctrl.shouldBindToApp" value="none">
+          <input type="radio" ng-model="ctrl.bindType" value="none">
           Do not bind at this time
         </label>
         <div ng-if="ctrl.allowNoBinding" class="help-block bind-description">
