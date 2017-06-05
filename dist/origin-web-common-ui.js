@@ -1113,7 +1113,7 @@ angular.module('openshiftCommonUI')
       tagName = tagName || 'latest';
       if (resource && resource.spec && resource.spec.tags){
         var tags = resource.spec.tags;
-        for(var i=0; i < tags.length; ++i){
+        for(var i=0; i < _.size(tags); ++i){
           var tag = tags[i];
           if(tagName === tag.name && tag.annotations){
             return tag.annotations[key];
@@ -1141,7 +1141,6 @@ angular.module('openshiftCommonUI')
     return (icon) ? icon : "fa fa-cube";
   };
 });
-
 ;'use strict';
 
 angular
