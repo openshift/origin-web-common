@@ -270,6 +270,7 @@ div.hopscotch-bubble .hopscotch-nav-button.prev {
 }
 .toast-notifications-list-pf {
   top: 28px;
+  z-index: 1055;
 }
 .toast-notifications-list-pf > div.ng-enter {
   animation: toastSlideIn 0.2s ease-out;

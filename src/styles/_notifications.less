@@ -9,6 +9,8 @@
 
 .toast-notifications-list-pf {
   top: 28px;
+  z-index: @zindex-modal + 5;  // Override Patternfly's z-index to keep toasts above modals but below popovers
+
   > div {
     &.ng-enter {
       animation: toastSlideIn .2s ease-out;
