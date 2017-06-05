@@ -5,6 +5,15 @@
  *   Base module for openshiftCommonUI.
  */
 angular.module('openshiftCommonUI', [])
+// Sometimes we need to know the css breakpoints, make sure to update this
+// if they ever change!
+.constant("BREAKPOINTS", {
+  screenXsMin:  480,   // screen-xs
+  screenSmMin:  768,   // screen-sm
+  screenMdMin:  992,   // screen-md
+  screenLgMin:  1200,  // screen-lg
+  screenXlgMin: 1600   // screen-xlg
+})
 // DNS1123 subdomain patterns are used for name validation of many resources,
 // including persistent volume claims, config maps, and secrets.
 // See https://github.com/kubernetes/kubernetes/blob/master/pkg/api/validation/validation.go
