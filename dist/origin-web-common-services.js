@@ -1014,10 +1014,10 @@ angular.module("openshiftCommonServices")
       resource: 'bindings'
     };
 
-    var makeBinding = function (serviceToBind) {
+    var makeBinding = function (serviceToBind, appToBind) {
       var generateName = $filter('generateName');
-
-      return {
+      var relatedObjName = generateName(_.trunc(serviceToBind, DNS1123_SUBDOMAIN_VALIDATION.maxlength - 6) + '-');
+      var binding = {
         kind: 'Binding',
         apiVersion: 'servicecatalog.k8s.io/v1alpha1',
         metadata: {
@@ -1027,17 +1027,29 @@ angular.module("openshiftCommonServices")
           instanceRef: {
             name: serviceToBind
           },
-          secretName: generateName(_.trunc(serviceToBind, DNS1123_SUBDOMAIN_VALIDATION.maxlength - 6) + '-')
+          secretName: relatedObjName
         }
       };
+      var appSelector = _.get(appToBind, 'spec.selector');
+      if (appSelector) {
+        if (!appSelector.matchLabels && !appSelector.matchExpressions) {
+          // Then this is the old format of selector, pod preset requires the new format
+          appSelector = {
+            matchLabels: appSelector
+          };
+        }
+        binding.spec.alphaPodPresetTemplate = {
+          name: relatedObjName,
+          selector: appSelector
+        };
+      }
+      return binding;
     };
 
     return {
       bindingResource: bindingResource,
       bindService: function(context, serviceToBind, appToBind) {
-        var newBinding = makeBinding(serviceToBind);
-
-        // TODO: Use appToBind to bind the service to the application
+        var newBinding = makeBinding(serviceToBind, appToBind);
         return DataService.create(bindingResource, null, newBinding, context);
       },
       isServiceBindable: function(serviceInstance, serviceClasses) {
