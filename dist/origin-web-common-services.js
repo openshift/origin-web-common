@@ -2801,6 +2801,7 @@ angular.module('openshiftCommonServices')
                                         "error_description": description
                                       })
                                       .toString());
+                                return $q.reject();
                               });
                     });
           },
