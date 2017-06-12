@@ -4825,6 +4825,11 @@ angular.module('openshiftCommonUI').factory('GuidedTourService', function() {
       if (angular.isUndefined(step.yOffset) && (step.placement === 'right' || step.placement === 'left' )) {
         step.yOffset = -45;
       }
+
+      step.title = _.isFunction(step.title) ? step.title() : step.title;
+      step.content = _.isFunction(step.content) ? step.content() : step.content;
+      step.target = _.isFunction(step.target) ? step.target() : step.target;
+      step.placement = _.isFunction(step.placement) ? step.placement() : step.placement;
     });
   }
 
