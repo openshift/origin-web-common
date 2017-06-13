@@ -21,7 +21,9 @@ angular.module('openshiftCommonUI', [])
   pattern: /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/,
   maxlength: 253,
   description: 'Name must consist of lower-case letters, numbers, periods, and hyphens. It must start and end with a letter or a number.'
-});
+})
+// http://stackoverflow.com/questions/9038625/detect-if-device-is-ios
+.constant('IS_IOS', /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
 
 
 hawtioPluginLoader.addModule('openshiftCommonUI');
