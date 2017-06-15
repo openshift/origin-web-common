@@ -5027,15 +5027,18 @@ angular.module("openshiftCommonUI")
       isWindowBelowBreakpoint: function(size) {
         switch(size) {
           case WINDOW_SIZE_XXS:
-            return window.innerWidth < BREAKPOINTS.screenXsMin;
+            return false; // Nothing is below xxs
             break;
           case WINDOW_SIZE_XS:
-            return window.innerWidth < BREAKPOINTS.screenSmMin;
+            return window.innerWidth < BREAKPOINTS.screenXsMin;
             break;
           case WINDOW_SIZE_SM:
-            return window.innerWidth < BREAKPOINTS.screenMdMin;
+            return window.innerWidth < BREAKPOINTS.screenSmMin;
             break;
           case WINDOW_SIZE_MD:
+            return window.innerWidth < BREAKPOINTS.screenMdMin;
+            break;
+          case WINDOW_SIZE_LG:
             return window.innerWidth < BREAKPOINTS.screenLgMin;
             break;
           default:
