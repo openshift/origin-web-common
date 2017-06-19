@@ -47,7 +47,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "    <fieldset>\n" +
     "      <div class=\"radio\">\n" +
     "        <label ng-if=\"ctrl.allowNoBinding\">\n" +
-    "          <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" value=\"\">\n" +
+    "          <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" ng-value=\"null\">\n" +
     "          Do not bind at this time.\n" +
     "        </label>\n" +
     "        <div ng-if=\"ctrl.allowNoBinding\" class=\"bind-description\">\n" +
@@ -57,7 +57,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "        </div>\n" +
     "        <div ng-repeat=\"serviceInstance in ctrl.bindableServiceInstances\">\n" +
     "          <label>\n" +
-    "            <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" value=\"{{serviceInstance.metadata.name}}\">\n" +
+    "            <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" ng-value=\"serviceInstance\">\n" +
     "            {{ctrl.serviceClasses[serviceInstance.spec.serviceClassName].osbMetadata.displayName || serviceInstance.spec.serviceClassName}}\n" +
     "          </label>\n" +
     "          <div class=\"bind-description\">\n" +

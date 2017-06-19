@@ -218,7 +218,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "    <fieldset>\n" +
     "      <div class=\"radio\">\n" +
     "        <label ng-if=\"ctrl.allowNoBinding\">\n" +
-    "          <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" value=\"\">\n" +
+    "          <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" ng-value=\"null\">\n" +
     "          Do not bind at this time.\n" +
     "        </label>\n" +
     "        <div ng-if=\"ctrl.allowNoBinding\" class=\"bind-description\">\n" +
@@ -228,7 +228,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "        </div>\n" +
     "        <div ng-repeat=\"serviceInstance in ctrl.bindableServiceInstances\">\n" +
     "          <label>\n" +
-    "            <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" value=\"{{serviceInstance.metadata.name}}\">\n" +
+    "            <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" ng-value=\"serviceInstance\">\n" +
     "            {{ctrl.serviceClasses[serviceInstance.spec.serviceClassName].osbMetadata.displayName || serviceInstance.spec.serviceClassName}}\n" +
     "          </label>\n" +
     "          <div class=\"bind-description\">\n" +
@@ -2722,29 +2722,63 @@ angular.module('openshiftCommonServices')
 ;'use strict';
 
 angular.module("openshiftCommonServices")
-  .service("BindingService", ["$filter", "$q", "DataService", "DNS1123_SUBDOMAIN_VALIDATION", function($filter, $q, DataService, DNS1123_SUBDOMAIN_VALIDATION){
+  .service("BindingService",
+           ["$filter", "$q", "AuthService", "DataService", "DNS1123_SUBDOMAIN_VALIDATION", function($filter,
+                    $q,
+                    AuthService,
+                    DataService,
+                    DNS1123_SUBDOMAIN_VALIDATION) {
     var bindingResource = {
       group: 'servicecatalog.k8s.io',
       resource: 'bindings'
     };
 
-    var makeBinding = function (serviceToBind, appToBind) {
-      var generateName = $filter('generateName');
-      var relatedObjName = generateName(_.trunc(serviceToBind, DNS1123_SUBDOMAIN_VALIDATION.maxlength - 6) + '-');
+    var getServiceClassForInstance = function(serviceInstance, serviceClasses) {
+      var serviceClassName = _.get(serviceInstance, 'spec.serviceClassName');
+      return _.get(serviceClasses, [serviceClassName]);
+    };
+
+    var getPlanForInstance = function(serviceInstance, serviceClass) {
+      var planName = _.get(serviceInstance, 'spec.planName');
+      return _.find(serviceClass.plans, { name: planName });
+    };
+
+    var getBindParameters = function(serviceInstance, serviceClass) {
+      var plan = getPlanForInstance(serviceInstance, serviceClass);
+      if (_.has(plan, ['alphaBindingCreateParameterSchema', 'properties', 'template.openshift.io/requester-username'])) {
+        return AuthService.withUser().then(function(user) {
+          return {
+            'template.openshift.io/requester-username': user.metadata.name
+          };
+        });
+      }
+
+      return $q.when({});
+    };
+
+    var generateName = $filter('generateName');
+    var makeBinding = function (serviceInstance, application, parameters) {
+      var instanceName = serviceInstance.metadata.name;
+      var relatedObjName = generateName(_.trunc(instanceName, DNS1123_SUBDOMAIN_VALIDATION.maxlength - 6) + '-');
       var binding = {
         kind: 'Binding',
         apiVersion: 'servicecatalog.k8s.io/v1alpha1',
         metadata: {
-          generateName: serviceToBind + '-'
+          generateName: instanceName + '-'
         },
         spec: {
           instanceRef: {
-            name: serviceToBind
+            name: instanceName
           },
           secretName: relatedObjName
         }
       };
-      var appSelector = _.get(appToBind, 'spec.selector');
+
+      if (!_.isEmpty(parameters)) {
+        binding.spec.parameters = parameters;
+      }
+
+      var appSelector = _.get(application, 'spec.selector');
       if (appSelector) {
         if (!appSelector.matchLabels && !appSelector.matchExpressions) {
           // Then this is the old format of selector, pod preset requires the new format
@@ -2757,30 +2791,45 @@ angular.module("openshiftCommonServices")
           selector: appSelector
         };
       }
+
       return binding;
     };
 
     return {
       bindingResource: bindingResource,
-      bindService: function(context, serviceToBind, appToBind) {
-        var newBinding = makeBinding(serviceToBind, appToBind);
-        return DataService.create(bindingResource, null, newBinding, context);
+      getServiceClassForInstance: getServiceClassForInstance,
+
+      // Create a binding for `serviceInstance`. If an `application` API object
+      // is specified, also create a pod preset for that application using its
+      // `spec.selector`. `serviceClass` is required to determine if any
+      // parameters need to be set when creating the binding.
+      bindService: function(serviceInstance, application, serviceClass) {
+        return getBindParameters(serviceInstance, serviceClass).then(function (parameters) {
+          var newBinding = makeBinding(serviceInstance, application, parameters);
+          var context = {
+            namespace: serviceInstance.metadata.namespace
+          };
+          return DataService.create(bindingResource, null, newBinding, context);
+        });
       },
+
       isServiceBindable: function(serviceInstance, serviceClasses) {
-        if (serviceClasses && serviceInstance) {
-          var serviceClass = serviceClasses[serviceInstance.spec.serviceClassName];
-          if (serviceClass) {
-            var plan = _.find(serviceClass.plans, {name: serviceInstance.spec.planName});
-            if (plan.bindable === false) {
-              return false;
-            } else if (plan.bindable === true) {
-              return true;
-            } else {
-              return serviceClass.bindable;
-            }
-          }
+        var serviceClass = getServiceClassForInstance(serviceInstance, serviceClasses);
+        if (!serviceClass) {
+          return !!serviceInstance;
         }
-        return !!serviceInstance;
+
+        var plan = getPlanForInstance(serviceInstance, serviceClass);
+        var planBindable = _.get(plan, 'bindable');
+        if (planBindable === true) {
+          return true;
+        }
+        if (planBindable === false) {
+          return false;
+        }
+
+        // If `plan.bindable` is not set, fall back to `serviceClass.bindable`.
+        return serviceClass.bindable;
       }
     };
   }]);
