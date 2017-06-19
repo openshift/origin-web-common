@@ -149,10 +149,16 @@ angular.module('openshiftCommonServices')
     var data, headers = {};
     var data = {
       kind: "DeleteOptions",
-      apiVersion: "v1",
-      // Default to "Foreground" (cascading) if no propagationPolicy was given.
-      propagationPolicy: opts.propagationPolicy || "Foreground"
+      apiVersion: "v1"
     };
+    if (_.has(opts, 'propagationPolicy')) {
+      // Use a has check so that explicitly setting propagationPolicy to null passes through and doesn't fallback to default behavior
+      data.propagationPolicy = opts.propagationPolicy;
+    }
+    else {
+      // Default to "Foreground" (cascading) if no propagationPolicy was given.
+      data.propagationPolicy = 'Foreground';
+    }
     var headers = {
       'Content-Type': 'application/json'
     };
