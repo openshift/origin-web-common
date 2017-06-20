@@ -14,7 +14,7 @@
     <fieldset>
       <div class="radio">
         <label ng-if="ctrl.allowNoBinding">
-          <input type="radio" ng-model="ctrl.serviceToBind" value="">
+          <input type="radio" ng-model="ctrl.serviceToBind" ng-value="null">
           Do not bind at this time.
         </label>
         <div ng-if="ctrl.allowNoBinding" class="bind-description">
@@ -24,7 +24,7 @@
         </div>
         <div ng-repeat="serviceInstance in ctrl.bindableServiceInstances">
           <label>
-            <input type="radio" ng-model="ctrl.serviceToBind" value="{{serviceInstance.metadata.name}}">
+            <input type="radio" ng-model="ctrl.serviceToBind" ng-value="serviceInstance">
             {{ctrl.serviceClasses[serviceInstance.spec.serviceClassName].osbMetadata.displayName || serviceInstance.spec.serviceClassName}}
           </label>
           <div class="bind-description">
