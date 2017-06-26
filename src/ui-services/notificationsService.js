@@ -23,6 +23,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
       }
 
       notifications.push(notification);
+      $rootScope.$emit('NotificationsService.onNotificationAdded', notification);
     };
 
     var hideNotification = function (notificationID) {
@@ -75,7 +76,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
     };
 
     // Also handle `addNotification` events on $rootScope, which is used by DataService.
-    $rootScope.$on('addNotification', function(event, data) {
+    $rootScope.$on('NotificationsService.addNotification', function(event, data) {
       addNotification(data);
     });
 

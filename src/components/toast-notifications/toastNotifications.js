@@ -1,49 +1,79 @@
 'use strict';
 
 angular.module('openshiftCommonUI')
-  .directive('toastNotifications', function(NotificationsService, $timeout) {
+  .directive('toastNotifications', function(NotificationsService, $rootScope, $timeout) {
     return {
       restrict: 'E',
       scope: {},
       templateUrl: 'src/components/toast-notifications/toast-notifications.html',
       link: function($scope) {
-        $scope.notifications = NotificationsService.getNotifications();
+        $scope.notifications = [];
+
+        // A notification is removed if it has hidden set and the user isn't
+        // currently hovering over it.
+        var isRemoved = function(notification) {
+          return notification.hidden && !notification.isHover;
+        };
+
+        var removeNotification = function(notification) {
+          notification.isHover = false;
+          notification.hidden = true;
+        };
+
+        // Remove items that are now hidden to keep the array from growing
+        // indefinitely. We loop over the entire array each digest loop, even
+        // if everything is hidden, and any watch update triggers a new digest
+        // loop. If the array grows large, it can hurt performance.
+        var pruneRemovedNotifications = function() {
+          $scope.notifications = _.reject($scope.notifications, isRemoved);
+        };
 
         $scope.close = function(notification) {
-          notification.hidden = true;
+          removeNotification(notification);
           if (_.isFunction(notification.onClose)) {
             notification.onClose();
           }
         };
+
         $scope.onClick = function(notification, link) {
           if (_.isFunction(link.onClick)) {
             // If onClick() returns true, also hide the alert.
             var close = link.onClick();
             if (close) {
-              notification.hidden = true;
+              removeNotification(notification);
             }
           }
         };
+
         $scope.setHover = function(notification, isHover) {
-          notification.isHover = isHover;
+          // Don't change anything if the notification was already removed.
+          // Avoids a potential issue where the flag is reset during the slide
+          // out animation.
+          if (!isRemoved(notification)) {
+            notification.isHover = isHover;
+          }
         };
 
-        $scope.$watch('notifications', function() {
-          _.each($scope.notifications, function(notification) {
-            if (NotificationsService.isAutoDismiss(notification) && !notification.hidden) {
-              if (!notification.timerId) {
-                notification.timerId = $timeout(function () {
-                  notification.timerId = -1;
-                  if (!notification.isHover) {
-                    notification.hidden = true;
-                  }
-                }, NotificationsService.dismissDelay);
-              } else if (notification.timerId === -1 && !notification.isHover) {
-                notification.hidden = true;
-              }
-            }
-          });
-        }, true);
+        // Listen for updates from NotificationsService to show a notification.
+        var deregisterNotificationListener = $rootScope.$on('NotificationsService.onNotificationAdded', function(event, notification) {
+          $scope.notifications.push(notification);
+          if (NotificationsService.isAutoDismiss(notification)) {
+            $timeout(function () {
+              notification.hidden = true;
+            }, NotificationsService.dismissDelay);
+          }
+
+          // Whenever we add a new notification, also remove any hidden toasts
+          // so that the array doesn't grow indefinitely.
+          pruneRemovedNotifications();
+        });
+
+        $scope.$on('$destroy', function() {
+          if (deregisterNotificationListener) {
+            deregisterNotificationListener();
+            deregisterNotificationListener = null;
+          }
+        });
       }
     };
   });

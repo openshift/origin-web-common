@@ -361,7 +361,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
 
   $templateCache.put('src/components/toast-notifications/toast-notifications.html',
     "<div class=\"toast-notifications-list-pf\">\n" +
-    "  <div ng-repeat=\"(notificationID, notification) in notifications track by (notificationID + (notification.message || notification.details))\" ng-if=\"!notification.hidden\"\n" +
+    "  <div ng-repeat=\"(notificationID, notification) in notifications track by (notificationID + (notification.message || notification.details))\" ng-if=\"!notification.hidden || notification.isHover\"\n" +
     "       ng-mouseenter=\"setHover(notification, true)\" ng-mouseleave=\"setHover(notification, false)\">\n" +
     "    <div class=\"toast-pf alert {{notification.type | alertStatus}}\" ng-class=\"{'alert-dismissable': !hideCloseButton}\">\n" +
     "      <button ng-if=\"!hideCloseButton\" type=\"button\" class=\"close\" ng-click=\"close(notification)\">\n" +
