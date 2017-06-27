@@ -45,6 +45,9 @@
   margin-bottom: 20px;
   margin-top: 30px;
 }
+.bind-service-selection {
+  margin-bottom: 5px;
+}
 .bind-status {
   display: flex;
   font-size: 16px;
