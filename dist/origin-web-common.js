@@ -2372,7 +2372,7 @@ angular.module('openshiftCommonServices')
   	}
   };
 
-  this.$get = ["$q", "$injector", "$log", "$rootScope", "Logger", function($q, $injector, $log, $rootScope, Logger) {
+  this.$get = ["$q", "$injector", "$log", "$rootScope", "Logger", "base64", function($q, $injector, $log, $rootScope, Logger, base64) {
     var authLogger = Logger.get("auth");
     authLogger.log('AuthServiceProvider.$get', arguments);
 
@@ -2453,8 +2453,23 @@ angular.module('openshiftCommonServices')
 
         // Handle web socket requests with a parameter
         if (config.method === 'WATCH') {
-          config.url = URI(config.url).addQuery({access_token: token}).toString();
-          authLogger.log('AuthService.addAuthToRequest(), added token param', config.url);
+          // Ensure protocols is defined
+          config.protocols = config.protocols || [];
+
+          // Ensure protocols is an array
+          if (!_.isArray(config.protocols)) {
+            config.protocols = [config.protocols];
+          }
+
+          // Ensure protocols has at least one item in it (for the server to echo back once the bearer protocol is stripped out)
+          if (config.protocols.length == 0) {
+            config.protocols.unshift("undefined");
+          }
+
+          // Prepend the bearer token protocol
+          config.protocols.unshift("base64url.bearer.authorization.k8s.io."+base64.urlencode(token));
+
+          authLogger.log('AuthService.addAuthToRequest(), added token protocol', config.protocols);
         } else {
           config.headers["Authorization"] = "Bearer " + token;
           authLogger.log('AuthService.addAuthToRequest(), added token header', config.headers["Authorization"]);
