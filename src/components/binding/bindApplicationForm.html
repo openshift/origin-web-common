@@ -2,27 +2,32 @@
   <form>
     <div class="form-group">
       <label>
-        <h3>Bind a service to <strong>{{ctrl.applicationName}}</strong></h3>
+        <h3>Create a binding for application <strong>{{ctrl.applicationName}}</strong></h3>
       </label>
       <span class="help-block">
-        Binding to a provisioned service will create a secret containing the information necessary for your application to use the service.
+        Bindings create a secret containing the necessary information for an application to use a service.
       </span>
     </div>
   </form>
 
+  <label ng-if="!ctrl.allowNoBinding">
+    Select a service:
+  </label>
   <form name="ctrl.formName">
     <fieldset>
       <div class="radio">
-        <label ng-if="ctrl.allowNoBinding">
-          <input type="radio" ng-model="ctrl.serviceToBind" ng-value="null">
-          Do not bind at this time.
-        </label>
-        <div ng-if="ctrl.allowNoBinding" class="bind-description">
+        <div ng-if="ctrl.allowNoBinding" class="bind-service-selection">
+          <label>
+            <input type="radio" ng-model="ctrl.serviceToBind" ng-value="null">
+            Do not bind at this time.
+          </label>
+          <div class="bind-description">
           <span class="help-block service-instance-name">
-            You can create the binding later from your project.
+            Bindings can be created later from within a project.
           </span>
+          </div>
         </div>
-        <div ng-repeat="serviceInstance in ctrl.bindableServiceInstances">
+        <div ng-repeat="serviceInstance in ctrl.bindableServiceInstances" class="bind-service-selection">
           <label>
             <input type="radio" ng-model="ctrl.serviceToBind" ng-value="serviceInstance">
             {{ctrl.serviceClasses[serviceInstance.spec.serviceClassName].osbMetadata.displayName || serviceInstance.spec.serviceClassName}}

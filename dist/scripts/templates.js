@@ -6,27 +6,32 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "  <form>\n" +
     "    <div class=\"form-group\">\n" +
     "      <label>\n" +
-    "        <h3>Bind a service to <strong>{{ctrl.applicationName}}</strong></h3>\n" +
+    "        <h3>Create a binding for application <strong>{{ctrl.applicationName}}</strong></h3>\n" +
     "      </label>\n" +
     "      <span class=\"help-block\">\n" +
-    "        Binding to a provisioned service will create a secret containing the information necessary for your application to use the service.\n" +
+    "        Bindings create a secret containing the necessary information for an application to use a service.\n" +
     "      </span>\n" +
     "    </div>\n" +
     "  </form>\n" +
     "\n" +
+    "  <label ng-if=\"!ctrl.allowNoBinding\">\n" +
+    "    Select a service:\n" +
+    "  </label>\n" +
     "  <form name=\"ctrl.formName\">\n" +
     "    <fieldset>\n" +
     "      <div class=\"radio\">\n" +
-    "        <label ng-if=\"ctrl.allowNoBinding\">\n" +
-    "          <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" ng-value=\"null\">\n" +
-    "          Do not bind at this time.\n" +
-    "        </label>\n" +
-    "        <div ng-if=\"ctrl.allowNoBinding\" class=\"bind-description\">\n" +
+    "        <div ng-if=\"ctrl.allowNoBinding\" class=\"bind-service-selection\">\n" +
+    "          <label>\n" +
+    "            <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" ng-value=\"null\">\n" +
+    "            Do not bind at this time.\n" +
+    "          </label>\n" +
+    "          <div class=\"bind-description\">\n" +
     "          <span class=\"help-block service-instance-name\">\n" +
-    "            You can create the binding later from your project.\n" +
+    "            Bindings can be created later from within a project.\n" +
     "          </span>\n" +
+    "          </div>\n" +
     "        </div>\n" +
-    "        <div ng-repeat=\"serviceInstance in ctrl.bindableServiceInstances\">\n" +
+    "        <div ng-repeat=\"serviceInstance in ctrl.bindableServiceInstances\" class=\"bind-service-selection\">\n" +
     "          <label>\n" +
     "            <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" ng-value=\"serviceInstance\">\n" +
     "            {{ctrl.serviceClasses[serviceInstance.spec.serviceClassName].osbMetadata.displayName || serviceInstance.spec.serviceClassName}}\n" +
@@ -115,9 +120,9 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "  <form>\n" +
     "    <div class=\"form-group\">\n" +
     "        <label>\n" +
-    "          <h3>Bind <strong>{{ctrl.serviceClass.osbMetadata.displayName || ctrl.serviceClassName}}</strong> to an existing application</strong></h3>\n" +
+    "          <h3>Create a binding for <strong>{{ctrl.serviceClass.osbMetadata.displayName || ctrl.serviceClassName}}</strong></h3>\n" +
     "        </label>\n" +
-    "        <span class=\"help-block\">Binding to a provisioned service will create a secret containing the information necessary for your application to use the service.</span>\n" +
+    "        <span class=\"help-block\">Bindings create a secret containing the necessary information for an application to use this service.</span>\n" +
     "    </div>\n" +
     "  </form>\n" +
     "\n" +
@@ -126,7 +131,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "      <div class=\"radio\">\n" +
     "        <label class=\"bind-choice\" ng-disabled=\"!ctrl.applications.length\">\n" +
     "          <input type=\"radio\" ng-model=\"ctrl.bindType\" value=\"application\" ng-disabled=\"!ctrl.applications.length\">\n" +
-    "          Bind to an application\n" +
+    "          Create a secret and inject it into an application\n" +
     "        </label>\n" +
     "        <div class=\"application-select\">\n" +
     "          <ui-select ng-model=\"ctrl.appToBind\"\n" +
@@ -147,17 +152,17 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "        </div>\n" +
     "        <label class=\"bind-choice\">\n" +
     "          <input type=\"radio\" ng-model=\"ctrl.bindType\" value=\"secret-only\">\n" +
-    "          Create a secret in my project\n" +
+    "          Create a secret in <strong>{{ctrl.projectName}}</strong> to be used later\n" +
     "        </label>\n" +
     "        <div class=\"help-block bind-description\">\n" +
-    "          You can reference this secret later from any application either as environment variables or configuration files mounted as volumes.\n" +
+    "          Secrets can be referenced later from an application.\n" +
     "        </div>\n" +
     "        <label ng-if=\"ctrl.allowNoBinding\" class=\"bind-choice\">\n" +
     "          <input type=\"radio\" ng-model=\"ctrl.bindType\" value=\"none\">\n" +
     "          Do not bind at this time\n" +
     "        </label>\n" +
     "        <div ng-if=\"ctrl.allowNoBinding\" class=\"help-block bind-description\">\n" +
-    "          You can create the binding later from your project.\n" +
+    "          Bindings can be created later from within a project.\n" +
     "        </div>\n" +
     "      </div>\n" +
     "    </fieldset>\n" +

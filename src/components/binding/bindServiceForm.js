@@ -8,6 +8,7 @@ angular.module('openshiftCommonUI').component('bindServiceForm', {
     applications: '<',
     formName: '=',
     allowNoBinding: '<?',
+    projectName: '<',
     bindType: '=', // One of: 'none', 'application', 'secret-only'
     appToBind: '=' // only applicable to 'application' bindType
   },
