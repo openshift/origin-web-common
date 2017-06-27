@@ -273,7 +273,16 @@ div.hopscotch-bubble .hopscotch-nav-button.prev {
 }
 .toast-notifications-list-pf {
   top: 28px;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
   z-index: 1055;
+}
+@media (max-width: 767px) {
+  .toast-notifications-list-pf {
+    max-width: calc(100% - 40px);
+  }
 }
 .toast-notifications-list-pf > div.ng-enter {
   animation: toastSlideIn 0.2s ease-out;

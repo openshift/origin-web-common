@@ -8,7 +8,13 @@
 }
 
 .toast-notifications-list-pf {
+  @media(max-width: @screen-xs-max) {
+    // Set max-width when < 769, so that word-break functions on Firefox & IE.
+    // Subtract 40px to align edges with content within container-fluid that has left & right 20px margin
+    max-width: calc(~"100% - 40px");
+  }
   top: 28px;
+  .word-break();
   z-index: @zindex-modal + 5;  // Override Patternfly's z-index to keep toasts above modals but below popovers
 
   > div {
