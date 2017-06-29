@@ -63,7 +63,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "        <div ng-repeat=\"serviceInstance in ctrl.bindableServiceInstances\" class=\"bind-service-selection\">\n" +
     "          <label>\n" +
     "            <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" ng-value=\"serviceInstance\">\n" +
-    "            {{ctrl.serviceClasses[serviceInstance.spec.serviceClassName].osbMetadata.displayName || serviceInstance.spec.serviceClassName}}\n" +
+    "            {{ctrl.serviceClasses[serviceInstance.spec.serviceClassName].externalMetadata.displayName || serviceInstance.spec.serviceClassName}}\n" +
     "          </label>\n" +
     "          <div class=\"bind-description\">\n" +
     "            <span class=\"pficon pficon-info\"\n" +
@@ -149,7 +149,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "  <form>\n" +
     "    <div class=\"form-group\">\n" +
     "        <label>\n" +
-    "          <h3>Create a binding for <strong>{{ctrl.serviceClass.osbMetadata.displayName || ctrl.serviceClassName}}</strong></h3>\n" +
+    "          <h3>Create a binding for <strong>{{ctrl.serviceClass.externalMetadata.displayName || ctrl.serviceClassName}}</strong></h3>\n" +
     "        </label>\n" +
     "        <span class=\"help-block\">Bindings create a secret containing the necessary information for an application to use this service.</span>\n" +
     "    </div>\n" +
