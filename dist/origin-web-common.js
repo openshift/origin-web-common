@@ -713,7 +713,6 @@ angular.module("openshiftCommonUI")
     return {
       restrict: 'E',
       scope: {
-        alerts: '=',
         redirectAction: '&',
         onCancel: '&?',
         isDialog: '@'
@@ -726,9 +725,8 @@ angular.module("openshiftCommonUI")
 
         $scope.isDialog = $scope.isDialog === 'true';
 
-        var showAlert = function(name, alert) {
-          $scope.alerts[name] = alert;
-          NotificationsService.addNotification(alert);
+        var hideErrorNotifications = function() {
+          NotificationsService.hideNotification('create-project-error');
         };
 
         $scope.createProject = function() {
@@ -752,9 +750,9 @@ angular.module("openshiftCommonUI")
                 } else {
                   $location.path("project/" + encodeURIComponent(data.metadata.name) + "/create");
                 }
-                showAlert('created-project', {
+                NotificationsService.addNotification({
                   type: "success",
-                    message: "Project \'"  + displayNameFilter(data) + "\' was successfully created."
+                  message: "Project \'"  + displayNameFilter(data) + "\' was successfully created."
                 });
               }, function(result) {
                 $scope.disableInputs = false;
@@ -763,7 +761,11 @@ angular.module("openshiftCommonUI")
                   $scope.nameTaken = true;
                 } else {
                   var msg = data.message || 'An error occurred creating the project.';
-                  showAlert('error-creating-project', {type: 'error', message: msg});
+                  NotificationsService.addNotification({
+                    id: 'create-project-error',
+                    type: 'error',
+                    message: msg
+                  });
                 }
               });
           }
@@ -779,6 +781,8 @@ angular.module("openshiftCommonUI")
             $window.history.back();
           }
         };
+
+        $scope.$on("$destroy", hideErrorNotifications);
       }],
     };
   }]);
