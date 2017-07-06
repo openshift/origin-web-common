@@ -76,6 +76,46 @@ angular.module('openshiftCommonServices')
     }
   }
 
+  // If several connection errors happen close together, display them as one
+  // notification. This prevents us spamming the user with many failed requests
+  // at once.
+  var queuedErrors = [];
+  var addQueuedNotifications = _.debounce(function() {
+    if (!queuedErrors.length) {
+      return;
+    }
+
+    // Show all queued messages together. If the details is extremely long, it
+    // will be truncated with a see more link.
+    var notification = {
+      type: 'error',
+      message: 'An error occurred connecting to the server.',
+      details: queuedErrors.join('\n'),
+      links: [{
+        label: 'Refresh',
+        onClick: function() {
+          window.location.reload();
+        }
+      }]
+    };
+
+    // Use `$rootScope.$emit` instead of NotificationsService directly
+    // so that DataService doesn't add a dependency on `openshiftCommonUI`
+    $rootScope.$emit('NotificationsService.addNotification', notification);
+
+    // Clear the queue.
+    queuedErrors = [];
+  }, 300, { maxWait: 1000 });
+
+  var showRequestError = function(message, status) {
+    if (status) {
+      message += " (status " + status + ")";
+    }
+    // Queue the message and call debounced `addQueuedNotifications`.
+    queuedErrors.push(message);
+    addQueuedNotifications();
+  };
+
   function DataService() {
     this._listDeferredMap = {};
     this._watchCallbacksMap = {};
@@ -412,16 +452,7 @@ angular.module('openshiftCommonServices')
         })
         .error(function(data, status, headers, config) {
           if (opts.errorNotification !== false) {
-            var msg = "Failed to get " + resource + "/" + name;
-            if (status !== 0) {
-              msg += " (" + status + ")";
-            }
-            // Use `$rootScope.$emit` instead of NotificationsService directly
-            // so that DataService doesn't add a dependency on `openshiftCommonUI`
-            $rootScope.$emit('NotificationsService.addNotification', {
-              type: 'error',
-              message: msg
-            });
+            showRequestError("Failed to get " + resource + "/" + name, status);
           }
           deferred.reject({
             data: data,
@@ -957,16 +988,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
             return;
           }
 
-          var msg = "Failed to list " + resource;
-          if (status !== 0) {
-            msg += " (" + status + ")";
-          }
-          // Use `$rootScope.$emit` instead of NotificationsService directly
-          // so that DataService doesn't add a dependency on `openshiftCommonUI`
-          $rootScope.$emit('NotificationsService.addNotification', {
-            type: 'error',
-            message: msg
-          });
+          showRequestError("Failed to list " + resource, status);
         });
       });
     }
@@ -988,16 +1010,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
           return;
         }
 
-        var msg = "Failed to list " + resource;
-        if (status !== 0) {
-          msg += " (" + status + ")";
-        }
-        // Use `$rootScope.$emit` instead of NotificationsService directly
-        // so that DataService doesn't add a dependency on `openshiftCommonUI`
-        $rootScope.$emit('NotificationsService.addNotification', {
-          type: 'error',
-          message: msg
-        });
+        showRequestError("Failed to list " + resource, status);
       });
     }
   };

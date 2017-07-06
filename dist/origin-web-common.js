@@ -576,7 +576,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "      <span class=\"{{notification.type | alertIcon}}\" aria-hidden=\"true\"></span>\n" +
     "      <span class=\"sr-only\">{{notification.type}}</span>\n" +
     "      <span class=\"toast-notification-message\" ng-if=\"notification.message\">{{notification.message}}</span>\n" +
-    "      <span ng-if=\"notification.details\">\n" +
+    "      <div ng-if=\"notification.details\" class=\"toast-notification-details\">\n" +
     "        <truncate-long-text\n" +
     "          limit=\"200\"\n" +
     "          content=\"notification.details\"\n" +
@@ -584,7 +584,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "          expandable=\"true\"\n" +
     "          hide-collapse=\"true\">\n" +
     "        </truncate-long-text>\n" +
-    "      </span>\n" +
+    "      </div>\n" +
     "      <span ng-repeat=\"link in notification.links\">\n" +
     "        <a ng-if=\"!link.href\" href=\"\" ng-click=\"onClick(notification, link)\" role=\"button\">{{link.label}}</a>\n" +
     "        <a ng-if=\"link.href\" ng-href=\"{{link.href}}\" ng-attr-target=\"{{link.target}}\">{{link.label}}</a>\n" +
@@ -1252,16 +1252,18 @@ angular.module('openshiftCommonUI')
 
         // Listen for updates from NotificationsService to show a notification.
         var deregisterNotificationListener = $rootScope.$on('NotificationsService.onNotificationAdded', function(event, notification) {
-          $scope.notifications.push(notification);
-          if (NotificationsService.isAutoDismiss(notification)) {
-            $timeout(function () {
-              notification.hidden = true;
-            }, NotificationsService.dismissDelay);
-          }
+          $scope.$evalAsync(function() {
+            $scope.notifications.push(notification);
+            if (NotificationsService.isAutoDismiss(notification)) {
+              $timeout(function () {
+                notification.hidden = true;
+              }, NotificationsService.dismissDelay);
+            }
 
-          // Whenever we add a new notification, also remove any hidden toasts
-          // so that the array doesn't grow indefinitely.
-          pruneRemovedNotifications();
+            // Whenever we add a new notification, also remove any hidden toasts
+            // so that the array doesn't grow indefinitely.
+            pruneRemovedNotifications();
+          });
         });
 
         $scope.$on('$destroy', function() {
@@ -2975,6 +2977,46 @@ angular.module('openshiftCommonServices')
     }
   }
 
+  // If several connection errors happen close together, display them as one
+  // notification. This prevents us spamming the user with many failed requests
+  // at once.
+  var queuedErrors = [];
+  var addQueuedNotifications = _.debounce(function() {
+    if (!queuedErrors.length) {
+      return;
+    }
+
+    // Show all queued messages together. If the details is extremely long, it
+    // will be truncated with a see more link.
+    var notification = {
+      type: 'error',
+      message: 'An error occurred connecting to the server.',
+      details: queuedErrors.join('\n'),
+      links: [{
+        label: 'Refresh',
+        onClick: function() {
+          window.location.reload();
+        }
+      }]
+    };
+
+    // Use `$rootScope.$emit` instead of NotificationsService directly
+    // so that DataService doesn't add a dependency on `openshiftCommonUI`
+    $rootScope.$emit('NotificationsService.addNotification', notification);
+
+    // Clear the queue.
+    queuedErrors = [];
+  }, 300, { maxWait: 1000 });
+
+  var showRequestError = function(message, status) {
+    if (status) {
+      message += " (status " + status + ")";
+    }
+    // Queue the message and call debounced `addQueuedNotifications`.
+    queuedErrors.push(message);
+    addQueuedNotifications();
+  };
+
   function DataService() {
     this._listDeferredMap = {};
     this._watchCallbacksMap = {};
@@ -3311,16 +3353,7 @@ angular.module('openshiftCommonServices')
         })
         .error(function(data, status, headers, config) {
           if (opts.errorNotification !== false) {
-            var msg = "Failed to get " + resource + "/" + name;
-            if (status !== 0) {
-              msg += " (" + status + ")";
-            }
-            // Use `$rootScope.$emit` instead of NotificationsService directly
-            // so that DataService doesn't add a dependency on `openshiftCommonUI`
-            $rootScope.$emit('NotificationsService.addNotification', {
-              type: 'error',
-              message: msg
-            });
+            showRequestError("Failed to get " + resource + "/" + name, status);
           }
           deferred.reject({
             data: data,
@@ -3856,16 +3889,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
             return;
           }
 
-          var msg = "Failed to list " + resource;
-          if (status !== 0) {
-            msg += " (" + status + ")";
-          }
-          // Use `$rootScope.$emit` instead of NotificationsService directly
-          // so that DataService doesn't add a dependency on `openshiftCommonUI`
-          $rootScope.$emit('NotificationsService.addNotification', {
-            type: 'error',
-            message: msg
-          });
+          showRequestError("Failed to list " + resource, status);
         });
       });
     }
@@ -3887,16 +3911,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
           return;
         }
 
-        var msg = "Failed to list " + resource;
-        if (status !== 0) {
-          msg += " (" + status + ")";
-        }
-        // Use `$rootScope.$emit` instead of NotificationsService directly
-        // so that DataService doesn't add a dependency on `openshiftCommonUI`
-        $rootScope.$emit('NotificationsService.addNotification', {
-          type: 'error',
-          message: msg
-        });
+        showRequestError("Failed to list " + resource, status);
       });
     }
   };

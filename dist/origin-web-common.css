@@ -267,6 +267,9 @@ div.hopscotch-bubble .hopscotch-nav-button.prev {
 .toast-action-divider {
   color: #9c9c9c;
 }
+.toast-notification-details .truncated-content {
+  white-space: pre-line;
+}
 .toast-notification-message {
   font-weight: 700;
   margin-right: 5px;
