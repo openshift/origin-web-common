@@ -376,7 +376,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "      <span class=\"{{notification.type | alertIcon}}\" aria-hidden=\"true\"></span>\n" +
     "      <span class=\"sr-only\">{{notification.type}}</span>\n" +
     "      <span class=\"toast-notification-message\" ng-if=\"notification.message\">{{notification.message}}</span>\n" +
-    "      <span ng-if=\"notification.details\">\n" +
+    "      <div ng-if=\"notification.details\" class=\"toast-notification-details\">\n" +
     "        <truncate-long-text\n" +
     "          limit=\"200\"\n" +
     "          content=\"notification.details\"\n" +
@@ -384,7 +384,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "          expandable=\"true\"\n" +
     "          hide-collapse=\"true\">\n" +
     "        </truncate-long-text>\n" +
-    "      </span>\n" +
+    "      </div>\n" +
     "      <span ng-repeat=\"link in notification.links\">\n" +
     "        <a ng-if=\"!link.href\" href=\"\" ng-click=\"onClick(notification, link)\" role=\"button\">{{link.label}}</a>\n" +
     "        <a ng-if=\"link.href\" ng-href=\"{{link.href}}\" ng-attr-target=\"{{link.target}}\">{{link.label}}</a>\n" +

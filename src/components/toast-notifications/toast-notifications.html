@@ -9,7 +9,7 @@
       <span class="{{notification.type | alertIcon}}" aria-hidden="true"></span>
       <span class="sr-only">{{notification.type}}</span>
       <span class="toast-notification-message" ng-if="notification.message">{{notification.message}}</span>
-      <span ng-if="notification.details">
+      <div ng-if="notification.details" class="toast-notification-details">
         <truncate-long-text
           limit="200"
           content="notification.details"
@@ -17,7 +17,7 @@
           expandable="true"
           hide-collapse="true">
         </truncate-long-text>
-      </span>
+      </div>
       <span ng-repeat="link in notification.links">
         <a ng-if="!link.href" href="" ng-click="onClick(notification, link)" role="button">{{link.label}}</a>
         <a ng-if="link.href" ng-href="{{link.href}}" ng-attr-target="{{link.target}}">{{link.label}}</a>
