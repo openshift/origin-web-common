@@ -38,7 +38,7 @@ angular.module("openshiftCommonServices")
     var generateName = $filter('generateName');
     var makeBinding = function (serviceInstance, application, parameters) {
       var instanceName = serviceInstance.metadata.name;
-      var relatedObjName = generateName(_.trunc(instanceName, DNS1123_SUBDOMAIN_VALIDATION.maxlength - 6) + '-');
+      var relatedObjName = generateName(_.truncate(instanceName, DNS1123_SUBDOMAIN_VALIDATION.maxlength - 6) + '-');
       var binding = {
         kind: 'Binding',
         apiVersion: 'servicecatalog.k8s.io/v1alpha1',

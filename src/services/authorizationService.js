@@ -36,7 +36,7 @@ angular.module("openshiftCommonServices")
     //  - subresource that contains '/', eg: 'builds/source', 'builds/logs', ...
     //  - resource is in REVIEW_RESOURCES list
     var checkResource = function(resource) {
-      if (resource === "projectrequests" || _.contains(resource, "/") || _.contains(REVIEW_RESOURCES, resource)) {
+      if (resource === "projectrequests" || _.includes(resource, "/") || _.includes(REVIEW_RESOURCES, resource)) {
         return false;
       } else {
         return true;
@@ -109,7 +109,7 @@ angular.module("openshiftCommonServices")
       if (!verbs) {
         return false;
       }
-      return _.contains(verbs, verb) || _.contains(verbs, '*');
+      return _.includes(verbs, verb) || _.includes(verbs, '*');
     };
 
     // canI checks whether any rule allows the specified verb on the specified group-resource (directly or via a wildcard rule).

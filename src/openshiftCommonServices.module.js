@@ -48,7 +48,7 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
   var k8sBaseURL = protocol + window.OPENSHIFT_CONFIG.api.k8s.hostPort + window.OPENSHIFT_CONFIG.api.k8s.prefix;
   var k8sDeferred = $.get(k8sBaseURL + "/v1")
     .done(function(data) {
-      api.k8s.v1 = _.indexBy(data.resources, 'name');
+      api.k8s.v1 =  _.keyBy(data.resources, 'name');
     })
     .fail(function(data, textStatus, jqXHR) {
       API_DISCOVERY_ERRORS.push({
@@ -62,7 +62,7 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
   var osBaseURL = protocol + window.OPENSHIFT_CONFIG.api.openshift.hostPort + window.OPENSHIFT_CONFIG.api.openshift.prefix;
   var osDeferred = $.get(osBaseURL + "/v1")
     .done(function(data) {
-      api.openshift.v1 = _.indexBy(data.resources, 'name');
+      api.openshift.v1 =  _.keyBy(data.resources, 'name');
     })
     .fail(function(data, textStatus, jqXHR) {
       API_DISCOVERY_ERRORS.push({
@@ -110,7 +110,7 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
         };
         apisDeferredVersions.push($.get(baseURL + "/" + apiVersion.groupVersion)
           .done(function(data) {
-            group.versions[versionStr].resources = _.indexBy(data.resources, 'name');
+            group.versions[versionStr].resources =  _.keyBy(data.resources, 'name');
           })
           .fail(function(data, textStatus, jqXHR) {
             API_DISCOVERY_ERRORS.push({
