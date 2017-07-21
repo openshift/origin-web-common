@@ -6,6 +6,13 @@
   .application-select {
     margin-top: 10px;
     padding-left: 20px;
+    // Fixes bug https://github.com/openshift/origin-web-console/issues/1814
+    .ui-select-bootstrap > .ui-select-choices {
+      max-height: 100px;
+      @media(min-width: @screen-sm-min) {
+        max-height: 170px;
+      }
+    }
   }
 
   .bind-description {

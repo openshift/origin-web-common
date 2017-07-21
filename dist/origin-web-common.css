@@ -25,6 +25,14 @@
   margin-top: 10px;
   padding-left: 20px;
 }
+.bind-form .application-select .ui-select-bootstrap > .ui-select-choices {
+  max-height: 100px;
+}
+@media (min-width: 768px) {
+  .bind-form .application-select .ui-select-bootstrap > .ui-select-choices {
+    max-height: 170px;
+  }
+}
 .bind-form .bind-description {
   padding-left: 20px;
 }
