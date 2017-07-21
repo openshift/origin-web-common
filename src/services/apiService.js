@@ -283,15 +283,14 @@ angular.module('openshiftCommonServices')
               kind;
     });
 
-
     // ignore the legacy openshift kinds, these have been migrated to api groups
-    _.each(_.pick(API_CFG, function(value, key) {
+    _.each(_.pickBy(API_CFG, function(value, key) {
       return key !== 'openshift';
     }), function(api) {
       _.each(api.resources.v1, function(resource) {
         if (resource.namespaced || includeClusterScoped) {
           // Exclude subresources and any rejected kinds
-          if (_.contains(resource.name, '/') || _.find(rejectedKinds, { kind: resource.kind, group: '' })) {
+          if (_.includes(resource.name, '/') || _.find(rejectedKinds, { kind: resource.kind, group: '' })) {
             return;
           }
 
@@ -309,7 +308,7 @@ angular.module('openshiftCommonServices')
       var preferredVersion = defaultVersion[group.name] || group.preferredVersion;
       _.each(group.versions[preferredVersion].resources, function(resource) {
         // Exclude subresources and any rejected kinds
-        if (_.contains(resource.name, '/') || _.find(rejectedKinds, {kind: resource.kind, group: group.name})) {
+        if (_.includes(resource.name, '/') || _.find(rejectedKinds, {kind: resource.kind, group: group.name})) {
           return;
         }
 
@@ -328,7 +327,7 @@ angular.module('openshiftCommonServices')
       });
     });
 
-    return _.uniq(kinds, false, function(value) {
+    return _.uniqBy(kinds, function(value) {
       return value.group + "/" + value.kind;
     });
   };

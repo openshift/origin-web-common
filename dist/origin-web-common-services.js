@@ -48,7 +48,7 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
   var k8sBaseURL = protocol + window.OPENSHIFT_CONFIG.api.k8s.hostPort + window.OPENSHIFT_CONFIG.api.k8s.prefix;
   var k8sDeferred = $.get(k8sBaseURL + "/v1")
     .done(function(data) {
-      api.k8s.v1 = _.indexBy(data.resources, 'name');
+      api.k8s.v1 =  _.keyBy(data.resources, 'name');
     })
     .fail(function(data, textStatus, jqXHR) {
       API_DISCOVERY_ERRORS.push({
@@ -62,7 +62,7 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
   var osBaseURL = protocol + window.OPENSHIFT_CONFIG.api.openshift.hostPort + window.OPENSHIFT_CONFIG.api.openshift.prefix;
   var osDeferred = $.get(osBaseURL + "/v1")
     .done(function(data) {
-      api.openshift.v1 = _.indexBy(data.resources, 'name');
+      api.openshift.v1 =  _.keyBy(data.resources, 'name');
     })
     .fail(function(data, textStatus, jqXHR) {
       API_DISCOVERY_ERRORS.push({
@@ -110,7 +110,7 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
         };
         apisDeferredVersions.push($.get(baseURL + "/" + apiVersion.groupVersion)
           .done(function(data) {
-            group.versions[versionStr].resources = _.indexBy(data.resources, 'name');
+            group.versions[versionStr].resources =  _.keyBy(data.resources, 'name');
           })
           .fail(function(data, textStatus, jqXHR) {
             API_DISCOVERY_ERRORS.push({
@@ -476,15 +476,14 @@ angular.module('openshiftCommonServices')
               kind;
     });
 
-
     // ignore the legacy openshift kinds, these have been migrated to api groups
-    _.each(_.pick(API_CFG, function(value, key) {
+    _.each(_.pickBy(API_CFG, function(value, key) {
       return key !== 'openshift';
     }), function(api) {
       _.each(api.resources.v1, function(resource) {
         if (resource.namespaced || includeClusterScoped) {
           // Exclude subresources and any rejected kinds
-          if (_.contains(resource.name, '/') || _.find(rejectedKinds, { kind: resource.kind, group: '' })) {
+          if (_.includes(resource.name, '/') || _.find(rejectedKinds, { kind: resource.kind, group: '' })) {
             return;
           }
 
@@ -502,7 +501,7 @@ angular.module('openshiftCommonServices')
       var preferredVersion = defaultVersion[group.name] || group.preferredVersion;
       _.each(group.versions[preferredVersion].resources, function(resource) {
         // Exclude subresources and any rejected kinds
-        if (_.contains(resource.name, '/') || _.find(rejectedKinds, {kind: resource.kind, group: group.name})) {
+        if (_.includes(resource.name, '/') || _.find(rejectedKinds, {kind: resource.kind, group: group.name})) {
           return;
         }
 
@@ -521,7 +520,7 @@ angular.module('openshiftCommonServices')
       });
     });
 
-    return _.uniq(kinds, false, function(value) {
+    return _.uniqBy(kinds, function(value) {
       return value.group + "/" + value.kind;
     });
   };
@@ -884,7 +883,7 @@ angular.module("openshiftCommonServices")
     //  - subresource that contains '/', eg: 'builds/source', 'builds/logs', ...
     //  - resource is in REVIEW_RESOURCES list
     var checkResource = function(resource) {
-      if (resource === "projectrequests" || _.contains(resource, "/") || _.contains(REVIEW_RESOURCES, resource)) {
+      if (resource === "projectrequests" || _.includes(resource, "/") || _.includes(REVIEW_RESOURCES, resource)) {
         return false;
       } else {
         return true;
@@ -957,7 +956,7 @@ angular.module("openshiftCommonServices")
       if (!verbs) {
         return false;
       }
-      return _.contains(verbs, verb) || _.contains(verbs, '*');
+      return _.includes(verbs, verb) || _.includes(verbs, '*');
     };
 
     // canI checks whether any rule allows the specified verb on the specified group-resource (directly or via a wildcard rule).
@@ -1050,7 +1049,7 @@ angular.module("openshiftCommonServices")
     var generateName = $filter('generateName');
     var makeBinding = function (serviceInstance, application, parameters) {
       var instanceName = serviceInstance.metadata.name;
-      var relatedObjName = generateName(_.trunc(instanceName, DNS1123_SUBDOMAIN_VALIDATION.maxlength - 6) + '-');
+      var relatedObjName = generateName(_.truncate(instanceName, DNS1123_SUBDOMAIN_VALIDATION.maxlength - 6) + '-');
       var binding = {
         kind: 'Binding',
         apiVersion: 'servicecatalog.k8s.io/v1alpha1',
