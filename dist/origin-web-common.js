@@ -3502,6 +3502,9 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
 //            pollInterval: in milliseconds, how long to wait between polling the server
 //                    only applies if poll=true.  Default is 5000.
 //            http:   similar to .get, etc. at this point, only used to pass http.params for filtering
+//            skipDigest: will skip the $apply & avoid triggering a digest loop
+//                    if set to `true`.  Is intentionally the inverse of the invokeApply
+//                    arg passed to $timeout (due to default values).
 //            errorNotification: will popup an error notification if the API request fails (default true)
 // returns handle to the watch, needed to unwatch e.g.
 //        var handle = DataService.watch(resource,context,callback[,opts])
@@ -3509,6 +3512,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
   DataService.prototype.watch = function(resource, context, callback, opts) {
     resource = APIService.toResourceGroupVersion(resource);
     opts = opts || {};
+    var invokeApply =  !opts.skipDigest;
     var key = this._uniqueKey(resource, null, context, _.get(opts, 'http.params'));
     if (callback) {
       // If we were given a callback, add it
@@ -3536,7 +3540,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
       if (callback) {
         $timeout(function() {
           callback(self._data(key));
-        }, 0);
+        }, 0, invokeApply);
       }
     }
     else {
@@ -3548,7 +3552,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
             if (resourceVersion === self._resourceVersion(key)) {
               callback(self._data(key)); // but just in case, still pull from the current data map
             }
-          }, 0);
+          }, 0, invokeApply);
         }
       }
       if (!this._listInFlight(key)) {
@@ -4011,6 +4015,8 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
 
   DataService.prototype._watchOpOnMessage = function(resource, context, opts, event) {
     var key = this._uniqueKey(resource, null, context, _.get(opts, 'http.params'));
+    opts = opts || {};
+    var invokeApply = !opts.skipDigest;
     try {
       var eventData = $.parseJSON(event.data);
 
@@ -4040,7 +4046,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
       // without timeout this is triggering a repeated digest loop
       $timeout(function() {
         self._watchCallbacks(key).fire(self._data(key), eventData.type, eventData.object);
-      }, 0);
+      }, 0, invokeApply);
     }
     catch (e) {
       // TODO: surface in the UI?
