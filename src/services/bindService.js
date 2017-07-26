@@ -7,6 +7,9 @@ angular.module("openshiftCommonServices")
                     AuthService,
                     DataService,
                     DNS1123_SUBDOMAIN_VALIDATION) {
+    // The secret key this service uses for the parameters JSON blob when binding.
+    var PARAMETERS_SECRET_KEY = 'parameters';
+
     var bindingResource = {
       group: 'servicecatalog.k8s.io',
       resource: 'bindings'
@@ -22,23 +25,49 @@ angular.module("openshiftCommonServices")
       return _.find(serviceClass.plans, { name: planName });
     };
 
-    var getBindParameters = function(serviceInstance, serviceClass) {
-      var plan = getPlanForInstance(serviceInstance, serviceClass);
-      if (_.has(plan, ['alphaBindingCreateParameterSchema', 'properties', 'template.openshift.io/requester-username'])) {
-        return AuthService.withUser().then(function(user) {
-          return {
-            'template.openshift.io/requester-username': user.metadata.name
-          };
-        });
-      }
+    var generateName = $filter('generateName');
+    var generateSecretName = function(prefix) {
+      var generateNameLength = 5;
+      // Truncate the class name if it's too long to append the generated name suffix.
+      var secretNamePrefix = _.truncate(prefix, {
+        // `generateNameLength - 1` because we append a '-' and then a 5 char generated suffix
+        length: DNS1123_SUBDOMAIN_VALIDATION.maxlength - generateNameLength - 1,
+        omission: ''
+      });
 
-      return $q.when({});
+      return generateName(secretNamePrefix, generateNameLength);
     };
 
-    var generateName = $filter('generateName');
-    var makeBinding = function (serviceInstance, application, parameters) {
+    var makeParametersSecret = function(secretName, parameters, binding) {
+      var secret = {
+        apiVersion: 'v1',
+        kind: 'Secret',
+        metadata: {
+          name: secretName,
+          ownerReferences: [{
+            apiVersion: binding.apiVersion,
+            kind: binding.kind,
+            name: binding.metadata.name,
+            uid: binding.metadata.uid,
+            controller: false,
+            // TODO: Change to true when garbage collection works with service
+            // catalog resources. Setting to true now results in a 403 Forbidden
+            // error creating the secret.
+            blockOwnerDeletion: false
+          }]
+        },
+        type: 'Opaque',
+        stringData: {}
+      };
+
+      secret.stringData[PARAMETERS_SECRET_KEY] = JSON.stringify(parameters);
+      return secret;
+    };
+
+    var makeBinding = function(serviceInstance, application, parametersSecretName) {
+      var parametersSecretName;
       var instanceName = serviceInstance.metadata.name;
-      var relatedObjName = generateName(_.truncate(instanceName, DNS1123_SUBDOMAIN_VALIDATION.maxlength - 6) + '-');
+
       var binding = {
         kind: 'Binding',
         apiVersion: 'servicecatalog.k8s.io/v1alpha1',
@@ -49,12 +78,17 @@ angular.module("openshiftCommonServices")
           instanceRef: {
             name: instanceName
           },
-          secretName: relatedObjName
+          secretName: generateSecretName(serviceInstance.metadata.name + '-credentials-')
         }
       };
 
-      if (!_.isEmpty(parameters)) {
-        binding.spec.parameters = parameters;
+      if (parametersSecretName) {
+        binding.spec.parametersFrom = [{
+          secretKeyRef: {
+            name: parametersSecretName,
+            key: PARAMETERS_SECRET_KEY
+          }
+        }];
       }
 
       var appSelector = _.get(application, 'spec.selector');
@@ -166,18 +200,34 @@ angular.module("openshiftCommonServices")
     return {
       bindingResource: bindingResource,
       getServiceClassForInstance: getServiceClassForInstance,
+      getPlanForInstance: getPlanForInstance,
 
       // Create a binding for `serviceInstance`. If an `application` API object
       // is specified, also create a pod preset for that application using its
       // `spec.selector`. `serviceClass` is required to determine if any
       // parameters need to be set when creating the binding.
-      bindService: function(serviceInstance, application, serviceClass) {
-        return getBindParameters(serviceInstance, serviceClass).then(function (parameters) {
-          var newBinding = makeBinding(serviceInstance, application, parameters);
-          var context = {
-            namespace: serviceInstance.metadata.namespace
-          };
-          return DataService.create(bindingResource, null, newBinding, context);
+      bindService: function(serviceInstance, application, serviceClass, parameters) {
+        var parametersSecretName;
+        if (!_.isEmpty(parameters)) {
+          parametersSecretName = generateSecretName(serviceInstance.metadata.name + '-bind-parameters-');
+        }
+
+        var newBinding = makeBinding(serviceInstance, application, parametersSecretName);
+        var context = {
+          namespace: serviceInstance.metadata.namespace
+        };
+
+        var promise = DataService.create(bindingResource, null, newBinding, context);
+        if (!parametersSecretName) {
+          return promise;
+        }
+
+        // Create the secret as well if the binding has parameters.
+        return promise.then(function(binding) {
+          var parametersSecret = makeParametersSecret(parametersSecretName, parameters, binding);
+          return DataService.create("secrets", null, parametersSecret, context).then(function() {
+            return binding;
+          });
         });
       },
 
