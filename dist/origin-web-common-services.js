@@ -1085,6 +1085,91 @@ angular.module("openshiftCommonServices")
       return binding;
     };
 
+    var isServiceBindable = function(serviceInstance, serviceClasses) {
+      var serviceClass = getServiceClassForInstance(serviceInstance, serviceClasses);
+
+      // If being deleted, it is not bindable
+      if (_.get(serviceInstance, 'metadata.deletionTimestamp')) {
+        return false;
+      }
+
+      if (!serviceClass) {
+        return !!serviceInstance;
+      }
+
+      var plan = getPlanForInstance(serviceInstance, serviceClass);
+      var planBindable = _.get(plan, 'bindable');
+      if (planBindable === true) {
+        return true;
+      }
+      if (planBindable === false) {
+        return false;
+      }
+
+      // If `plan.bindable` is not set, fall back to `serviceClass.bindable`.
+      return serviceClass.bindable;
+    };
+
+    var getPodPresetSelectorsForBindings = function(bindings) {
+      // Build a map of pod preset selectors by binding name.
+      var podPresetSelectors = {};
+      _.each(bindings, function(binding) {
+        var podPresetSelector = _.get(binding, 'spec.alphaPodPresetTemplate.selector');
+        if (podPresetSelector) {
+          podPresetSelectors[binding.metadata.name] = new LabelSelector(podPresetSelector);
+        }
+      });
+
+      return podPresetSelectors;
+    };
+
+    var getBindingsForResource = function(bindings, apiObject) {
+      var podPresetSelectors = getPodPresetSelectorsForBindings(bindings);
+
+      // Create a selector for the potential binding target to check if the
+      // pod preset covers the selector.
+      var applicationSelector = new LabelSelector(_.get(apiObject, 'spec.selector'));
+
+      var resourceBindings = [];
+
+      // Look at each pod preset selector to see if it covers this API object selector.
+      _.each(podPresetSelectors, function(podPresetSelector, bindingName) {
+        if (podPresetSelector.covers(applicationSelector)) {
+          // Keep a map of the target UID to the binding and the binding to
+          // the target. We want to show bindings both in the "application"
+          // object rows and the service instance rows.
+          resourceBindings.push(bindings[bindingName]);
+        }
+      });
+
+      return resourceBindings;
+    };
+
+    var filterBindableServiceInstances = function(serviceInstances, serviceClasses) {
+      if (!serviceInstances && !serviceClasses) {
+        return null;
+      }
+
+      return _.filter(serviceInstances, function (serviceInstance) {
+        return isServiceBindable(serviceInstance, serviceClasses);
+      });
+    };
+
+    var sortServiceInstances = function(serviceInstances, serviceClasses) {
+      if (!serviceInstances && !serviceClasses) {
+        return null;
+      }
+
+      return _.sortBy(serviceInstances,
+        function(item) {
+          return _.get(serviceClasses, [item.spec.serviceClassName, 'externalMetadata', 'displayName']) || item.spec.serviceClassName;
+        },
+        function(item) {
+          return _.get(item, 'metadata.name', '');
+        }
+      );
+    };
+
     return {
       bindingResource: bindingResource,
       getServiceClassForInstance: getServiceClassForInstance,
@@ -1103,24 +1188,11 @@ angular.module("openshiftCommonServices")
         });
       },
 
-      isServiceBindable: function(serviceInstance, serviceClasses) {
-        var serviceClass = getServiceClassForInstance(serviceInstance, serviceClasses);
-        if (!serviceClass) {
-          return !!serviceInstance;
-        }
-
-        var plan = getPlanForInstance(serviceInstance, serviceClass);
-        var planBindable = _.get(plan, 'bindable');
-        if (planBindable === true) {
-          return true;
-        }
-        if (planBindable === false) {
-          return false;
-        }
-
-        // If `plan.bindable` is not set, fall back to `serviceClass.bindable`.
-        return serviceClass.bindable;
-      }
+      isServiceBindable: isServiceBindable,
+      getPodPresetSelectorsForBindings: getPodPresetSelectorsForBindings,
+      getBindingsForResource: getBindingsForResource,
+      filterBindableServiceInstances: filterBindableServiceInstances,
+      sortServiceInstances: sortServiceInstances
     };
   });
 ;'use strict';

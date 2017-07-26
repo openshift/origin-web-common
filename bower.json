@@ -34,6 +34,7 @@
     "hawtio-extension-service": "~2.0.2",
     "hopscotch": "~0.2.7",
     "jquery": "~3.2.1",
+    "kubernetes-label-selector": "~2.0.0",
     "lodash": "~4.17.4",
     "patternfly": "~3.25.1",
     "uri.js": "~1.18.0"
