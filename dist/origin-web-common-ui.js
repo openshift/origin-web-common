@@ -1682,7 +1682,7 @@ angular.module('openshiftCommonUI')
 angular.module('openshiftCommonUI')
   .filter('truncate', function() {
     return function(str, charLimit, useWordBoundary, newlineLimit) {
-      if (!str) {
+      if (typeof str !== 'string') {
         return str;
       }
 
@@ -1698,11 +1698,10 @@ angular.module('openshiftCommonUI')
       }
 
       if (useWordBoundary !== false) {
-        // Find the last word break, but don't look more than 10 characters back.
-        // Make sure we show at least the first 5 characters.
+
         var startIndex = Math.max(4, charLimit - 10);
-        var lastSpace = truncated.lastIndexOf(/\s/, startIndex);
-        if (lastSpace !== -1) {
+        var lastSpace = truncated.lastIndexOf(' ');
+        if (lastSpace >= startIndex && lastSpace !== -1) {
           truncated = truncated.substring(0, lastSpace);
         }
       }
