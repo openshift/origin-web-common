@@ -364,6 +364,20 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
   );
 
 
+  $templateCache.put('src/components/origin-modal-popup/origin-modal-popup.html',
+    "<div class=\"origin-modal-popup tile-click-prevent\" ng-if=\"$ctrl.shown\" ng-style=\"$ctrl.positionStyle\"\n" +
+    "     ng-class=\"{'position-above': $ctrl.showAbove, 'position-left': $ctrl.showLeft}\">\n" +
+    "  <h4 class=\"origin-modal-popup-title\">\n" +
+    "    {{$ctrl.modalTitle}}\n" +
+    "  </h4>\n" +
+    "  <div ng-transclude></div>\n" +
+    "  <a href=\"\" class=\"origin-modal-popup-close\" ng-click=\"$ctrl.onClose()\">\n" +
+    "    <span class=\"pficon pficon-close\"></span>\n" +
+    "  </a>\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('src/components/toast-notifications/toast-notifications.html',
     "<div class=\"toast-notifications-list-pf\">\n" +
     "  <div ng-repeat=\"(notificationID, notification) in notifications track by (notificationID + (notification.message || notification.details))\" ng-if=\"!notification.hidden || notification.isHover\"\n" +

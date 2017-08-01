@@ -1,0 +1,95 @@
+.origin-modal-popup {
+  background-color: @color-pf-white;
+  bottom: 0;
+  color: @text-color;
+  left: 0;
+  position: fixed;
+  padding: 0 (@grid-gutter-width / 2) (@grid-gutter-width / 2);
+  right: 0;
+  top: 0;
+  z-index: @zindex-modal;
+
+  @media (min-width: @screen-sm-min) {
+    border: 1px solid @dropdown-border;
+    bottom: auto;
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    left: auto;
+    margin-top: 15px;
+    right: auto;
+    top: auto;
+
+    &:after {
+      border: solid 7px transparent;
+      border-bottom-color: @dropdown-border;
+      content: "";
+      position: absolute;
+      right: (@grid-gutter-width / 4);
+      top: -15px;
+    }
+
+    &:before {
+      border: solid 7px transparent;
+      border-bottom-color: @color-pf-black-150;
+      content: "";
+      position: absolute;
+      right: (@grid-gutter-width / 4);
+      top: -14px;
+      z-index: 1;
+    }
+
+    &.position-above {
+      margin-top: -15px;
+      &:after {
+        border-bottom-color:transparent;
+        border-top-color: @color-pf-white;
+        bottom: -15px;
+        top: auto;
+      }
+
+      &:before {
+        border-bottom-color:transparent;
+        border-top-color: @color-pf-white;
+        bottom: -14px;
+        top: auto;
+      }
+    }
+    &.position-left {
+      &:after {
+        left: (@grid-gutter-width / 4);
+        right: auto;
+      }
+
+      &:before {
+        left: (@grid-gutter-width / 4);
+        right: auto;
+      }
+    }
+  }
+
+  .origin-modal-popup-close {
+    color: @color-pf-black-600;
+    font-size: 14px;
+    line-height: 1;
+    position: absolute;
+    right: (@grid-gutter-width / 2);
+    top: (@grid-gutter-width / 4) + 1;
+
+    &:hover {
+      color: @color-pf-black-800;
+    }
+  }
+
+  .origin-modal-popup-title {
+    background: @color-pf-black-150;
+    margin-left: -(@grid-gutter-width / 2);
+    margin-right: -(@grid-gutter-width / 2);
+    margin-top: 0;
+    padding: 10px @grid-gutter-width 10px (@grid-gutter-width / 2);
+  }
+}
+
+.origin-modal-popup-backdrop.modal-backdrop {
+  background-color: transparent;
+  cursor: not-allowed;
+  z-index: @zindex-navbar-fixed + 1;
+}
