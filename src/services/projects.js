@@ -2,7 +2,7 @@
 
 angular.module('openshiftCommonServices')
   .factory('ProjectsService',
-    function($location, $q, AuthService, DataService, annotationNameFilter, AuthorizationService) {
+    function($location, $q, AuthService, DataService, annotationNameFilter, AuthorizationService, RecentlyViewedProjectsService) {
 
 
       var cleanEditableAnnotations = function(resource) {
@@ -37,6 +37,7 @@ angular.module('openshiftCommonServices')
                                         .then(function() {
                                           context.project = project;
                                           context.projectPromise.resolve(project);
+                                          RecentlyViewedProjectsService.addProjectUID(project.metadata.uid);
                                           // TODO: fix need to return context & projectPromise
                                           return [project, context];
                                         });
@@ -66,6 +67,23 @@ angular.module('openshiftCommonServices')
           update: function(projectName, data) {
             return DataService
                     .update('projects', projectName, cleanEditableAnnotations(data), {projectName: projectName}, {errorNotification: false});
+          },
+          create: function(name, displayName, description) {
+            var projectRequest = {
+              apiVersion: "v1",
+              kind: "ProjectRequest",
+              metadata: {
+                name: name
+              },
+              displayName: displayName,
+              description: description
+            };
+            return DataService
+              .create('projectrequests', null, projectRequest, {})
+              .then(function(project) {
+                RecentlyViewedProjectsService.addProjectUID(project.metadata.uid);
+                return project;
+              });
           },
           canCreate: function() {
             return DataService.get("projectrequests", null, {}, { errorNotification: false});

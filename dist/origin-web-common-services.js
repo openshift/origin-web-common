@@ -2894,7 +2894,7 @@ angular.module('openshiftCommonServices')
 
 angular.module('openshiftCommonServices')
   .factory('ProjectsService',
-    function($location, $q, AuthService, DataService, annotationNameFilter, AuthorizationService) {
+    function($location, $q, AuthService, DataService, annotationNameFilter, AuthorizationService, RecentlyViewedProjectsService) {
 
 
       var cleanEditableAnnotations = function(resource) {
@@ -2929,6 +2929,7 @@ angular.module('openshiftCommonServices')
                                         .then(function() {
                                           context.project = project;
                                           context.projectPromise.resolve(project);
+                                          RecentlyViewedProjectsService.addProjectUID(project.metadata.uid);
                                           // TODO: fix need to return context & projectPromise
                                           return [project, context];
                                         });
@@ -2959,11 +2960,91 @@ angular.module('openshiftCommonServices')
             return DataService
                     .update('projects', projectName, cleanEditableAnnotations(data), {projectName: projectName}, {errorNotification: false});
           },
+          create: function(name, displayName, description) {
+            var projectRequest = {
+              apiVersion: "v1",
+              kind: "ProjectRequest",
+              metadata: {
+                name: name
+              },
+              displayName: displayName,
+              description: description
+            };
+            return DataService
+              .create('projectrequests', null, projectRequest, {})
+              .then(function(project) {
+                RecentlyViewedProjectsService.addProjectUID(project.metadata.uid);
+                return project;
+              });
+          },
           canCreate: function() {
             return DataService.get("projectrequests", null, {}, { errorNotification: false});
           }
         };
     });
+;'use strict';
+
+angular.module("openshiftCommonServices")
+  .service("RecentlyViewedProjectsService", function($filter){
+
+    var recentlyViewedProjsKey = "openshift/recently-viewed-project-uids";
+
+    var getProjectUIDs = function() {
+      var recentlyViewed = localStorage.getItem(recentlyViewedProjsKey);
+      return recentlyViewed ? JSON.parse(recentlyViewed) : [];
+    };
+
+    var addProjectUID = function(uid) {
+      var recentlyViewed = getProjectUIDs();
+
+      // add to front of list
+      recentlyViewed.unshift(uid);
+
+      // no dups
+      recentlyViewed = _.uniq(recentlyViewed);
+
+      // limit to 5 items
+      recentlyViewed = _.take(recentlyViewed, 5);
+
+      setRecentlyViewedProjects(recentlyViewed);
+    };
+
+    var clear = function() {
+      localStorage.removeItem(recentlyViewedProjsKey);
+    };
+
+    var setRecentlyViewedProjects = function(recentlyViewed) {
+      localStorage.setItem(recentlyViewedProjsKey, JSON.stringify(recentlyViewed));
+    };
+
+    var orderByMostRecentlyViewed = function(projects) {
+      var recentlyViewedProjects = [];
+      var recentlyViewedIds = getProjectUIDs();
+
+      // remove mostRecentlyViewed projects
+      _.each(recentlyViewedIds, function(uid) {
+        var proj = _.remove(projects, function(project) {
+          return project.metadata.uid === uid;
+        })[0];
+        if(proj !== undefined) {
+          recentlyViewedProjects.push(proj);
+        }
+      });
+
+      // order by creationDate
+      projects =  $filter('orderObjectsByDate')(projects, true);
+
+      // return array where moveRecentlyViewed is first, then sorted by creationDate
+      return recentlyViewedProjects.concat(projects);
+    };
+
+    return {
+      getProjectUIDs: getProjectUIDs,
+      addProjectUID: addProjectUID,
+      orderByMostRecentlyViewed: orderByMostRecentlyViewed,
+      clear: clear
+    };
+  });
 ;'use strict';
 
 // Login strategies
