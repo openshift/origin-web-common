@@ -1,0 +1,10 @@
+<div class="origin-modal-popup tile-click-prevent" ng-if="$ctrl.shown" ng-style="$ctrl.positionStyle"
+     ng-class="{'position-above': $ctrl.showAbove, 'position-left': $ctrl.showLeft}">
+  <h4 class="origin-modal-popup-title">
+    {{$ctrl.modalTitle}}
+  </h4>
+  <div ng-transclude></div>
+  <a href="" class="origin-modal-popup-close" ng-click="$ctrl.onClose()">
+    <span class="pficon pficon-close"></span>
+  </a>
+</div>
