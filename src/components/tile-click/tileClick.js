@@ -11,7 +11,7 @@ angular.module('openshiftCommonUI')
           if (t && (t.closest("a", element).length || t.closest("button", element).length) || t.closest(".tile-click-prevent", element).length) {
             return;
           }
-          $('a.tile-target', element).trigger("click");
+          angular.element($('a.tile-target', element))[0].click();
         });
       }
     };
