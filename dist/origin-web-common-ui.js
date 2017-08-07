@@ -561,7 +561,7 @@ angular.module("openshiftCommonUI")
         isDialog: '@'
       },
       templateUrl: 'src/components/create-project/createProject.html',
-      controller: function($scope, $filter, $location, DataService, NotificationsService, displayNameFilter) {
+      controller: function($scope, $location, ProjectsService, NotificationsService, displayNameFilter) {
         if(!($scope.submitButtonLabel)) {
           $scope.submitButtonLabel = 'Create';
         }
@@ -575,27 +575,18 @@ angular.module("openshiftCommonUI")
         $scope.createProject = function() {
           $scope.disableInputs = true;
           if ($scope.createProjectForm.$valid) {
-            DataService
-              .create('projectrequests', null, {
-                apiVersion: "v1",
-                kind: "ProjectRequest",
-                metadata: {
-                  name: $scope.name
-                },
-                displayName: $scope.displayName,
-                description: $scope.description
-              }, $scope)
-              .then(function(data) {
+            ProjectsService.create($scope.name, $scope.displayName, $scope.description)
+              .then(function(project) {
                 // angular is actually wrapping the redirect action
                 var cb = $scope.redirectAction();
                 if (cb) {
-                  cb(encodeURIComponent(data.metadata.name));
+                  cb(encodeURIComponent(project.metadata.name));
                 } else {
-                  $location.path("project/" + encodeURIComponent(data.metadata.name) + "/create");
+                  $location.path("project/" + encodeURIComponent(project.metadata.name) + "/create");
                 }
                 NotificationsService.addNotification({
                   type: "success",
-                  message: "Project \'"  + displayNameFilter(data) + "\' was successfully created."
+                  message: "Project \'"  + displayNameFilter(project) + "\' was successfully created."
                 });
               }, function(result) {
                 $scope.disableInputs = false;
@@ -626,7 +617,7 @@ angular.module("openshiftCommonUI")
         };
 
         $scope.$on("$destroy", hideErrorNotifications);
-      },
+      }
     };
   });
 ;'use strict';
