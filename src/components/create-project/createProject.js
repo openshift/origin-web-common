@@ -11,7 +11,7 @@ angular.module("openshiftCommonUI")
         isDialog: '@'
       },
       templateUrl: 'src/components/create-project/createProject.html',
-      controller: function($scope, $location, ProjectsService, NotificationsService, displayNameFilter) {
+      controller: function($scope, $location, ProjectsService, NotificationsService, displayNameFilter, Logger) {
         if(!($scope.submitButtonLabel)) {
           $scope.submitButtonLabel = 'Create';
         }
@@ -25,6 +25,8 @@ angular.module("openshiftCommonUI")
         $scope.createProject = function() {
           $scope.disableInputs = true;
           if ($scope.createProjectForm.$valid) {
+            var displayName = $scope.displayName || $scope.name;
+
             ProjectsService.create($scope.name, $scope.displayName, $scope.description)
               .then(function(project) {
                 // angular is actually wrapping the redirect action
@@ -44,12 +46,12 @@ angular.module("openshiftCommonUI")
                 if (data.reason === 'AlreadyExists') {
                   $scope.nameTaken = true;
                 } else {
-                  var msg = data.message || 'An error occurred creating the project.';
+                  var msg = data.message || "An error occurred creating project \'" + displayName + "\'.";
                   NotificationsService.addNotification({
-                    id: 'create-project-error',
                     type: 'error',
                     message: msg
                   });
+                  Logger.error("Project \'" + displayName + "\' could not be created.", result);
                 }
               });
           }

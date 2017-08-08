@@ -34,10 +34,6 @@ angular.module("openshiftCommonUI")
       // Replace so ".dropdown-menu > li > a" styles are applied.
       replace: true,
       link: function(scope, element, attrs) {
-        var showAlert = function(alert) {
-          NotificationsService.addNotification(alert.data);
-        };
-
         var navigateToList = function() {
           if (scope.stayOnCurrentPage) {
             return;
@@ -73,19 +69,16 @@ angular.module("openshiftCommonUI")
           modalInstance.result.then(function() {
             // upon clicking delete button, delete resource and send alert
             var projectName = scope.projectName;
-            var formattedResource = "Project \'"  + scope.displayName + "\'";
+            var formattedResource = "Project \'"  + (scope.displayName || projectName) + "\'";
             var context = {};
 
             DataService.delete({
               resource: APIService.kindToResource("Project")
             }, projectName, context)
             .then(function() {
-              showAlert({
-                name: projectName,
-                data: {
-                  type: "success",
-                  message: formattedResource + " was marked for deletion."
-                }
+              NotificationsService.addNotification({
+                type: "success",
+                message: formattedResource + " was marked for deletion."
               });
 
               if (scope.success) {
@@ -96,12 +89,11 @@ angular.module("openshiftCommonUI")
             })
             .catch(function(err) {
               // called if failure to delete
-              var alert = {
+              NotificationsService.addNotification({
                 type: "error",
                 message: formattedResource + " could not be deleted.",
                 details: $filter('getErrorDetails')(err)
-              };
-              NotificationsService.addNotification(alert);
+              });
               Logger.error(formattedResource + " could not be deleted.", err);
             });
           });

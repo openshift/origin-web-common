@@ -3,7 +3,7 @@
     <div class="form-group">
       <label for="name" class="required">Name</label>
       <span ng-class="{'has-error': (createProjectForm.name.$error.pattern && createProjectForm.name.$touched) || nameTaken}">
-        <input class="form-control input-lg"
+        <input class="form-control"
             name="name"
             id="name"
             placeholder="my-project"
@@ -49,7 +49,7 @@
 
     <div class="form-group">
       <label for="displayName">Display Name</label>
-      <input class="form-control input-lg"
+      <input class="form-control"
           name="displayName"
           id="displayName"
           placeholder="My Project"
@@ -59,7 +59,7 @@
 
     <div class="form-group">
       <label for="description">Description</label>
-      <textarea class="form-control input-lg"
+      <textarea class="form-control"
           name="description"
           id="description"
           placeholder="A short description."
@@ -68,7 +68,7 @@
 
     <div class="button-group">
       <button type="submit"
-          class="btn btn-primary btn-lg"
+          class="btn btn-primary"
           ng-class="{'dialog-btn': isDialog}"
           ng-click="createProject()"
           ng-disabled="createProjectForm.$invalid || nameTaken || disableInputs"
@@ -76,7 +76,7 @@
         Create
       </button>
       <button
-          class="btn btn-default btn-lg"
+          class="btn btn-default"
           ng-class="{'dialog-btn': isDialog}"
           ng-click="cancelCreateProject()">
         Cancel

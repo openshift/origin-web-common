@@ -7,14 +7,13 @@ angular.module("openshiftCommonUI")
       restrict: 'E',
       scope: {
         project: '=',
-        alerts: '=',
         submitButtonLabel: '@',
         redirectAction: '&',
         onCancel: '&',
         isDialog: '@'
       },
       templateUrl: 'src/components/edit-project/editProject.html',
-      controller: function($scope, $filter, $location, DataService, NotificationsService, annotationNameFilter, displayNameFilter) {
+      controller: function($scope, $filter, $location, DataService, NotificationsService, annotationNameFilter, displayNameFilter, Logger) {
         if(!($scope.submitButtonLabel)) {
           $scope.submitButtonLabel = 'Save';
         }
@@ -51,11 +50,6 @@ angular.module("openshiftCommonUI")
           return resource;
         };
 
-        var showAlert = function(alert) {
-          $scope.alerts["update"] = alert;
-          NotificationsService.addNotification(alert);
-        };
-
         $scope.editableFields = editableFields($scope.project);
 
         $scope.update = function() {
@@ -75,18 +69,19 @@ angular.module("openshiftCommonUI")
                   cb(encodeURIComponent($scope.project.metadata.name));
                 }
 
-                showAlert({
-                  type: "success",
+                NotificationsService.addNotification({
+                  type: 'success',
                   message: "Project \'"  + displayNameFilter(project) + "\' was successfully updated."
                 });
               }, function(result) {
                 $scope.disableInputs = false;
                 $scope.editableFields = editableFields($scope.project);
-                showAlert({
-                  type: "error",
-                  message: "An error occurred while updating the project",
+                NotificationsService.addNotification({
+                  type: 'error',
+                  message: "An error occurred while updating project \'" + displayNameFilter($scope.project) + "\'." ,
                   details: $filter('getErrorDetails')(result)
                 });
+                Logger.error("Project \'" + displayNameFilter($scope.project) + "\' could not be updated.", result);
               });
           }
         };
