@@ -4,6 +4,15 @@
 angular.module('openshiftCommonServices')
 .factory('DataService', function($cacheFactory, $http, $ws, $rootScope, $q, API_CFG, APIService, Logger, $timeout, base64, base64util) {
 
+  // Accept PartialObjectMetadataList. Unfortunately we can't use the Accept
+  // header to fallback to JSON due to an API server content negotiation bug.
+  // https://github.com/kubernetes/kubernetes/issues/50519
+  //
+  // This is a potential version skew issue for when the web console runs in
+  // a pod where we potentially need to support different server versions.
+  // https://trello.com/c/9oaUh8xP
+  var ACCEPT_PARTIAL_OBJECT_METADATA_LIST = 'application/json;as=PartialObjectMetadataList;v=v1alpha1;g=meta.k8s.io';
+
   function Data(array) {
     this._data = {};
     this._objectsByAttribute(array, "metadata.name", this._data);
@@ -150,11 +159,12 @@ angular.module('openshiftCommonServices')
 //                    which includes a helper method for returning a map indexed
 //                    by attribute (e.g. data.by('metadata.name'))
 // opts:      http - options to pass to the inner $http call
+//            partialObjectMetadataList - if true, request only the metadata for each object
 //
 // returns a promise
   DataService.prototype.list = function(resource, context, callback, opts) {
     resource = APIService.toResourceGroupVersion(resource);
-    var key = this._uniqueKey(resource, null, context, _.get(opts, 'http.params'));
+    var key = this._uniqueKey(resource, null, context, opts);
     var deferred = this._listDeferred(key);
     if (callback) {
       deferred.promise.then(callback);
@@ -416,7 +426,7 @@ angular.module('openshiftCommonServices')
   DataService.prototype.get = function(resource, name, context, opts) {
     resource = APIService.toResourceGroupVersion(resource);
     opts = opts || {};
-    var key = this._uniqueKey(resource, name, context, _.get(opts, 'http.params'));
+    var key = this._uniqueKey(resource, name, context, opts);
     var force = !!opts.force;
     delete opts.force;
 
@@ -613,7 +623,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
     resource = APIService.toResourceGroupVersion(resource);
     opts = opts || {};
     var invokeApply =  !opts.skipDigest;
-    var key = this._uniqueKey(resource, null, context, _.get(opts, 'http.params'));
+    var key = this._uniqueKey(resource, null, context, opts);
     if (callback) {
       // If we were given a callback, add it
       this._watchCallbacks(key).add(callback);
@@ -692,7 +702,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
   DataService.prototype.watchObject = function(resource, name, context, callback, opts) {
     resource = APIService.toResourceGroupVersion(resource);
     opts = opts || {};
-    var key = this._uniqueKey(resource, name, context, _.get(opts, 'http.params'));
+    var key = this._uniqueKey(resource, name, context, opts);
     var wrapperCallback;
     if (callback) {
       // If we were given a callback, add it
@@ -733,10 +743,10 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
     var callback = handle.callback;
     var objectCallback = handle.objectCallback;
     var opts = handle.opts;
-    var key = this._uniqueKey(resource, null, context, _.get(opts, 'http.params'));
+    var key = this._uniqueKey(resource, null, context, opts);
 
     if (objectCallback && objectName) {
-      var objectKey = this._uniqueKey(resource, objectName, context, _.get(opts, 'http.params'));
+      var objectKey = this._uniqueKey(resource, objectName, context, opts);
       var objCallbacks = this._watchObjectCallbacks(objectKey);
       objCallbacks.remove(objectCallback);
     }
@@ -954,22 +964,35 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
   // - ensure namespace if available
   // - ensure only witelisted url params used for keys (fieldSelector, labelSelector) via paramsForKey
   //   and that these are consistently ordered
+  // - ensure that requests with different Accept request headers have different keys
   // - NOTE: Do not use the key as your url for API requests. This function does not use the 'isWebsocket'
   //         bool.  Both websocket & http operations should respond with the same data from cache if key matches
   //         so the unique key will always include http://
-  DataService.prototype._uniqueKey = function(resource, name, context, params) {
+  DataService.prototype._uniqueKey = function(resource, name, context, opts) {
     var ns = context && context.namespace ||
              _.get(context, 'project.metadata.name') ||
              context.projectName;
-    return this._urlForResource(resource, name, context, null, angular.extend({}, {}, {namespace: ns})).toString() + paramsForKey(params || {});
+    var params = _.get(opts, 'http.params');
+    var url = this._urlForResource(resource, name, context, null, angular.extend({}, {}, {namespace: ns})).toString() + paramsForKey(params || {});
+    if (_.get(opts, 'partialObjectMetadataList')) {
+      // Make sure partial objects get a different cache key.
+      return url + '#' + ACCEPT_PARTIAL_OBJECT_METADATA_LIST;
+    }
+
+    return url;
   };
 
 
   DataService.prototype._startListOp = function(resource, context, opts) {
     opts = opts || {};
-    var key = this._uniqueKey(resource, null, context, _.get(opts, 'http.params'));
+    var key = this._uniqueKey(resource, null, context, opts);
     // mark the operation as in progress
     this._listInFlight(key, true);
+
+    var headers = {};
+    if (opts.partialObjectMetadataList) {
+      headers.Accept = ACCEPT_PARTIAL_OBJECT_METADATA_LIST;
+    }
 
     var self = this;
     if (context.projectPromise && !resource.equals("projects")) {
@@ -977,6 +1000,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
         $http(angular.extend({
           method: 'GET',
           auth: {},
+          headers: headers,
           url: self._urlForResource(resource, null, context, false, {namespace: project.metadata.name})
         }, opts.http || {}))
         .success(function(data, status, headerFunc, config, statusText) {
@@ -1000,6 +1024,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
       $http({
         method: 'GET',
         auth: {},
+        headers: headers,
         url: this._urlForResource(resource, null, context),
       }).success(function(data, status, headerFunc, config, statusText) {
         self._listOpComplete(key, resource, context, opts, data);
@@ -1044,7 +1069,9 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
     var deferred = this._listDeferred(key);
     delete this._listDeferredMap[key];
 
-    this._resourceVersion(key, data.resourceVersion || data.metadata.resourceVersion);
+    // Some responses might not have `data.metadata` (for instance, PartialObjectMetadataList).
+    var resourceVersion = _.get(data, 'resourceVersion') || _.get(data, 'metadata.resourceVersion');
+    this._resourceVersion(key, resourceVersion);
     this._data(key, items);
     deferred.resolve(this._data(key));
     this._watchCallbacks(key).fire(this._data(key));
@@ -1109,12 +1136,12 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
 
   DataService.prototype._watchOpOnOpen = function(resource, context, opts, event) {
     Logger.log('Websocket opened for resource/context', resource, context);
-    var key = this._uniqueKey(resource, null, context, _.get(opts, 'http.params'));
+    var key = this._uniqueKey(resource, null, context, opts);
     this._addWebsocketEvent(key, 'open');
   };
 
   DataService.prototype._watchOpOnMessage = function(resource, context, opts, event) {
-    var key = this._uniqueKey(resource, null, context, _.get(opts, 'http.params'));
+    var key = this._uniqueKey(resource, null, context, opts);
     opts = opts || {};
     var invokeApply = !opts.skipDigest;
     try {
@@ -1156,7 +1183,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
 
   DataService.prototype._watchOpOnClose = function(resource, context, opts, event) {
     var eventWS = event.target;
-    var key = this._uniqueKey(resource, null, context, _.get(opts, 'http.params'));
+    var key = this._uniqueKey(resource, null, context, opts);
 
     if (!eventWS) {
       Logger.log("Skipping reopen, no eventWS in event", event);
