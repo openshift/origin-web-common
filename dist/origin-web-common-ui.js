@@ -206,7 +206,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "    <div class=\"form-group\">\n" +
     "      <label for=\"name\" class=\"required\">Name</label>\n" +
     "      <span ng-class=\"{'has-error': (createProjectForm.name.$error.pattern && createProjectForm.name.$touched) || nameTaken}\">\n" +
-    "        <input class=\"form-control input-lg\"\n" +
+    "        <input class=\"form-control\"\n" +
     "            name=\"name\"\n" +
     "            id=\"name\"\n" +
     "            placeholder=\"my-project\"\n" +
@@ -252,7 +252,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "\n" +
     "    <div class=\"form-group\">\n" +
     "      <label for=\"displayName\">Display Name</label>\n" +
-    "      <input class=\"form-control input-lg\"\n" +
+    "      <input class=\"form-control\"\n" +
     "          name=\"displayName\"\n" +
     "          id=\"displayName\"\n" +
     "          placeholder=\"My Project\"\n" +
@@ -262,7 +262,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "\n" +
     "    <div class=\"form-group\">\n" +
     "      <label for=\"description\">Description</label>\n" +
-    "      <textarea class=\"form-control input-lg\"\n" +
+    "      <textarea class=\"form-control\"\n" +
     "          name=\"description\"\n" +
     "          id=\"description\"\n" +
     "          placeholder=\"A short description.\"\n" +
@@ -271,7 +271,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "\n" +
     "    <div class=\"button-group\">\n" +
     "      <button type=\"submit\"\n" +
-    "          class=\"btn btn-primary btn-lg\"\n" +
+    "          class=\"btn btn-primary\"\n" +
     "          ng-class=\"{'dialog-btn': isDialog}\"\n" +
     "          ng-click=\"createProject()\"\n" +
     "          ng-disabled=\"createProjectForm.$invalid || nameTaken || disableInputs\"\n" +
@@ -279,7 +279,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "        Create\n" +
     "      </button>\n" +
     "      <button\n" +
-    "          class=\"btn btn-default btn-lg\"\n" +
+    "          class=\"btn btn-default\"\n" +
     "          ng-class=\"{'dialog-btn': isDialog}\"\n" +
     "          ng-click=\"cancelCreateProject()\">\n" +
     "        Cancel\n" +
@@ -357,7 +357,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "  <fieldset ng-disabled=\"disableInputs\">\n" +
     "    <div class=\"form-group\">\n" +
     "      <label for=\"displayName\">Display Name</label>\n" +
-    "      <input class=\"form-control input-lg\"\n" +
+    "      <input class=\"form-control\"\n" +
     "             name=\"displayName\"\n" +
     "             id=\"displayName\"\n" +
     "             placeholder=\"My Project\"\n" +
@@ -367,7 +367,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "\n" +
     "    <div class=\"form-group\">\n" +
     "      <label for=\"description\">Description</label>\n" +
-    "                    <textarea class=\"form-control input-lg\"\n" +
+    "                    <textarea class=\"form-control\"\n" +
     "                              name=\"description\"\n" +
     "                              id=\"description\"\n" +
     "                              placeholder=\"A short description.\"\n" +
@@ -376,13 +376,13 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "\n" +
     "    <div class=\"button-group\">\n" +
     "      <button type=\"submit\"\n" +
-    "              class=\"btn btn-primary btn-lg\"\n" +
+    "              class=\"btn btn-primary\"\n" +
     "              ng-class=\"{'dialog-btn': isDialog}\"\n" +
     "              ng-click=\"update()\"\n" +
     "              ng-disabled=\"editProjectForm.$invalid || disableInputs\"\n" +
     "              value=\"\">{{submitButtonLabel}}</button>\n" +
     "      <button\n" +
-    "          class=\"btn btn-default btn-lg\"\n" +
+    "          class=\"btn btn-default\"\n" +
     "          ng-class=\"{'dialog-btn': isDialog}\"\n" +
     "          ng-click=\"cancelEditProject()\">\n" +
     "        Cancel\n" +
@@ -561,7 +561,7 @@ angular.module("openshiftCommonUI")
         isDialog: '@'
       },
       templateUrl: 'src/components/create-project/createProject.html',
-      controller: function($scope, $location, ProjectsService, NotificationsService, displayNameFilter) {
+      controller: function($scope, $location, ProjectsService, NotificationsService, displayNameFilter, Logger) {
         if(!($scope.submitButtonLabel)) {
           $scope.submitButtonLabel = 'Create';
         }
@@ -575,6 +575,8 @@ angular.module("openshiftCommonUI")
         $scope.createProject = function() {
           $scope.disableInputs = true;
           if ($scope.createProjectForm.$valid) {
+            var displayName = $scope.displayName || $scope.name;
+
             ProjectsService.create($scope.name, $scope.displayName, $scope.description)
               .then(function(project) {
                 // angular is actually wrapping the redirect action
@@ -594,12 +596,12 @@ angular.module("openshiftCommonUI")
                 if (data.reason === 'AlreadyExists') {
                   $scope.nameTaken = true;
                 } else {
-                  var msg = data.message || 'An error occurred creating the project.';
+                  var msg = data.message || "An error occurred creating project \'" + displayName + "\'.";
                   NotificationsService.addNotification({
-                    id: 'create-project-error',
                     type: 'error',
                     message: msg
                   });
+                  Logger.error("Project \'" + displayName + "\' could not be created.", result);
                 }
               });
           }
@@ -656,10 +658,6 @@ angular.module("openshiftCommonUI")
       // Replace so ".dropdown-menu > li > a" styles are applied.
       replace: true,
       link: function(scope, element, attrs) {
-        var showAlert = function(alert) {
-          NotificationsService.addNotification(alert.data);
-        };
-
         var navigateToList = function() {
           if (scope.stayOnCurrentPage) {
             return;
@@ -695,19 +693,16 @@ angular.module("openshiftCommonUI")
           modalInstance.result.then(function() {
             // upon clicking delete button, delete resource and send alert
             var projectName = scope.projectName;
-            var formattedResource = "Project \'"  + scope.displayName + "\'";
+            var formattedResource = "Project \'"  + (scope.displayName || projectName) + "\'";
             var context = {};
 
             DataService.delete({
               resource: APIService.kindToResource("Project")
             }, projectName, context)
             .then(function() {
-              showAlert({
-                name: projectName,
-                data: {
-                  type: "success",
-                  message: formattedResource + " was marked for deletion."
-                }
+              NotificationsService.addNotification({
+                type: "success",
+                message: formattedResource + " was marked for deletion."
               });
 
               if (scope.success) {
@@ -718,12 +713,11 @@ angular.module("openshiftCommonUI")
             })
             .catch(function(err) {
               // called if failure to delete
-              var alert = {
+              NotificationsService.addNotification({
                 type: "error",
                 message: formattedResource + " could not be deleted.",
                 details: $filter('getErrorDetails')(err)
-              };
-              NotificationsService.addNotification(alert);
+              });
               Logger.error(formattedResource + " could not be deleted.", err);
             });
           });
@@ -758,14 +752,13 @@ angular.module("openshiftCommonUI")
       restrict: 'E',
       scope: {
         project: '=',
-        alerts: '=',
         submitButtonLabel: '@',
         redirectAction: '&',
         onCancel: '&',
         isDialog: '@'
       },
       templateUrl: 'src/components/edit-project/editProject.html',
-      controller: function($scope, $filter, $location, DataService, NotificationsService, annotationNameFilter, displayNameFilter) {
+      controller: function($scope, $filter, $location, DataService, NotificationsService, annotationNameFilter, displayNameFilter, Logger) {
         if(!($scope.submitButtonLabel)) {
           $scope.submitButtonLabel = 'Save';
         }
@@ -802,11 +795,6 @@ angular.module("openshiftCommonUI")
           return resource;
         };
 
-        var showAlert = function(alert) {
-          $scope.alerts["update"] = alert;
-          NotificationsService.addNotification(alert);
-        };
-
         $scope.editableFields = editableFields($scope.project);
 
         $scope.update = function() {
@@ -826,18 +814,19 @@ angular.module("openshiftCommonUI")
                   cb(encodeURIComponent($scope.project.metadata.name));
                 }
 
-                showAlert({
-                  type: "success",
+                NotificationsService.addNotification({
+                  type: 'success',
                   message: "Project \'"  + displayNameFilter(project) + "\' was successfully updated."
                 });
               }, function(result) {
                 $scope.disableInputs = false;
                 $scope.editableFields = editableFields($scope.project);
-                showAlert({
-                  type: "error",
-                  message: "An error occurred while updating the project",
+                NotificationsService.addNotification({
+                  type: 'error',
+                  message: "An error occurred while updating project \'" + displayNameFilter($scope.project) + "\'." ,
                   details: $filter('getErrorDetails')(result)
                 });
+                Logger.error("Project \'" + displayNameFilter($scope.project) + "\' could not be updated.", result);
               });
           }
         };

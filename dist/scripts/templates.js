@@ -177,7 +177,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "    <div class=\"form-group\">\n" +
     "      <label for=\"name\" class=\"required\">Name</label>\n" +
     "      <span ng-class=\"{'has-error': (createProjectForm.name.$error.pattern && createProjectForm.name.$touched) || nameTaken}\">\n" +
-    "        <input class=\"form-control input-lg\"\n" +
+    "        <input class=\"form-control\"\n" +
     "            name=\"name\"\n" +
     "            id=\"name\"\n" +
     "            placeholder=\"my-project\"\n" +
@@ -223,7 +223,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "\n" +
     "    <div class=\"form-group\">\n" +
     "      <label for=\"displayName\">Display Name</label>\n" +
-    "      <input class=\"form-control input-lg\"\n" +
+    "      <input class=\"form-control\"\n" +
     "          name=\"displayName\"\n" +
     "          id=\"displayName\"\n" +
     "          placeholder=\"My Project\"\n" +
@@ -233,7 +233,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "\n" +
     "    <div class=\"form-group\">\n" +
     "      <label for=\"description\">Description</label>\n" +
-    "      <textarea class=\"form-control input-lg\"\n" +
+    "      <textarea class=\"form-control\"\n" +
     "          name=\"description\"\n" +
     "          id=\"description\"\n" +
     "          placeholder=\"A short description.\"\n" +
@@ -242,7 +242,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "\n" +
     "    <div class=\"button-group\">\n" +
     "      <button type=\"submit\"\n" +
-    "          class=\"btn btn-primary btn-lg\"\n" +
+    "          class=\"btn btn-primary\"\n" +
     "          ng-class=\"{'dialog-btn': isDialog}\"\n" +
     "          ng-click=\"createProject()\"\n" +
     "          ng-disabled=\"createProjectForm.$invalid || nameTaken || disableInputs\"\n" +
@@ -250,7 +250,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "        Create\n" +
     "      </button>\n" +
     "      <button\n" +
-    "          class=\"btn btn-default btn-lg\"\n" +
+    "          class=\"btn btn-default\"\n" +
     "          ng-class=\"{'dialog-btn': isDialog}\"\n" +
     "          ng-click=\"cancelCreateProject()\">\n" +
     "        Cancel\n" +
@@ -328,7 +328,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "  <fieldset ng-disabled=\"disableInputs\">\n" +
     "    <div class=\"form-group\">\n" +
     "      <label for=\"displayName\">Display Name</label>\n" +
-    "      <input class=\"form-control input-lg\"\n" +
+    "      <input class=\"form-control\"\n" +
     "             name=\"displayName\"\n" +
     "             id=\"displayName\"\n" +
     "             placeholder=\"My Project\"\n" +
@@ -338,7 +338,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "\n" +
     "    <div class=\"form-group\">\n" +
     "      <label for=\"description\">Description</label>\n" +
-    "                    <textarea class=\"form-control input-lg\"\n" +
+    "                    <textarea class=\"form-control\"\n" +
     "                              name=\"description\"\n" +
     "                              id=\"description\"\n" +
     "                              placeholder=\"A short description.\"\n" +
@@ -347,13 +347,13 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "\n" +
     "    <div class=\"button-group\">\n" +
     "      <button type=\"submit\"\n" +
-    "              class=\"btn btn-primary btn-lg\"\n" +
+    "              class=\"btn btn-primary\"\n" +
     "              ng-class=\"{'dialog-btn': isDialog}\"\n" +
     "              ng-click=\"update()\"\n" +
     "              ng-disabled=\"editProjectForm.$invalid || disableInputs\"\n" +
     "              value=\"\">{{submitButtonLabel}}</button>\n" +
     "      <button\n" +
-    "          class=\"btn btn-default btn-lg\"\n" +
+    "          class=\"btn btn-default\"\n" +
     "          ng-class=\"{'dialog-btn': isDialog}\"\n" +
     "          ng-click=\"cancelEditProject()\">\n" +
     "        Cancel\n" +
