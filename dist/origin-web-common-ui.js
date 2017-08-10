@@ -310,11 +310,10 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "  <!-- Use a form so that the enter key submits when typing a project name to confirm. -->\n" +
     "  <form>\n" +
     "    <div class=\"modal-body\">\n" +
-    "      <h1>Are you sure you want to delete the project\n" +
-    "        '<strong>{{displayName ? displayName : projectName}}</strong>'?</h1>\n" +
+    "      <h1>Are you sure you want to delete the project '<strong>{{project | displayName}}</strong>'?</h1>\n" +
     "      <p>\n" +
     "        This will <strong>delete all resources</strong> associated with\n" +
-    "        the project {{displayName ? displayName : projectName}} and <strong>cannot be\n" +
+    "        the project {{project | displayName}} and <strong>cannot be\n" +
     "        undone</strong>.  Make sure this is something you really want to do!\n" +
     "      </p>\n" +
     "      <div ng-show=\"typeNameToConfirm\">\n" +
@@ -334,8 +333,8 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "      </div>\n" +
     "    </div>\n" +
     "    <div class=\"modal-footer\">\n" +
-    "      <button ng-disabled=\"typeNameToConfirm && confirmName !== projectName && confirmName !== displayName\" class=\"btn btn-lg btn-danger\" type=\"submit\" ng-click=\"delete();\">Delete</button>\n" +
-    "      <button class=\"btn btn-lg btn-default\" type=\"button\" ng-click=\"cancel();\">Cancel</button>\n" +
+    "      <button ng-disabled=\"typeNameToConfirm && confirmName !== project.metadata.name && confirmName !== (project | displayName : false)\" class=\"btn btn-lg btn-danger\" type=\"submit\" ng-click=\"delete()\">Delete</button>\n" +
+    "      <button class=\"btn btn-lg btn-default\" type=\"button\" ng-click=\"cancel()\">Cancel</button>\n" +
     "    </div>\n" +
     "  </form>\n" +
     "</div>\n"
@@ -625,14 +624,12 @@ angular.module("openshiftCommonUI")
 ;'use strict';
 
 angular.module("openshiftCommonUI")
-  .directive("deleteProject", function ($uibModal, $location, $filter, $q, hashSizeFilter, APIService, DataService, NotificationsService, Logger) {
+  .directive("deleteProject", function($uibModal, $location, $filter, $q, hashSizeFilter, APIService, NotificationsService, ProjectsService, Logger) {
     return {
       restrict: "E",
       scope: {
-        // The name of project to delete
-        projectName: "@",
-        // Optional display name of the project to delete.
-        displayName: "@",
+        // The project to delete
+        project: "=",
         // Set to true to disable the delete button.
         disableDelete: "=?",
         // Force the user to enter the name before we'll delete the project.
@@ -658,6 +655,7 @@ angular.module("openshiftCommonUI")
       // Replace so ".dropdown-menu > li > a" styles are applied.
       replace: true,
       link: function(scope, element, attrs) {
+        var displayName = $filter('displayName');
         var navigateToList = function() {
           if (scope.stayOnCurrentPage) {
             return;
@@ -692,14 +690,9 @@ angular.module("openshiftCommonUI")
 
           modalInstance.result.then(function() {
             // upon clicking delete button, delete resource and send alert
-            var projectName = scope.projectName;
-            var formattedResource = "Project \'"  + (scope.displayName || projectName) + "\'";
-            var context = {};
+            var formattedResource = "Project \'"  + displayName(scope.project) + "\'";
 
-            DataService.delete({
-              resource: APIService.kindToResource("Project")
-            }, projectName, context)
-            .then(function() {
+            ProjectsService.delete(scope.project).then(function() {
               NotificationsService.addNotification({
                 type: "success",
                 message: formattedResource + " was marked for deletion."
@@ -758,7 +751,14 @@ angular.module("openshiftCommonUI")
         isDialog: '@'
       },
       templateUrl: 'src/components/edit-project/editProject.html',
-      controller: function($scope, $filter, $location, DataService, NotificationsService, annotationNameFilter, displayNameFilter, Logger) {
+      controller: function($scope,
+                           $filter,
+                           $location,
+                           Logger,
+                           NotificationsService,
+                           ProjectsService,
+                           annotationNameFilter,
+                           displayNameFilter) {
         if(!($scope.submitButtonLabel)) {
           $scope.submitButtonLabel = 'Save';
         }
@@ -800,13 +800,10 @@ angular.module("openshiftCommonUI")
         $scope.update = function() {
           $scope.disableInputs = true;
           if ($scope.editProjectForm.$valid) {
-            DataService
+            ProjectsService
               .update(
-                'projects',
                 $scope.project.metadata.name,
-                cleanEditableAnnotations(mergeEditable($scope.project, $scope.editableFields)),
-                {projectName: $scope.project.name},
-                {errorNotification: false})
+                cleanEditableAnnotations(mergeEditable($scope.project, $scope.editableFields)))
               .then(function(project) {
                 // angular is actually wrapping the redirect action :/
                 var cb = $scope.redirectAction();

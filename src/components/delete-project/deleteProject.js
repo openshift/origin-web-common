@@ -1,14 +1,12 @@
 'use strict';
 
 angular.module("openshiftCommonUI")
-  .directive("deleteProject", function ($uibModal, $location, $filter, $q, hashSizeFilter, APIService, DataService, NotificationsService, Logger) {
+  .directive("deleteProject", function($uibModal, $location, $filter, $q, hashSizeFilter, APIService, NotificationsService, ProjectsService, Logger) {
     return {
       restrict: "E",
       scope: {
-        // The name of project to delete
-        projectName: "@",
-        // Optional display name of the project to delete.
-        displayName: "@",
+        // The project to delete
+        project: "=",
         // Set to true to disable the delete button.
         disableDelete: "=?",
         // Force the user to enter the name before we'll delete the project.
@@ -34,6 +32,7 @@ angular.module("openshiftCommonUI")
       // Replace so ".dropdown-menu > li > a" styles are applied.
       replace: true,
       link: function(scope, element, attrs) {
+        var displayName = $filter('displayName');
         var navigateToList = function() {
           if (scope.stayOnCurrentPage) {
             return;
@@ -68,14 +67,9 @@ angular.module("openshiftCommonUI")
 
           modalInstance.result.then(function() {
             // upon clicking delete button, delete resource and send alert
-            var projectName = scope.projectName;
-            var formattedResource = "Project \'"  + (scope.displayName || projectName) + "\'";
-            var context = {};
+            var formattedResource = "Project \'"  + displayName(scope.project) + "\'";
 
-            DataService.delete({
-              resource: APIService.kindToResource("Project")
-            }, projectName, context)
-            .then(function() {
+            ProjectsService.delete(scope.project).then(function() {
               NotificationsService.addNotification({
                 type: "success",
                 message: formattedResource + " was marked for deletion."
