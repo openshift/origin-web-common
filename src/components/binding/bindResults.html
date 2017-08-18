@@ -20,7 +20,8 @@
       The binding operation created the secret
       <a ng-if="ctrl.secretHref && 'secrets' | canI : 'list'"
          ng-href="{{ctrl.secretHref}}">{{ctrl.binding.spec.secretName}}</a>
-      <span ng-if="!ctrl.secretHref || !('secrets' | canI : 'list')">{{ctrl.binding.spec.secretName}}</span>
+      <a ng-if="!ctrl.secretHref || !('secrets' | canI : 'list')"
+         ng-href="{{ctrl.secretHref}}">{{ctrl.binding.spec.secretName}}</a>
       that you may need to reference in your application.
       <span ng-if="ctrl.showPodPresets">Its data will be available to your application as environment variables.</span>
     </div>
