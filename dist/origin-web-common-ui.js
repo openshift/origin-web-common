@@ -113,7 +113,8 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "      The binding operation created the secret\n" +
     "      <a ng-if=\"ctrl.secretHref && 'secrets' | canI : 'list'\"\n" +
     "         ng-href=\"{{ctrl.secretHref}}\">{{ctrl.binding.spec.secretName}}</a>\n" +
-    "      <span ng-if=\"!ctrl.secretHref || !('secrets' | canI : 'list')\">{{ctrl.binding.spec.secretName}}</span>\n" +
+    "      <a ng-if=\"!ctrl.secretHref || !('secrets' | canI : 'list')\"\n" +
+    "         ng-href=\"{{ctrl.secretHref}}\">{{ctrl.binding.spec.secretName}}</a>\n" +
     "      that you may need to reference in your application.\n" +
     "      <span ng-if=\"ctrl.showPodPresets\">Its data will be available to your application as environment variables.</span>\n" +
     "    </div>\n" +
