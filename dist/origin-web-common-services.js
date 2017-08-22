@@ -2921,8 +2921,28 @@ angular.module('openshiftCommonServices')
 
 angular.module('openshiftCommonServices')
   .factory('ProjectsService',
-    function($location, $q, AuthService, DataService, annotationNameFilter, AuthorizationService, RecentlyViewedProjectsService) {
+           function($location,
+                    $q,
+                    $rootScope,
+                    AuthService,
+                    AuthorizationService,
+                    DataService,
+                    Logger,
+                    RecentlyViewedProjectsService,
+                    annotationNameFilter) {
 
+      // Cache project data when we can so we don't request it on every page load.
+      var cachedProjectData;
+      var cachedProjectDataIncomplete = false;
+
+      var clearCachedProjectData = function() {
+        Logger.debug('ProjectsService: clearing project cache');
+        cachedProjectData = null;
+        cachedProjectDataIncomplete = false;
+      };
+
+      AuthService.onUserChanged(clearCachedProjectData);
+      AuthService.onLogout(clearCachedProjectData);
 
       var cleanEditableAnnotations = function(resource) {
         var paths = [
@@ -2957,6 +2977,10 @@ angular.module('openshiftCommonServices')
                                           context.project = project;
                                           context.projectPromise.resolve(project);
                                           RecentlyViewedProjectsService.addProjectUID(project.metadata.uid);
+                                          if (cachedProjectData) {
+                                            cachedProjectData.update(project, 'MODIFIED');
+                                          }
+
                                           // TODO: fix need to return context & projectPromise
                                           return [project, context];
                                         });
@@ -2983,10 +3007,56 @@ angular.module('openshiftCommonServices')
                               });
                     });
           },
-          update: function(projectName, data) {
-            return DataService
-                    .update('projects', projectName, cleanEditableAnnotations(data), {projectName: projectName}, {errorNotification: false});
+
+          // List the projects the user has access to. This method returns
+          // cached data if the projects had previously been fetched to avoid
+          // requesting them again and again, which is a problem for admins who
+          // might have hundreds or more.
+          list: function(forceRefresh) {
+            if (cachedProjectData && !forceRefresh) {
+              Logger.debug('ProjectsService: returning cached project data');
+              return $q.when(cachedProjectData);
+            }
+
+            Logger.debug('ProjectsService: listing projects, force refresh', forceRefresh);
+            return DataService.list('projects', {}).then(function(projectData) {
+              cachedProjectData = projectData;
+              return projectData;
+            }, function(error) {
+              // If the request fails, don't try to list projects again without `forceRefresh`.
+              cachedProjectData = {};
+              cachedProjectDataIncomplete = true;
+            });
           },
+
+          isProjectListIncomplete: function() {
+            return cachedProjectDataIncomplete;
+          },
+
+          watch: function(context, callback) {
+            // Wrap `DataService.watch` so we can update the cached projects
+            // list on changes. TODO: We might want to disable watches entirely
+            // if we know the project list is large.
+            return DataService.watch('projects', context, function(projectData) {
+              cachedProjectData = projectData;
+              callback(projectData);
+            });
+          },
+
+          update: function(projectName, data) {
+            return DataService.update('projects', projectName, cleanEditableAnnotations(data), {
+              projectName: projectName
+            }, {
+              errorNotification: false
+            }).then(function(updatedProject) {
+              if (cachedProjectData) {
+                cachedProjectData.update(updatedProject, 'MODIFIED');
+              }
+
+              return updatedProject;
+            });
+          },
+
           create: function(name, displayName, description) {
             var projectRequest = {
               apiVersion: "v1",
@@ -3001,11 +3071,25 @@ angular.module('openshiftCommonServices')
               .create('projectrequests', null, projectRequest, {})
               .then(function(project) {
                 RecentlyViewedProjectsService.addProjectUID(project.metadata.uid);
+                if (cachedProjectData) {
+                  cachedProjectData.update(project, 'ADDED');
+                }
                 return project;
               });
           },
+
           canCreate: function() {
             return DataService.get("projectrequests", null, {}, { errorNotification: false});
+          },
+
+          delete: function(project) {
+            return DataService.delete('projects', project.metadata.name, {}).then(function(deletedProject) {
+              if (cachedProjectData) {
+                cachedProjectData.update(project, 'DELETED');
+              }
+
+              return deletedProject;
+            });
           }
         };
     });

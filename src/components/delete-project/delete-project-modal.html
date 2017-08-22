@@ -2,11 +2,10 @@
   <!-- Use a form so that the enter key submits when typing a project name to confirm. -->
   <form>
     <div class="modal-body">
-      <h1>Are you sure you want to delete the project
-        '<strong>{{displayName ? displayName : projectName}}</strong>'?</h1>
+      <h1>Are you sure you want to delete the project '<strong>{{project | displayName}}</strong>'?</h1>
       <p>
         This will <strong>delete all resources</strong> associated with
-        the project {{displayName ? displayName : projectName}} and <strong>cannot be
+        the project {{project | displayName}} and <strong>cannot be
         undone</strong>.  Make sure this is something you really want to do!
       </p>
       <div ng-show="typeNameToConfirm">
@@ -26,8 +25,8 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button ng-disabled="typeNameToConfirm && confirmName !== projectName && confirmName !== displayName" class="btn btn-lg btn-danger" type="submit" ng-click="delete();">Delete</button>
-      <button class="btn btn-lg btn-default" type="button" ng-click="cancel();">Cancel</button>
+      <button ng-disabled="typeNameToConfirm && confirmName !== project.metadata.name && confirmName !== (project | displayName : false)" class="btn btn-lg btn-danger" type="submit" ng-click="delete()">Delete</button>
+      <button class="btn btn-lg btn-default" type="button" ng-click="cancel()">Cancel</button>
     </div>
   </form>
 </div>

@@ -13,7 +13,14 @@ angular.module("openshiftCommonUI")
         isDialog: '@'
       },
       templateUrl: 'src/components/edit-project/editProject.html',
-      controller: function($scope, $filter, $location, DataService, NotificationsService, annotationNameFilter, displayNameFilter, Logger) {
+      controller: function($scope,
+                           $filter,
+                           $location,
+                           Logger,
+                           NotificationsService,
+                           ProjectsService,
+                           annotationNameFilter,
+                           displayNameFilter) {
         if(!($scope.submitButtonLabel)) {
           $scope.submitButtonLabel = 'Save';
         }
@@ -55,13 +62,10 @@ angular.module("openshiftCommonUI")
         $scope.update = function() {
           $scope.disableInputs = true;
           if ($scope.editProjectForm.$valid) {
-            DataService
+            ProjectsService
               .update(
-                'projects',
                 $scope.project.metadata.name,
-                cleanEditableAnnotations(mergeEditable($scope.project, $scope.editableFields)),
-                {projectName: $scope.project.name},
-                {errorNotification: false})
+                cleanEditableAnnotations(mergeEditable($scope.project, $scope.editableFields)))
               .then(function(project) {
                 // angular is actually wrapping the redirect action :/
                 var cb = $scope.redirectAction();

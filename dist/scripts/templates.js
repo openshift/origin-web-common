@@ -281,11 +281,10 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "  <!-- Use a form so that the enter key submits when typing a project name to confirm. -->\n" +
     "  <form>\n" +
     "    <div class=\"modal-body\">\n" +
-    "      <h1>Are you sure you want to delete the project\n" +
-    "        '<strong>{{displayName ? displayName : projectName}}</strong>'?</h1>\n" +
+    "      <h1>Are you sure you want to delete the project '<strong>{{project | displayName}}</strong>'?</h1>\n" +
     "      <p>\n" +
     "        This will <strong>delete all resources</strong> associated with\n" +
-    "        the project {{displayName ? displayName : projectName}} and <strong>cannot be\n" +
+    "        the project {{project | displayName}} and <strong>cannot be\n" +
     "        undone</strong>.  Make sure this is something you really want to do!\n" +
     "      </p>\n" +
     "      <div ng-show=\"typeNameToConfirm\">\n" +
@@ -305,8 +304,8 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "      </div>\n" +
     "    </div>\n" +
     "    <div class=\"modal-footer\">\n" +
-    "      <button ng-disabled=\"typeNameToConfirm && confirmName !== projectName && confirmName !== displayName\" class=\"btn btn-lg btn-danger\" type=\"submit\" ng-click=\"delete();\">Delete</button>\n" +
-    "      <button class=\"btn btn-lg btn-default\" type=\"button\" ng-click=\"cancel();\">Cancel</button>\n" +
+    "      <button ng-disabled=\"typeNameToConfirm && confirmName !== project.metadata.name && confirmName !== (project | displayName : false)\" class=\"btn btn-lg btn-danger\" type=\"submit\" ng-click=\"delete()\">Delete</button>\n" +
+    "      <button class=\"btn btn-lg btn-default\" type=\"button\" ng-click=\"cancel()\">Cancel</button>\n" +
     "    </div>\n" +
     "  </form>\n" +
     "</div>\n"
