@@ -4926,18 +4926,24 @@ angular.module("openshiftCommonServices")
         }
       });
 
-      // order by creationDate
-      projects =  $filter('orderObjectsByDate')(projects, true);
+      // second sort by case insensitive displayName
+      projects = _.sortBy(projects, function(project) {
+        return $filter('displayName')(project).toLowerCase();
+      });
 
-      // return array where moveRecentlyViewed is first, then sorted by creationDate
       return recentlyViewedProjects.concat(projects);
+    };
+
+    var isRecentlyViewed = function(uid) {
+      return _.includes(getProjectUIDs(), uid);
     };
 
     return {
       getProjectUIDs: getProjectUIDs,
       addProjectUID: addProjectUID,
       orderByMostRecentlyViewed: orderByMostRecentlyViewed,
-      clear: clear
+      clear: clear,
+      isRecentlyViewed: isRecentlyViewed
     };
   }]);
 ;'use strict';
