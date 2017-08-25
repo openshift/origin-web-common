@@ -105,8 +105,9 @@ angular.module('openshiftCommonServices')
               return projectData;
             }, function(error) {
               // If the request fails, don't try to list projects again without `forceRefresh`.
-              cachedProjectData = {};
+              cachedProjectData = DataService.createData([]);
               cachedProjectDataIncomplete = true;
+              return $q.reject();
             });
           },
 

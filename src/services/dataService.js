@@ -1359,6 +1359,11 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
     return new URI({protocol: protocol, hostname: hostPort}).toString();
   };
 
+  // Used by ProjectsService when a list fails.
+  DataService.prototype.createData = function(array) {
+    return new Data(array);
+  };
+
   // Immutables are flagged here as we should not need to fetch them more than once.
   var IMMUTABLE_RESOURCE = {
     imagestreamimages: true

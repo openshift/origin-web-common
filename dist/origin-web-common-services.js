@@ -2565,6 +2565,11 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
     return new URI({protocol: protocol, hostname: hostPort}).toString();
   };
 
+  // Used by ProjectsService when a list fails.
+  DataService.prototype.createData = function(array) {
+    return new Data(array);
+  };
+
   // Immutables are flagged here as we should not need to fetch them more than once.
   var IMMUTABLE_RESOURCE = {
     imagestreamimages: true
@@ -3024,8 +3029,9 @@ angular.module('openshiftCommonServices')
               return projectData;
             }, function(error) {
               // If the request fails, don't try to list projects again without `forceRefresh`.
-              cachedProjectData = {};
+              cachedProjectData = DataService.createData([]);
               cachedProjectDataIncomplete = true;
+              return $q.reject();
             });
           },
 
