@@ -1093,7 +1093,10 @@ angular.module("openshiftCommonUI").component("originModalPopup", {
 
     function onHide() {
       hideModalBackdrop();
-      angular.element($window).off('resize', debounceResize);
+      if (debounceResize) {
+        angular.element($window).off('resize', debounceResize);
+        debounceResize = null;
+      }
     }
 
     ctrl.$onChanges = function (changeObj) {
