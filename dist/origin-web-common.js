@@ -1484,6 +1484,7 @@ angular.module('openshiftCommonUI')
       "jenkinsBuildURL":          ["openshift.io/jenkins-build-uri"],
       "jenkinsLogURL":            ["openshift.io/jenkins-log-url"],
       "jenkinsStatus":            ["openshift.io/jenkins-status-json"],
+      "loggingUIHostname":        ["openshift.io/logging.ui.hostname"],
       "idledAt":                  ["idling.alpha.openshift.io/idled-at"],
       "idledPreviousScale":       ["idling.alpha.openshift.io/previous-scale"],
       "systemOnly":               ["authorization.openshift.io/system-only"]
