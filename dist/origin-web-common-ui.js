@@ -1568,6 +1568,12 @@ angular.module('openshiftCommonUI')
 ;'use strict';
 
 angular.module('openshiftCommonUI')
+  .filter('preferredVersion', function(APIService) {
+    return APIService.getPreferredVersion;
+  });
+;'use strict';
+
+angular.module('openshiftCommonUI')
   .filter('prettifyJSON', function(parseJSONFilter) {
     return function(json) {
       var jsonObj = parseJSONFilter(json);
