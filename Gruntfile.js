@@ -21,6 +21,15 @@ module.exports = function (grunt) {
           }
         }
       },
+      watch: {
+        scripts: {
+          files: ['src/**/*'],
+          tasks: ['deploy'],
+          options: {
+            spawn: false,
+          },
+        },
+      },
       clean: {
         all: ['dist/*']
       },
