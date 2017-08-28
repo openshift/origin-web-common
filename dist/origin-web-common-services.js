@@ -3171,6 +3171,7 @@ angular.module('openshiftCommonServices')
   var _oauth_authorize_uri = "";
   var _oauth_token_uri = "";
   var _oauth_redirect_uri = "";
+  var _oauth_scope = "";
 
   this.OAuthClientID = function(id) {
     if (id) {
@@ -3196,6 +3197,12 @@ angular.module('openshiftCommonServices')
     }
     return _oauth_redirect_uri;
   };
+  this.OAuthScope = function(scope) {
+    if (scope) {
+      _oauth_scope = scope;
+    }
+    return _oauth_scope;
+  }
 
   this.$get = function($injector, $location, $q, Logger, base64) {
     var authLogger = Logger.get("auth");
@@ -3285,6 +3292,10 @@ angular.module('openshiftCommonServices')
           state: makeState(returnUri.toString()),
           redirect_uri: _oauth_redirect_uri
         };
+
+        if (_oauth_scope) {
+          authorizeParams.scope = _oauth_scope;
+        }
 
         if (_oauth_token_uri) {
           authorizeParams.response_type = "code";
@@ -3376,6 +3387,10 @@ angular.module('openshiftCommonServices')
             "redirect_uri=" + encodeURIComponent(_oauth_redirect_uri),
             "client_id="    + encodeURIComponent(_oauth_client_id)
           ].join("&");
+
+          if (_oauth_scope) {
+            tokenPostData += "&scope=" + encodeURIComponent(_oauth_scope);
+          }
 
           return http({
             method: "POST",
