@@ -1137,6 +1137,10 @@ angular.module("openshiftCommonServices")
     };
 
     var getBindingsForResource = function(bindings, apiObject) {
+      if (_.get(apiObject, 'kind') === 'Instance') {
+        return _.filter(bindings, ['spec.instanceRef.name', _.get(apiObject, 'metadata.name')]);
+      }
+
       var podPresetSelectors = getPodPresetSelectorsForBindings(bindings);
 
       // Create a selector for the potential binding target to check if the
