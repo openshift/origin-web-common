@@ -52,6 +52,10 @@ angular.module("openshiftCommonServices")
       });
     };
 
+    // Avoid loading rules twice if another request is already in flight. Key
+    // is the project name, value is the promise.
+    var inFlightRulesRequests = {};
+
     // forceRefresh is a boolean to bust the cache & request new perms
     var getProjectRules = function(projectName, forceRefresh) {
       var deferred = $q.defer();
@@ -61,11 +65,18 @@ angular.module("openshiftCommonServices")
       if (!projectRules || projectRules.forceRefresh || forceRefresh) {
         // Check if APIserver contains 'selfsubjectrulesreviews' resource. If not switch to permissive mode.
         if (APIService.apiInfo(rulesResource)) {
+          // If a request is already in flight, return the promise for that request.
+          if (inFlightRulesRequests[projectName]) {
+            return inFlightRulesRequests[projectName];
+          }
+
           Logger.log("AuthorizationService, loading user rules for " + projectName + " project");
-          var object = {kind: "SelfSubjectRulesReview",
-                        apiVersion: "v1"
-                      };
-          DataService.create(rulesResource, null, object, {namespace: projectName}).then(
+          inFlightRulesRequests[projectName] = deferred.promise;
+          var resourceGroupVersion = {
+            kind: "SelfSubjectRulesReview",
+            apiVersion: "v1"
+          };
+          DataService.create(rulesResource, null, resourceGroupVersion, {namespace: projectName}).then(
             function(data) {
               var normalizedData = normalizeRules(data.status.rules);
               var canUserAddToProject = canAddToProjectCheck(data.status.rules);
@@ -78,6 +89,8 @@ angular.module("openshiftCommonServices")
             }, function() {
               permissiveMode = true;
               deferred.resolve();
+          }).finally(function() {
+            delete inFlightRulesRequests[projectName];
           });
         } else {
           Logger.log("AuthorizationService, resource 'selfsubjectrulesreviews' is not part of APIserver. Switching into permissive mode.");
