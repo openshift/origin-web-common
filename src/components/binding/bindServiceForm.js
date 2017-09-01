@@ -5,6 +5,7 @@ angular.module('openshiftCommonUI').component('bindServiceForm', {
   bindings: {
     serviceClass: '<',
     serviceClassName: '<',
+    showPodPresets: '<',
     applications: '<',
     formName: '=',
     allowNoBinding: '<?',

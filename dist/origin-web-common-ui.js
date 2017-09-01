@@ -92,7 +92,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
 
   $templateCache.put('src/components/binding/bindResults.html',
     "<div ng-if=\"!ctrl.error\">\n" +
-    "  <div ng-if=\"!(ctrl.binding | isBindingReady)\" class=\"bind-status\" ng-class=\"{'text-center': !ctrl.progressInline, 'show-progress': !ctrl.progressInline}\">\n" +
+    "  <div ng-if=\"ctrl.binding && !(ctrl.binding | isBindingReady)\" class=\"bind-status\" ng-class=\"{'text-center': !ctrl.progressInline, 'show-progress': !ctrl.progressInline}\">\n" +
     "    <div class=\"spinner\" ng-class=\"{'spinner-sm': ctrl.progressInline, 'spinner-inline': ctrl.progressInline, 'spinner-lg': !ctrl.progressInline}\" aria-hidden=\"true\"></div>\n" +
     "    <h3 class=\"bind-message\">\n" +
     "      <span class=\"sr-only\">Pending</span>\n" +
@@ -148,21 +148,21 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "<div class=\"bind-form\">\n" +
     "  <form>\n" +
     "    <div class=\"form-group\">\n" +
-    "        <label>\n" +
-    "          <h3>Create a binding for <strong>{{ctrl.serviceClass.externalMetadata.displayName || ctrl.serviceClassName}}</strong></h3>\n" +
-    "        </label>\n" +
-    "        <span class=\"help-block\">Bindings create a secret containing the necessary information for an application to use this service.</span>\n" +
+    "      <label>\n" +
+    "        <h3>Create a binding for <strong>{{ctrl.serviceClass.externalMetadata.displayName || ctrl.serviceClassName}}</strong></h3>\n" +
+    "      </label>\n" +
+    "      <span class=\"help-block\">Bindings create a secret containing the necessary information for an application to use this service.</span>\n" +
     "    </div>\n" +
     "  </form>\n" +
     "\n" +
-    "  <form name=\"ctrl.formName\" class=\"mar-bottom-lg\">\n" +
+    "  <form ng-if=\"ctrl.allowNoBinding || ctrl.showPodPresets\" name=\"ctrl.formName\" class=\"mar-bottom-lg\">\n" +
     "    <fieldset>\n" +
     "      <div class=\"radio\">\n" +
-    "        <label class=\"bind-choice\" ng-disabled=\"!ctrl.applications.length\">\n" +
+    "        <label ng-if=\"ctrl.showPodPresets\" class=\"bind-choice\" ng-disabled=\"!ctrl.applications.length\">\n" +
     "          <input type=\"radio\" ng-model=\"ctrl.bindType\" value=\"application\" ng-disabled=\"!ctrl.applications.length\">\n" +
     "          Create a secret and inject it into an application\n" +
     "        </label>\n" +
-    "        <div class=\"application-select\">\n" +
+    "        <div ng-if=\"ctrl.showPodPresets\" class=\"application-select\">\n" +
     "          <ui-select ng-model=\"ctrl.appToBind\"\n" +
     "                     ng-disabled=\"ctrl.bindType !== 'application'\"\n" +
     "                     ng-required=\"ctrl.bindType === 'application'\">\n" +
@@ -530,6 +530,7 @@ angular.module('openshiftCommonUI').component('bindServiceForm', {
   bindings: {
     serviceClass: '<',
     serviceClassName: '<',
+    showPodPresets: '<',
     applications: '<',
     formName: '=',
     allowNoBinding: '<?',
