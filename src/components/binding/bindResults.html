@@ -1,5 +1,5 @@
 <div ng-if="!ctrl.error">
-  <div ng-if="!(ctrl.binding | isBindingReady)" class="bind-status" ng-class="{'text-center': !ctrl.progressInline, 'show-progress': !ctrl.progressInline}">
+  <div ng-if="ctrl.binding && !(ctrl.binding | isBindingReady)" class="bind-status" ng-class="{'text-center': !ctrl.progressInline, 'show-progress': !ctrl.progressInline}">
     <div class="spinner" ng-class="{'spinner-sm': ctrl.progressInline, 'spinner-inline': ctrl.progressInline, 'spinner-lg': !ctrl.progressInline}" aria-hidden="true"></div>
     <h3 class="bind-message">
       <span class="sr-only">Pending</span>

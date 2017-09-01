@@ -1,21 +1,21 @@
 <div class="bind-form">
   <form>
     <div class="form-group">
-        <label>
-          <h3>Create a binding for <strong>{{ctrl.serviceClass.externalMetadata.displayName || ctrl.serviceClassName}}</strong></h3>
-        </label>
-        <span class="help-block">Bindings create a secret containing the necessary information for an application to use this service.</span>
+      <label>
+        <h3>Create a binding for <strong>{{ctrl.serviceClass.externalMetadata.displayName || ctrl.serviceClassName}}</strong></h3>
+      </label>
+      <span class="help-block">Bindings create a secret containing the necessary information for an application to use this service.</span>
     </div>
   </form>
 
-  <form name="ctrl.formName" class="mar-bottom-lg">
+  <form ng-if="ctrl.allowNoBinding || ctrl.showPodPresets" name="ctrl.formName" class="mar-bottom-lg">
     <fieldset>
       <div class="radio">
-        <label class="bind-choice" ng-disabled="!ctrl.applications.length">
+        <label ng-if="ctrl.showPodPresets" class="bind-choice" ng-disabled="!ctrl.applications.length">
           <input type="radio" ng-model="ctrl.bindType" value="application" ng-disabled="!ctrl.applications.length">
           Create a secret and inject it into an application
         </label>
-        <div class="application-select">
+        <div ng-if="ctrl.showPodPresets" class="application-select">
           <ui-select ng-model="ctrl.appToBind"
                      ng-disabled="ctrl.bindType !== 'application'"
                      ng-required="ctrl.bindType === 'application'">
