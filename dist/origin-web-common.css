@@ -121,16 +121,31 @@ mark {
 .ui-select-choices-row.active > span mark {
   background-color: rgba(252, 248, 160, 0.75);
 }
+.pretty-json {
+  font-family: Menlo, Monaco, Consolas, monospace;
+  white-space: pre-wrap;
+}
 .truncation-block {
   margin-right: 10px;
 }
 .truncation-collapse-link {
+  float: right;
   margin-left: 10px;
   white-space: nowrap;
 }
-.pretty-json {
-  font-family: Menlo, Monaco, Consolas, monospace;
-  white-space: pre-wrap;
+.table-responsive .truncation-collapse-link {
+  display: block;
+  float: none;
+  margin-left: 0;
+}
+.well .truncation-collapse-link {
+  margin-top: -10px;
+}
+.truncation-expand-link {
+  white-space: nowrap;
+}
+.table-responsive .truncation-expand-link {
+  display: block;
 }
 label.required:before {
   content: '*';

@@ -37,18 +37,33 @@ mark {
   }
 }
 
+.pretty-json {
+  font-family: @font-family-monospace;
+  white-space: pre-wrap;
+}
+
 // Within truncation directive controls spacing between content and toggle link
 .truncation-block {
   margin-right: 10px;
 }
 
 .truncation-collapse-link {
+  float: right;
   margin-left: 10px;
   white-space: nowrap;
+  .table-responsive & {
+    display: block;
+    float: none;
+    margin-left: 0;
+  }
+  .well & {
+    margin-top: -10px;
+  }
 }
 
-.pretty-json {
-  font-family: @font-family-monospace;
-  white-space: pre-wrap;
+.truncation-expand-link {
+  white-space: nowrap;
+  .table-responsive & {
+    display: block;
+  }
 }
-
