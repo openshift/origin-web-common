@@ -1250,7 +1250,9 @@ angular.module('openshiftCommonUI')
     return function (type) {
       var status;
 
-      switch(type) {
+      // API events have just two types: Normal, Warning
+      // our notifications have four: info, success, error, and warning
+      switch(type.toLowerCase()) {
         case 'error':
           status = 'alert-danger';
           break;
@@ -1259,6 +1261,9 @@ angular.module('openshiftCommonUI')
           break;
         case 'success':
           status = 'alert-success';
+          break;
+        case 'normal':
+          status = 'alert-info';
           break;
         default:
           status = 'alert-info';
@@ -1271,7 +1276,9 @@ angular.module('openshiftCommonUI')
     return function (type) {
       var icon;
 
-      switch(type) {
+      // API events have just two types: Normal, Warning
+      // our notifications have four: info, success, error, and warning
+      switch(type.toLowerCase()) {
         case 'error':
           icon = 'pficon pficon-error-circle-o';
           break;
@@ -1280,6 +1287,9 @@ angular.module('openshiftCommonUI')
           break;
         case 'success':
           icon = 'pficon pficon-ok';
+          break;
+        case 'normal':
+          icon = 'pficon pficon-info';
           break;
         default:
           icon = 'pficon pficon-info';
@@ -2139,6 +2149,8 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
     };
 
     var addNotification = function (notification) {
+      notification.id = notification.id || _.uniqueId('notification-');
+      notification.timestamp = new Date().toISOString();
       if (isNotificationPermanentlyHidden(notification) || isNotificationVisible(notification)) {
         return;
       }
