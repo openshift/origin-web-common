@@ -42,6 +42,12 @@
 .bind-form .bind-choice:first-of-type {
   margin-top: 0;
 }
+.bind-form .bind-choice strong {
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
 .bind-form .help-block.service-instance-name {
   display: inline-block;
   margin-top: 0;
