@@ -450,15 +450,15 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "    <span ng-attr-title=\"{{content}}\" class=\"truncation-block\">\n" +
     "      <span ng-bind-html=\"truncatedContent | highlightKeywords : keywords\" class=\"truncated-content\"></span>&hellip;\n" +
     "    </span>\n" +
-    "    <a ng-if=\"expandable\" href=\"\" ng-click=\"toggles.expanded = true\" class=\"nowrap\">See All</a>\n" +
+    "    <a ng-if=\"expandable\" href=\"\" ng-click=\"toggles.expanded = true\" class=\"truncation-expand-link\">See All</a>\n" +
     "  </span>\n" +
     "  <span ng-if=\"toggles.expanded\">\n" +
     "    <div ng-if=\"prettifyJson\" class=\"well\">\n" +
-    "      <span ng-if=\"!hideCollapse\" class=\"pull-right\" style=\"margin-top: -10px;\"><a href=\"\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a></span>\n" +
+    "      <a href=\"\" ng-if=\"!hideCollapse\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a>\n" +
     "      <span ng-bind-html=\"content | prettifyJSON | highlightKeywords : keywords\" class=\"pretty-json truncated-content\"></span>\n" +
     "    </div>\n" +
     "    <span ng-if=\"!prettifyJson\">\n" +
-    "      <span ng-if=\"!hideCollapse\" class=\"pull-right\"><a href=\"\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a></span>\n" +
+    "      <a href=\"\" ng-if=\"!hideCollapse\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a>\n" +
     "      <span ng-bind-html=\"content | highlightKeywords : keywords\" class=\"truncated-content\"></span>\n" +
     "    </span>\n" +
     "  </span>\n" +
