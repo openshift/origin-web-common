@@ -18,7 +18,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
     };
 
     var addNotification = function (notification) {
-      notification.id = notification.id || _.uniqueId('notification-');
+      notification.id = notification.id || _.uniqueId('notification-') + Date.now();
       notification.timestamp = new Date().toISOString();
       if (isNotificationPermanentlyHidden(notification) || isNotificationVisible(notification)) {
         return;
