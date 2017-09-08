@@ -1,5 +1,5 @@
 <div class="toast-notifications-list-pf">
-  <div ng-repeat="(notificationID, notification) in notifications track by (notificationID + (notification.message || notification.details))" ng-if="!notification.hidden || notification.isHover"
+  <div ng-repeat="(notificationID, notification) in notifications track by notification.trackByID" ng-if="!notification.hidden || notification.isHover"
        ng-mouseenter="setHover(notification, true)" ng-mouseleave="setHover(notification, false)">
     <div class="toast-pf alert {{notification.type | alertStatus}}" ng-class="{'alert-dismissable': !hideCloseButton}">
       <button ng-if="!hideCloseButton" type="button" class="close" ng-click="close(notification)">

@@ -579,7 +579,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
 
   $templateCache.put('src/components/toast-notifications/toast-notifications.html',
     "<div class=\"toast-notifications-list-pf\">\n" +
-    "  <div ng-repeat=\"(notificationID, notification) in notifications track by (notificationID + (notification.message || notification.details))\" ng-if=\"!notification.hidden || notification.isHover\"\n" +
+    "  <div ng-repeat=\"(notificationID, notification) in notifications track by notification.trackByID\" ng-if=\"!notification.hidden || notification.isHover\"\n" +
     "       ng-mouseenter=\"setHover(notification, true)\" ng-mouseleave=\"setHover(notification, false)\">\n" +
     "    <div class=\"toast-pf alert {{notification.type | alertStatus}}\" ng-class=\"{'alert-dismissable': !hideCloseButton}\">\n" +
     "      <button ng-if=\"!hideCloseButton\" type=\"button\" class=\"close\" ng-click=\"close(notification)\">\n" +
@@ -5720,7 +5720,9 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
     };
 
     var addNotification = function (notification) {
-      notification.id = notification.id || _.uniqueId('notification-') + Date.now();
+      // notifications may already have an id that is not necessarily unique,
+      // this is an explicitly unique id just for `track by` in templates
+      notification.trackByID = _.uniqueId('notification-') + Date.now();
       notification.timestamp = new Date().toISOString();
       if (isNotificationPermanentlyHidden(notification) || isNotificationVisible(notification)) {
         return;
