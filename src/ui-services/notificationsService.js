@@ -18,7 +18,9 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
     };
 
     var addNotification = function (notification) {
-      notification.id = notification.id || _.uniqueId('notification-') + Date.now();
+      // notifications may already have an id that is not necessarily unique,
+      // this is an explicitly unique id just for `track by` in templates
+      notification.trackByID = _.uniqueId('notification-') + Date.now();
       notification.timestamp = new Date().toISOString();
       if (isNotificationPermanentlyHidden(notification) || isNotificationVisible(notification)) {
         return;
