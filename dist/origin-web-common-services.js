@@ -1131,6 +1131,7 @@ angular.module("openshiftCommonServices")
       var parametersSecretName;
       var instanceName = serviceInstance.metadata.name;
 
+      var credentialSecretName = generateSecretName(serviceInstance.metadata.name + '-credentials-');
       var binding = {
         kind: 'Binding',
         apiVersion: 'servicecatalog.k8s.io/v1alpha1',
@@ -1141,7 +1142,7 @@ angular.module("openshiftCommonServices")
           instanceRef: {
             name: instanceName
           },
-          secretName: generateSecretName(serviceInstance.metadata.name + '-credentials-')
+          secretName: credentialSecretName
         }
       };
 
@@ -1163,7 +1164,7 @@ angular.module("openshiftCommonServices")
           };
         }
         binding.spec.alphaPodPresetTemplate = {
-          name: relatedObjName,
+          name: credentialSecretName,
           selector: appSelector
         };
       }
