@@ -117,7 +117,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "      that you may need to reference in your application.\n" +
     "      <span ng-if=\"ctrl.showPodPresets\">Its data will be available to your application as environment variables.</span>\n" +
     "    </div>\n" +
-    "    <div class=\"alert alert-info bind-info\">\n" +
+    "    <div class=\"alert alert-info bind-info\" ng-if=\"ctrl.bindType === 'application'\">\n" +
     "      <span class=\"pficon pficon-info\" aria-hidden=\"true\"></span>\n" +
     "      <span class=\"sr-only\">Info</span>\n" +
     "      The binding secret will only be available to new pods. You will need to redeploy your application.\n" +

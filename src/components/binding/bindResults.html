@@ -24,7 +24,7 @@
       that you may need to reference in your application.
       <span ng-if="ctrl.showPodPresets">Its data will be available to your application as environment variables.</span>
     </div>
-    <div class="alert alert-info bind-info">
+    <div class="alert alert-info bind-info" ng-if="ctrl.bindType === 'application'">
       <span class="pficon pficon-info" aria-hidden="true"></span>
       <span class="sr-only">Info</span>
       The binding secret will only be available to new pods. You will need to redeploy your application.
