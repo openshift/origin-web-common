@@ -408,7 +408,9 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
 
   $templateCache.put('src/components/toast-notifications/toast-notifications.html',
     "<div class=\"toast-notifications-list-pf\">\n" +
-    "  <div ng-repeat=\"(notificationID, notification) in notifications track by notification.trackByID\" ng-if=\"!notification.hidden || notification.isHover\"\n" +
+    "  <div\n" +
+    "    ng-repeat=\"(notificationID, notification) in notifications track by notification.trackByID\"\n" +
+    "    ng-if=\"!notification.hidden || notification.isHover\"\n" +
     "       ng-mouseenter=\"setHover(notification, true)\" ng-mouseleave=\"setHover(notification, false)\">\n" +
     "    <div class=\"toast-pf alert {{notification.type | alertStatus}}\" ng-class=\"{'alert-dismissable': !hideCloseButton}\">\n" +
     "      <button ng-if=\"!hideCloseButton\" type=\"button\" class=\"close\" ng-click=\"close(notification)\">\n" +
@@ -1185,6 +1187,9 @@ angular.module('openshiftCommonUI')
 
         // Listen for updates from NotificationsService to show a notification.
         var deregisterNotificationListener = $rootScope.$on('NotificationsService.onNotificationAdded', function(event, notification) {
+          if (notification.skipToast) {
+            return;
+          }
           $scope.$evalAsync(function() {
             $scope.notifications.push(notification);
             if (NotificationsService.isAutoDismiss(notification)) {
@@ -2152,6 +2157,8 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
       // notifications may already have an id that is not necessarily unique,
       // this is an explicitly unique id just for `track by` in templates
       notification.trackByID = _.uniqueId('notification-') + Date.now();
+      notification.skipToast = notification.skipToast || false;
+      notification.showInDrawer = notification.showInDrawer || false;
       notification.timestamp = new Date().toISOString();
       if (isNotificationPermanentlyHidden(notification) || isNotificationVisible(notification)) {
         return;

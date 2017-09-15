@@ -56,6 +56,9 @@ angular.module('openshiftCommonUI')
 
         // Listen for updates from NotificationsService to show a notification.
         var deregisterNotificationListener = $rootScope.$on('NotificationsService.onNotificationAdded', function(event, notification) {
+          if (notification.skipToast) {
+            return;
+          }
           $scope.$evalAsync(function() {
             $scope.notifications.push(notification);
             if (NotificationsService.isAutoDismiss(notification)) {
