@@ -18,7 +18,8 @@ angular.module('openshiftCommonUI').factory('GuidedTourService', function() {
       showPrevButton: true,
       i18n: {
         nextBtn: 'Next >',
-        prevBtn: '< Back'
+        prevBtn: '< Back',
+        closeTooltip: 'x'  // this is the button text not a tooltip, hidden but must be 1 character for focus border (cannot but empty or null)
       }
     };
     hopscotchConfig = {};
