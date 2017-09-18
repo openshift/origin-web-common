@@ -41,6 +41,7 @@ ResourceGroupVersion.prototype.equals = function(resource, group, version) {
 angular.module('openshiftCommonServices')
 .factory('APIService', function(API_CFG,
                                 APIS_CFG,
+                                API_PREFERRED_VERSIONS,
                                 AuthService,
                                 Constants,
                                 Logger,
@@ -339,6 +340,17 @@ angular.module('openshiftCommonServices')
     return includeClusterScoped ? allKinds : namespacedKinds;
   };
 
+  // Provides us a way to ensure we consistently use the
+  // correct {resource, group} for API calls.  Version
+  // will typically fallback to the preferredVersion of the API 
+  var getPreferredVersion = function(resource) {
+    var preferred = API_PREFERRED_VERSIONS[resource];
+    if(!preferred) {
+      Logger.log("No preferred version for ", resource);
+    }
+    return preferred;
+  };
+
   return {
     toResourceGroupVersion: toResourceGroupVersion,
 
@@ -356,6 +368,7 @@ angular.module('openshiftCommonServices')
 
     invalidObjectKindOrVersion: invalidObjectKindOrVersion,
     unsupportedObjectKindOrVersion: unsupportedObjectKindOrVersion,
-    availableKinds: availableKinds
+    availableKinds: availableKinds,
+    getPreferredVersion: getPreferredVersion
   };
 });

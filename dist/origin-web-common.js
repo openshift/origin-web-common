@@ -1421,6 +1421,39 @@ angular.module('openshiftCommonUI')
   }]);
 ;'use strict';
 
+angular.module('openshiftCommonServices')
+  .constant('API_PREFERRED_VERSIONS', {
+      autoscaling:                  {group: 'autoscaling',            resource: 'horizontalpodautoscalers' },
+      appliedclusterresourcequotas: {group: 'quota.openshift.io',     resource: 'appliedclusterresourcequotas' },
+      bindings:                     {group: 'servicecatalog.k8s.io',  resource: 'bindings' },
+      builds:                       {group: 'build.openshift.io',     resource: 'builds' },
+      buildconfigs:                 {group: 'build.openshift.io',     resource: 'buildconfigs' },
+      configmaps:                   'configmaps',
+      deployments:                  {group: 'apps',                   resource: 'deployments' },
+      deploymentconfigs:            {group: 'apps.openshift.io',      resource: 'deploymentconfigs' },
+      imagestreams:                 {group: 'image.openshift.io',     resource: 'imagestreams' },
+      imagestreamtags:              {group: 'image.openshift.io',     resource: 'imagestreamtags' },
+      instances:                    {group: 'servicecatalog.k8s.io',  resource: 'instances' },
+      limitranges:                  'limitranges',
+      pods:                         'pods',
+      projects:                     {group: 'project.openshift.io',   resource: 'projects'},
+      projectrequests:              {group: 'project.openshift.io',   resource: 'projectrequests'},
+      persistentvolumeclaims:       'persistentvolumeclaims',
+      replicasets:                  {group: 'extensions',             resource: 'replicasets' },
+      replicationcontrollers:       'replicationcontrollers',
+      resourcequotas:               'resourcequotas',
+      rolebindings:                 'rolebindings',
+      routes:                       {group: 'route.openshift.io',     resource: 'routes' },
+      secrets:                      'secrets',
+      selfsubjectrulesreviews:      {group: 'authorization.k8s.io',   resource: 'selfsubjectrulesreviews'},
+      services:                     'services',
+      serviceaccounts:              'serviceaccounts',
+      serviceclasses:               {group: 'servicecatalog.k8s.io',  resource: 'serviceclasses' },
+      statefulsets:                 {group: 'apps',                   resource: 'statefulsets' },
+      templates:                    {group: 'template.openshift.io',  resource: 'templates'}
+  });
+;'use strict';
+
 angular.module('openshiftCommonUI')
   .filter("alertStatus", function() {
     return function (type) {
@@ -1736,6 +1769,12 @@ angular.module('openshiftCommonUI')
       }
     };
   });
+;'use strict';
+
+angular.module('openshiftCommonUI')
+  .filter('preferredVersion', ["APIService", function(APIService) {
+    return APIService.getPreferredVersion;
+  }]);
 ;'use strict';
 
 angular.module('openshiftCommonUI')
@@ -2117,8 +2156,9 @@ ResourceGroupVersion.prototype.equals = function(resource, group, version) {
 };
 
 angular.module('openshiftCommonServices')
-.factory('APIService', ["API_CFG", "APIS_CFG", "AuthService", "Constants", "Logger", "$q", "$http", "$filter", "$window", function(API_CFG,
+.factory('APIService', ["API_CFG", "APIS_CFG", "API_PREFERRED_VERSIONS", "AuthService", "Constants", "Logger", "$q", "$http", "$filter", "$window", function(API_CFG,
                                 APIS_CFG,
+                                API_PREFERRED_VERSIONS,
                                 AuthService,
                                 Constants,
                                 Logger,
@@ -2417,6 +2457,17 @@ angular.module('openshiftCommonServices')
     return includeClusterScoped ? allKinds : namespacedKinds;
   };
 
+  // Provides us a way to ensure we consistently use the
+  // correct {resource, group} for API calls.  Version
+  // will typically fallback to the preferredVersion of the API 
+  var getPreferredVersion = function(resource) {
+    var preferred = API_PREFERRED_VERSIONS[resource];
+    if(!preferred) {
+      Logger.log("No preferred version for ", resource);
+    }
+    return preferred;
+  };
+
   return {
     toResourceGroupVersion: toResourceGroupVersion,
 
@@ -2434,7 +2485,8 @@ angular.module('openshiftCommonServices')
 
     invalidObjectKindOrVersion: invalidObjectKindOrVersion,
     unsupportedObjectKindOrVersion: unsupportedObjectKindOrVersion,
-    availableKinds: availableKinds
+    availableKinds: availableKinds,
+    getPreferredVersion: getPreferredVersion
   };
 }]);
 ;'use strict';
