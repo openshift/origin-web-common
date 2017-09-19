@@ -13,7 +13,8 @@ module.exports = function (grunt) {
               'help': 'Task list helper for your Grunt enabled projects.',
               'clean': 'Deletes the content of the dist directory.',
               'build': 'Builds the project into the dist directory.',
-              'test': 'Executes the karma testsuite.'
+              'test': 'Executes the karma testsuite.',
+              'watch': 'Automatically rebuild /dist whenever /src files change.'
             },
             groups: {
               'Basic project tasks': ['help', 'clean', 'build', 'test']

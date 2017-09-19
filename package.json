@@ -43,6 +43,7 @@
     "test": "grunt test",
     "build": "grunt build",
     "deploy": "grunt deploy",
+    "watch": "grunt watch",
     "help": "grunt help"
   },
   "repository": {
