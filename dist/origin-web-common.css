@@ -240,7 +240,21 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.up .hopscotch-bubble-arro
   margin-top: 2px;
 }
 div.hopscotch-bubble .hopscotch-bubble-close {
+  background: none;
+  color: transparent;
+  line-height: 0;
   right: 8px;
+  text-indent: inherit;
+  top: 7px;
+}
+div.hopscotch-bubble .hopscotch-bubble-close:after {
+  color: #8b8d8f;
+  content: "\e60b";
+  display: inline-block;
+  font-family: "PatternFlyIcons-webfont";
+  left: 7px;
+  line-height: 1;
+  position: absolute;
   top: 7px;
 }
 div.hopscotch-bubble .hopscotch-bubble-container {

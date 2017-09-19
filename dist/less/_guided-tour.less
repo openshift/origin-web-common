@@ -97,8 +97,22 @@ div.hopscotch-bubble {
   }
 
   .hopscotch-bubble-close {
+    background: none;
+    color: transparent;
+    line-height: 0;
     right: 8px;
+    text-indent: inherit;
     top: 7px;
+    &:after {
+      color: @color-pf-black-500;
+      content: @pficon-var-close;
+      display: inline-block;
+      font-family: "PatternFlyIcons-webfont";
+      left: 7px;
+      line-height: 1;
+      position: absolute;
+      top: 7px;
+    }
   }
 
   .hopscotch-bubble-container {
