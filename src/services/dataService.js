@@ -985,6 +985,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
 
   DataService.prototype._startListOp = function(resource, context, opts) {
     opts = opts || {};
+    var params =  _.get(opts, 'http.params') || {};
     var key = this._uniqueKey(resource, null, context, opts);
     // mark the operation as in progress
     this._listInFlight(key, true);
@@ -1001,7 +1002,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
           method: 'GET',
           auth: {},
           headers: headers,
-          url: self._urlForResource(resource, null, context, false, {namespace: project.metadata.name})
+          url: self._urlForResource(resource, null, context, false, _.assign({}, params, {namespace: project.metadata.name}))
         }, opts.http || {}))
         .success(function(data, status, headerFunc, config, statusText) {
           self._listOpComplete(key, resource, context, opts, data);
@@ -1025,7 +1026,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
         method: 'GET',
         auth: {},
         headers: headers,
-        url: this._urlForResource(resource, null, context),
+        url: this._urlForResource(resource, null, context, false, params),
       }).success(function(data, status, headerFunc, config, statusText) {
         self._listOpComplete(key, resource, context, opts, data);
       }).error(function(data, status, headers, config) {
