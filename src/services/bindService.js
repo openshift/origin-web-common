@@ -110,13 +110,17 @@ angular.module("openshiftCommonServices")
     };
 
     var isServiceBindable = function(serviceInstance, serviceClasses) {
-      var serviceClass = getServiceClassForInstance(serviceInstance, serviceClasses);
-
       // If being deleted, it is not bindable
       if (_.get(serviceInstance, 'metadata.deletionTimestamp')) {
         return false;
       }
 
+      // If provisioning failed, the service is not bindable
+      if ($filter('isServiceInstanceFailed')(serviceInstance, 'Failed')) {
+        return false;
+      }
+
+      var serviceClass = getServiceClassForInstance(serviceInstance, serviceClasses);
       if (!serviceClass) {
         return !!serviceInstance;
       }

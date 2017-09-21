@@ -62,7 +62,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
 
 
   $templateCache.put('src/components/binding/bindResults.html',
-    "<div ng-if=\"!ctrl.error\">\n" +
+    "<div ng-if=\"!ctrl.error && !(ctrl.binding | isBindingFailed)\">\n" +
     "  <div ng-if=\"ctrl.binding && !(ctrl.binding | isBindingReady)\" class=\"bind-status\" ng-class=\"{'text-center': !ctrl.progressInline, 'show-progress': !ctrl.progressInline}\">\n" +
     "    <div class=\"spinner\" ng-class=\"{'spinner-sm': ctrl.progressInline, 'spinner-inline': ctrl.progressInline, 'spinner-lg': !ctrl.progressInline}\" aria-hidden=\"true\"></div>\n" +
     "    <h3 class=\"bind-message\">\n" +
@@ -94,7 +94,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "    </div>\n" +
     "  </div>\n" +
     "</div>\n" +
-    "<div ng-if=\"ctrl.error\">\n" +
+    "<div ng-if=\"ctrl.error || (ctrl.binding | isBindingFailed)\">\n" +
     "  <div class=\"bind-status\">\n" +
     "    <span class=\"pficon pficon-error-circle-o text-danger\" aria-hidden=\"true\"></span>\n" +
     "    <span class=\"sr-only\">Error</span>\n" +
@@ -102,13 +102,16 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "      <span>Binding Failed</span>\n" +
     "    </h3>\n" +
     "  </div>\n" +
-    "  <div class=\"sub-title\">\n" +
+    "  <div ng-if=\"ctrl.error\" class=\"sub-title\">\n" +
     "    <span ng-if=\"ctrl.error.data.message\">\n" +
     "      {{ctrl.error.data.message | upperFirst}}\n" +
     "    </span>\n" +
     "    <span ng-if=\"!ctrl.error.data.message\">\n" +
     "      An error occurred creating the binding.\n" +
     "    </span>\n" +
+    "  </div>\n" +
+    "  <div ng-if=\"!ctrl.error\" class=\"sub-title\">\n" +
+    "    {{ctrl.binding | bindingFailedMessage}}\n" +
     "  </div>\n" +
     "</div>\n"
   );

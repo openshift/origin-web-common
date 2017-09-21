@@ -1,4 +1,4 @@
-<div ng-if="!ctrl.error">
+<div ng-if="!ctrl.error && !(ctrl.binding | isBindingFailed)">
   <div ng-if="ctrl.binding && !(ctrl.binding | isBindingReady)" class="bind-status" ng-class="{'text-center': !ctrl.progressInline, 'show-progress': !ctrl.progressInline}">
     <div class="spinner" ng-class="{'spinner-sm': ctrl.progressInline, 'spinner-inline': ctrl.progressInline, 'spinner-lg': !ctrl.progressInline}" aria-hidden="true"></div>
     <h3 class="bind-message">
@@ -30,7 +30,7 @@
     </div>
   </div>
 </div>
-<div ng-if="ctrl.error">
+<div ng-if="ctrl.error || (ctrl.binding | isBindingFailed)">
   <div class="bind-status">
     <span class="pficon pficon-error-circle-o text-danger" aria-hidden="true"></span>
     <span class="sr-only">Error</span>
@@ -38,12 +38,15 @@
       <span>Binding Failed</span>
     </h3>
   </div>
-  <div class="sub-title">
+  <div ng-if="ctrl.error" class="sub-title">
     <span ng-if="ctrl.error.data.message">
       {{ctrl.error.data.message | upperFirst}}
     </span>
     <span ng-if="!ctrl.error.data.message">
       An error occurred creating the binding.
     </span>
+  </div>
+  <div ng-if="!ctrl.error" class="sub-title">
+    {{ctrl.binding | bindingFailedMessage}}
   </div>
 </div>

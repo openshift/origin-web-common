@@ -131,8 +131,34 @@ angular.module('openshiftCommonUI')
       return _.get(statusConditionFilter(apiObject, 'Ready'), 'status') === 'True';
     };
   })
+  .filter('serviceInstanceReadyMessage', function(statusConditionFilter) {
+    return function(apiObject) {
+      return _.get(statusConditionFilter(apiObject, 'Ready'), 'message');
+    };
+  })
+  .filter('isServiceInstanceFailed', function(statusConditionFilter) {
+    return function(apiObject) {
+      return _.get(statusConditionFilter(apiObject, 'Failed'), 'status') === 'True';
+    };
+  })
+  .filter('serviceInstanceFailedMessage', function(isServiceInstanceFailedFilter, statusConditionFilter) {
+    return function(apiObject) {
+      if (isServiceInstanceFailedFilter(apiObject)) {
+        return _.get(statusConditionFilter(apiObject, 'Failed'), 'message');
+      }
+    };
+  })
   .filter('isBindingReady', function(isServiceInstanceReadyFilter) {
     return isServiceInstanceReadyFilter;
+  })
+  .filter('isBindingFailed', function(isServiceInstanceFailedFilter) {
+    return isServiceInstanceFailedFilter;
+  })
+  .filter('bindingFailedMessage', function(serviceInstanceFailedMessageFilter) {
+    return serviceInstanceFailedMessageFilter;
+  })
+  .filter('bindingReadyMessage', function(serviceInstanceReadyMessageFilter) {
+    return serviceInstanceReadyMessageFilter;
   })
   .filter('hasDeployment', function(annotationFilter) {
     return function(object) {
