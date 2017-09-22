@@ -107,6 +107,10 @@ angular.module('openshiftCommonUI')
         return kind;
       }
 
+      if (kind === 'ServiceInstance') {
+        return useTitleCase ? 'Provisioned Service' : 'provisioned service';
+      }
+
       var humanized = _.startCase(kind);
       if (useTitleCase) {
         return humanized;
