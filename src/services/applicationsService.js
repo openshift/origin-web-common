@@ -7,12 +7,12 @@ service("ApplicationsService", function($q, DataService) {
   // deployment config. Note: This will not return replication controllers that
   // have been orphaned by `oc delete dc/foo --cascade=false`.
   var listStandaloneReplicationControllers = function(context) {
-    return DataService.list('replicationcontrollers', context, {
+    return DataService.list('replicationcontrollers', context, null, {
       http: {
         params: {
           // If the replica set has a `openshift.io/deployment-config-name`
           // label, it's managed by a deployment config.
-          labelSelector: "!openshift.io/deployment-config-name"
+          labelSelector: "!openshift.io/deployment-config.name"
         }
       }
     });
@@ -22,7 +22,7 @@ service("ApplicationsService", function($q, DataService) {
   // Note: This will not return replica sets that have been orphaned by
   // `oc delete deployment/foo --cascade=false`.
   var listStandaloneReplicaSets = function(context) {
-    return DataService.list({group: 'extensions', resource: 'replicasets'}, context, {
+    return DataService.list({group: 'extensions', resource: 'replicasets'}, context, null, {
       http: {
         params: {
           // If the replica set has a `pod-template-hash` label, it's managed

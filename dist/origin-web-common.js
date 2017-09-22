@@ -2526,12 +2526,12 @@ service("ApplicationsService", ["$q", "DataService", function($q, DataService) {
   // deployment config. Note: This will not return replication controllers that
   // have been orphaned by `oc delete dc/foo --cascade=false`.
   var listStandaloneReplicationControllers = function(context) {
-    return DataService.list('replicationcontrollers', context, {
+    return DataService.list('replicationcontrollers', context, null, {
       http: {
         params: {
           // If the replica set has a `openshift.io/deployment-config-name`
           // label, it's managed by a deployment config.
-          labelSelector: "!openshift.io/deployment-config-name"
+          labelSelector: "!openshift.io/deployment-config.name"
         }
       }
     });
@@ -2541,7 +2541,7 @@ service("ApplicationsService", ["$q", "DataService", function($q, DataService) {
   // Note: This will not return replica sets that have been orphaned by
   // `oc delete deployment/foo --cascade=false`.
   var listStandaloneReplicaSets = function(context) {
-    return DataService.list({group: 'extensions', resource: 'replicasets'}, context, {
+    return DataService.list({group: 'extensions', resource: 'replicasets'}, context, null, {
       http: {
         params: {
           // If the replica set has a `pod-template-hash` label, it's managed
@@ -4299,6 +4299,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
 
   DataService.prototype._startListOp = function(resource, context, opts) {
     opts = opts || {};
+    var params =  _.get(opts, 'http.params') || {};
     var key = this._uniqueKey(resource, null, context, opts);
     // mark the operation as in progress
     this._listInFlight(key, true);
@@ -4315,7 +4316,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
           method: 'GET',
           auth: {},
           headers: headers,
-          url: self._urlForResource(resource, null, context, false, {namespace: project.metadata.name})
+          url: self._urlForResource(resource, null, context, false, _.assign({}, params, {namespace: project.metadata.name}))
         }, opts.http || {}))
         .success(function(data, status, headerFunc, config, statusText) {
           self._listOpComplete(key, resource, context, opts, data);
@@ -4339,7 +4340,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
         method: 'GET',
         auth: {},
         headers: headers,
-        url: this._urlForResource(resource, null, context),
+        url: this._urlForResource(resource, null, context, false, params),
       }).success(function(data, status, headerFunc, config, statusText) {
         self._listOpComplete(key, resource, context, opts, data);
       }).error(function(data, status, headers, config) {
