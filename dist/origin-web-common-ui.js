@@ -91,7 +91,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
 
 
   $templateCache.put('src/components/binding/bindResults.html',
-    "<div ng-if=\"!ctrl.error\">\n" +
+    "<div ng-if=\"!ctrl.error && !(ctrl.binding | isBindingFailed)\">\n" +
     "  <div ng-if=\"ctrl.binding && !(ctrl.binding | isBindingReady)\" class=\"bind-status\" ng-class=\"{'text-center': !ctrl.progressInline, 'show-progress': !ctrl.progressInline}\">\n" +
     "    <div class=\"spinner\" ng-class=\"{'spinner-sm': ctrl.progressInline, 'spinner-inline': ctrl.progressInline, 'spinner-lg': !ctrl.progressInline}\" aria-hidden=\"true\"></div>\n" +
     "    <h3 class=\"bind-message\">\n" +
@@ -123,7 +123,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "    </div>\n" +
     "  </div>\n" +
     "</div>\n" +
-    "<div ng-if=\"ctrl.error\">\n" +
+    "<div ng-if=\"ctrl.error || (ctrl.binding | isBindingFailed)\">\n" +
     "  <div class=\"bind-status\">\n" +
     "    <span class=\"pficon pficon-error-circle-o text-danger\" aria-hidden=\"true\"></span>\n" +
     "    <span class=\"sr-only\">Error</span>\n" +
@@ -131,13 +131,16 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "      <span>Binding Failed</span>\n" +
     "    </h3>\n" +
     "  </div>\n" +
-    "  <div class=\"sub-title\">\n" +
+    "  <div ng-if=\"ctrl.error\" class=\"sub-title\">\n" +
     "    <span ng-if=\"ctrl.error.data.message\">\n" +
     "      {{ctrl.error.data.message | upperFirst}}\n" +
     "    </span>\n" +
     "    <span ng-if=\"!ctrl.error.data.message\">\n" +
     "      An error occurred creating the binding.\n" +
     "    </span>\n" +
+    "  </div>\n" +
+    "  <div ng-if=\"!ctrl.error\" class=\"sub-title\">\n" +
+    "    {{ctrl.binding | bindingFailedMessage}}\n" +
     "  </div>\n" +
     "</div>\n"
   );
@@ -1718,8 +1721,34 @@ angular.module('openshiftCommonUI')
       return _.get(statusConditionFilter(apiObject, 'Ready'), 'status') === 'True';
     };
   })
+  .filter('serviceInstanceReadyMessage', function(statusConditionFilter) {
+    return function(apiObject) {
+      return _.get(statusConditionFilter(apiObject, 'Ready'), 'message');
+    };
+  })
+  .filter('isServiceInstanceFailed', function(statusConditionFilter) {
+    return function(apiObject) {
+      return _.get(statusConditionFilter(apiObject, 'Failed'), 'status') === 'True';
+    };
+  })
+  .filter('serviceInstanceFailedMessage', function(isServiceInstanceFailedFilter, statusConditionFilter) {
+    return function(apiObject) {
+      if (isServiceInstanceFailedFilter(apiObject)) {
+        return _.get(statusConditionFilter(apiObject, 'Failed'), 'message');
+      }
+    };
+  })
   .filter('isBindingReady', function(isServiceInstanceReadyFilter) {
     return isServiceInstanceReadyFilter;
+  })
+  .filter('isBindingFailed', function(isServiceInstanceFailedFilter) {
+    return isServiceInstanceFailedFilter;
+  })
+  .filter('bindingFailedMessage', function(serviceInstanceFailedMessageFilter) {
+    return serviceInstanceFailedMessageFilter;
+  })
+  .filter('bindingReadyMessage', function(serviceInstanceReadyMessageFilter) {
+    return serviceInstanceReadyMessageFilter;
   })
   .filter('hasDeployment', function(annotationFilter) {
     return function(object) {
