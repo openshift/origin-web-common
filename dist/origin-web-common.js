@@ -1427,7 +1427,6 @@ angular.module('openshiftCommonServices')
   .constant('API_PREFERRED_VERSIONS', {
       autoscaling:                  {group: 'autoscaling',            resource: 'horizontalpodautoscalers' },
       appliedclusterresourcequotas: {group: 'quota.openshift.io',     resource: 'appliedclusterresourcequotas' },
-      bindings:                     {group: 'servicecatalog.k8s.io',  resource: 'bindings' },
       builds:                       {group: 'build.openshift.io',     resource: 'builds' },
       'builds/clone':               {group: 'build.openshift.io',     resource: 'builds/clone' },
       'buildconfigs/instantiate':   {group: 'build.openshift.io',     resource: 'buildconfigs/instantiate' },      
@@ -1438,7 +1437,6 @@ angular.module('openshiftCommonServices')
       events:                       'events',
       imagestreams:                 {group: 'image.openshift.io',     resource: 'imagestreams' },
       imagestreamtags:              {group: 'image.openshift.io',     resource: 'imagestreamtags' },
-      instances:                    {group: 'servicecatalog.k8s.io',  resource: 'instances' },
       limitranges:                  'limitranges',
       pods:                         'pods',
       projects:                     {group: 'project.openshift.io',   resource: 'projects'},
@@ -1454,6 +1452,8 @@ angular.module('openshiftCommonServices')
       services:                     'services',
       serviceaccounts:              'serviceaccounts',
       serviceclasses:               {group: 'servicecatalog.k8s.io',  resource: 'serviceclasses' },
+      serviceinstancecredentials:   {group: 'servicecatalog.k8s.io',  resource: 'serviceinstancecredentials' },
+      serviceinstances:             {group: 'servicecatalog.k8s.io',  resource: 'serviceinstances' },
       statefulsets:                 {group: 'apps',                   resource: 'statefulsets' },
       templates:                    {group: 'template.openshift.io',  resource: 'templates'}
   });
