@@ -1160,11 +1160,13 @@ angular.module('openshiftCommonUI')
     return {
       restrict: 'A',
       scope: {
-        oscUnique: '='
+        oscUnique: '=',
+        oscUniqueDisabled: '='
       },
       require: 'ngModel',
       link: function($scope, $elem, $attrs, ctrl) {
         var list = [];
+        var isUnique = true;
 
         $scope.$watchCollection('oscUnique', function(newVal) {
           list = _.isArray(newVal) ?
@@ -1172,9 +1174,15 @@ angular.module('openshiftCommonUI')
                     _.keys(newVal);
         });
 
+        var updateValidity = function() {
+          ctrl.$setValidity('oscUnique', $scope.oscUniqueDisabled || isUnique);
+        };
+
+        $scope.$watch('oscUniqueDisabled', updateValidity);
+
         ctrl.$parsers.unshift(function(value) {
-          // is valid so long as it doesn't already exist
-          ctrl.$setValidity('oscUnique', !_.includes(list, value));
+          isUnique = !_.includes(list, value);
+          updateValidity();
           return value;
         });
       }
