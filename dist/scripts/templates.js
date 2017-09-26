@@ -63,21 +63,25 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
 
   $templateCache.put('src/components/binding/bindResults.html',
     "<div ng-if=\"!ctrl.error && !(ctrl.binding | isBindingFailed)\">\n" +
-    "  <div ng-if=\"ctrl.binding && !(ctrl.binding | isBindingReady)\" class=\"bind-status\" ng-class=\"{'text-center': !ctrl.progressInline, 'show-progress': !ctrl.progressInline}\">\n" +
-    "    <div class=\"spinner\" ng-class=\"{'spinner-sm': ctrl.progressInline, 'spinner-inline': ctrl.progressInline, 'spinner-lg': !ctrl.progressInline}\" aria-hidden=\"true\"></div>\n" +
-    "    <h3 class=\"bind-message\">\n" +
-    "      <span class=\"sr-only\">Pending</span>\n" +
-    "      <div class=\"bind-pending-message\" ng-class=\"{'progress-inline': ctrl.progressInline}\">The binding was created but is not ready yet.</div>\n" +
+    "  <div ng-if=\"ctrl.binding && !(ctrl.binding | isBindingReady)\" class=\"results-status\">\n" +
+    "    <span class=\"spinner spinner-sm\" aria-hidden=\"true\"></span>\n" +
+    "    <span class=\"sr-only\">Pending</span>\n" +
+    "    <h3 class=\"results-message\">\n" +
+    "      The binding is being created.\n" +
     "    </h3>\n" +
     "  </div>\n" +
     "  <div ng-if=\"(ctrl.binding | isBindingReady)\">\n" +
-    "    <div class=\"bind-status\">\n" +
+    "    <div class=\"results-status\">\n" +
     "      <span class=\"pficon pficon-ok\" aria-hidden=\"true\"></span>\n" +
     "      <span class=\"sr-only\">Success</span>\n" +
-    "      <h3 class=\"bind-message\">\n" +
-    "        <strong>{{ctrl.serviceToBind}}</strong>\n" +
-    "        <span>has been bound</span>\n" +
-    "        <span ng-if=\"ctrl.bindType === 'application'\"> to <strong>{{ctrl.applicationToBind}}</strong> successfully</span>\n" +
+    "      <h3 class=\"results-message\">\n" +
+    "        <span ng-if=\"ctrl.bindType === 'application'\">\n" +
+    "          <strong>{{ctrl.serviceToBind}}</strong> has been bound to\n" +
+    "          <strong>{{ctrl.applicationToBind}}</strong> successfully.\n" +
+    "        </span>\n" +
+    "        <span ng-if=\"ctrl.bindType !== 'application'\">\n" +
+    "          <strong>{{ctrl.serviceToBind}}</strong> binding created successfully.\n" +
+    "        </span>\n" +
     "      </h3>\n" +
     "    </div>\n" +
     "    <div class=\"sub-title\">\n" +
@@ -87,7 +91,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "      that you may need to reference in your application.\n" +
     "      <span ng-if=\"ctrl.showPodPresets\">Its data will be available to your application as environment variables.</span>\n" +
     "    </div>\n" +
-    "    <div class=\"alert alert-info bind-info\" ng-if=\"ctrl.bindType === 'application'\">\n" +
+    "    <div class=\"alert alert-info results-info\" ng-if=\"ctrl.bindType === 'application'\">\n" +
     "      <span class=\"pficon pficon-info\" aria-hidden=\"true\"></span>\n" +
     "      <span class=\"sr-only\">Info</span>\n" +
     "      The binding secret will only be available to new pods. You will need to redeploy your application.\n" +
@@ -95,11 +99,11 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "  </div>\n" +
     "</div>\n" +
     "<div ng-if=\"ctrl.error || (ctrl.binding | isBindingFailed)\">\n" +
-    "  <div class=\"bind-status\">\n" +
+    "  <div class=\"results-status\">\n" +
     "    <span class=\"pficon pficon-error-circle-o text-danger\" aria-hidden=\"true\"></span>\n" +
     "    <span class=\"sr-only\">Error</span>\n" +
-    "    <h3 class=\"bind-message\">\n" +
-    "      <span>Binding Failed</span>\n" +
+    "    <h3 class=\"results-message\">\n" +
+    "      The binding could not be created.\n" +
     "    </h3>\n" +
     "  </div>\n" +
     "  <div ng-if=\"ctrl.error\" class=\"sub-title\">\n" +

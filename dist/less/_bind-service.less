@@ -41,50 +41,34 @@
   }
 }
 
-.bind-info {
-  margin-bottom: 20px;
-  margin-top: 30px;
-}
-
 .bind-service-selection {
   margin-bottom: 5px;
 }
 
-.bind-status {
-  display: flex;
-  font-size: 16px;
+// the following rules are shared by origin-web-catalog
+.results-info {
+  margin-bottom: 20px;
+  margin-top: 30px;
+}
+
+.results-message {
+  line-height: 1.4;
   margin-top: 0;
-
-  .bind-message {
-    flex: 1;
-    line-height: 1.4;
-    margin-top: 0;
-    padding-left: 10px;
-  }
-
-  .pficon {
-    margin-top: 3px;
-  }
-
-  &.show-progress {
-    display: block;
-    .bind-message {
-      padding-left: 0;
-    }
-  }
-
-  .spinner.spinner-sm {
-    height: 16px;
-    margin-right: 0;
-    margin-top: 3px;
-    width: 16px;
+  padding-left: 10px;
+  strong {
+    .word-break();
   }
 }
 
-
-.bind-pending-message {
-  margin-top: 15px;
-  &.progress-inline {
-    margin-top: 0;
+.results-status {
+  display: flex;
+  font-size: 16px;
+  .pficon {
+    margin-top: 3px;
+  }
+  .spinner.spinner-sm {
+    height: 16px;
+    margin: 3px 0 0;
+    width: 16px;
   }
 }
