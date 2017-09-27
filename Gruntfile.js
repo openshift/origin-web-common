@@ -43,7 +43,7 @@ module.exports = function (grunt) {
           dest: 'dist/origin-web-common-ui.js'
         },
         services: {
-          src: ['src/**/*Services.module.js', 'src/services/**/*.js'],
+          src: ['src/**/*Services.module.js', 'src/services/**/*.js', 'src/constants/**/*.js'],
           dest: 'dist/origin-web-common-services.js'
         },
         dist: {
