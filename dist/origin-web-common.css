@@ -55,44 +55,35 @@
 .bind-form .radio label[disabled] {
   cursor: not-allowed;
 }
-.bind-info {
-  margin-bottom: 20px;
-  margin-top: 30px;
-}
 .bind-service-selection {
   margin-bottom: 5px;
 }
-.bind-status {
-  display: flex;
-  font-size: 16px;
-  margin-top: 0;
+.results-info {
+  margin-bottom: 20px;
+  margin-top: 30px;
 }
-.bind-status .bind-message {
-  flex: 1;
+.results-message {
   line-height: 1.4;
   margin-top: 0;
   padding-left: 10px;
 }
-.bind-status .pficon {
+.results-message strong {
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+.results-status {
+  display: flex;
+  font-size: 16px;
+}
+.results-status .pficon {
   margin-top: 3px;
 }
-.bind-status.show-progress {
-  display: block;
-}
-.bind-status.show-progress .bind-message {
-  padding-left: 0;
-}
-.bind-status .spinner.spinner-sm {
+.results-status .spinner.spinner-sm {
   height: 16px;
-  margin-right: 0;
-  margin-top: 3px;
+  margin: 3px 0 0;
   width: 16px;
-}
-.bind-pending-message {
-  margin-top: 15px;
-}
-.bind-pending-message.progress-inline {
-  margin-top: 0;
 }
 .delete-resource-modal {
   background-color: #f1f1f1;
