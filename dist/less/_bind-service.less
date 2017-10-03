@@ -52,23 +52,52 @@
 }
 
 .results-message {
-  line-height: 1.4;
-  margin-top: 0;
+  flex: 1 1 0%; // IE
   padding-left: 10px;
-  strong {
-    .word-break();
+  @media(min-width: @screen-sm-min) {
+    padding-left: 15px;
+  }
+  h3,
+  .h3 {
+    font-size: 15px;
+    line-height: 1.4;
+    margin-bottom: 0;
+    margin-top: 0;
+    @media(min-width: @screen-sm-min) {
+      font-size: 20px;
+      font-weight: 300;
+    }
+    strong {
+      font-weight: 600;
+      .word-break();
+    }
+  }
+  .results-status-unknown & {
+    padding-left: 0;
   }
 }
 
+.results-message-details {
+  font-style: italic;
+  margin-bottom: 0;
+}
+
 .results-status {
+  align-items: center;
   display: flex;
-  font-size: 16px;
+  margin-bottom: 15px;
+  .fa,
   .pficon {
-    margin-top: 3px;
+    font-size: 24px;
+    @media(min-width: @screen-sm-min) {
+      font-size: 32px;
+    }
   }
-  .spinner.spinner-sm {
-    height: 16px;
-    margin: 3px 0 0;
-    width: 16px;
+  // make fa-clock-o slightly bigger so it matches pficon-ok, pficon-error-circle-o
+  .fa-clock-o {
+    font-size: 30px;
+    @media(min-width: @screen-sm-min) {
+      font-size: 36px;
+    }
   }
 }

@@ -63,27 +63,65 @@
   margin-top: 30px;
 }
 .results-message {
-  line-height: 1.4;
-  margin-top: 0;
+  flex: 1 1 0%;
   padding-left: 10px;
 }
-.results-message strong {
+@media (min-width: 768px) {
+  .results-message {
+    padding-left: 15px;
+  }
+}
+.results-message h3,
+.results-message .h3 {
+  font-size: 15px;
+  line-height: 1.4;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+@media (min-width: 768px) {
+  .results-message h3,
+  .results-message .h3 {
+    font-size: 20px;
+    font-weight: 300;
+  }
+}
+.results-message h3 strong,
+.results-message .h3 strong {
+  font-weight: 600;
   word-wrap: break-word;
   word-break: break-word;
   overflow-wrap: break-word;
   min-width: 0;
 }
+.results-status-unknown .results-message {
+  padding-left: 0;
+}
+.results-message-details {
+  font-style: italic;
+  margin-bottom: 0;
+}
 .results-status {
+  align-items: center;
   display: flex;
-  font-size: 16px;
+  margin-bottom: 15px;
 }
+.results-status .fa,
 .results-status .pficon {
-  margin-top: 3px;
+  font-size: 24px;
 }
-.results-status .spinner.spinner-sm {
-  height: 16px;
-  margin: 3px 0 0;
-  width: 16px;
+@media (min-width: 768px) {
+  .results-status .fa,
+  .results-status .pficon {
+    font-size: 32px;
+  }
+}
+.results-status .fa-clock-o {
+  font-size: 30px;
+}
+@media (min-width: 768px) {
+  .results-status .fa-clock-o {
+    font-size: 36px;
+  }
 }
 .delete-resource-modal {
   background-color: #f1f1f1;

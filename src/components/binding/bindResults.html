@@ -1,31 +1,36 @@
 <div ng-if="!ctrl.error && !(ctrl.binding | isBindingFailed)">
   <div ng-if="ctrl.binding && !(ctrl.binding | isBindingReady)" class="results-status">
-    <span class="spinner spinner-sm" aria-hidden="true"></span>
+    <span class="fa fa-clock-o text-muted" aria-hidden="true"></span>
     <span class="sr-only">Pending</span>
-    <h3 class="results-message">
-      The binding is being created.
-    </h3>
+    <div class="results-message">
+      <h3>
+        The binding is being created.
+      </h3>
+      <p class="results-message-details">This may take several minutes.</p>
+    </div>
   </div>
   <div ng-if="(ctrl.binding | isBindingReady)">
     <div class="results-status">
       <span class="pficon pficon-ok" aria-hidden="true"></span>
       <span class="sr-only">Success</span>
-      <h3 class="results-message">
-        <span ng-if="ctrl.bindType === 'application'">
-          <strong>{{ctrl.serviceToBind}}</strong> has been bound to
-          <strong>{{ctrl.applicationToBind}}</strong> successfully.
-        </span>
-        <span ng-if="ctrl.bindType !== 'application'">
-          <strong>{{ctrl.serviceToBind}}</strong> binding created successfully.
-        </span>
-      </h3>
-    </div>
-    <div class="sub-title">
-      The binding operation created the secret
-      <a ng-if="ctrl.secretHref" ng-href="{{ctrl.secretHref}}">{{ctrl.binding.spec.secretName}}</a>
-      <span ng-if="!ctrl.secretHref">{{ctrl.binding.spec.secretName}}</span>
-      that you may need to reference in your application.
-      <span ng-if="ctrl.showPodPresets">Its data will be available to your application as environment variables.</span>
+      <div class="results-message">
+        <h3>
+          <span ng-if="ctrl.bindType === 'application'">
+            <strong>{{ctrl.serviceToBind}}</strong> has been bound to
+            <strong>{{ctrl.applicationToBind}}</strong> successfully.
+          </span>
+          <span ng-if="ctrl.bindType !== 'application'">
+            The binding <strong>{{ctrl.serviceToBind}}</strong> has been created successfully.
+          </span>
+        </h3>
+        <p class="results-message-details">
+          The binding operation created the secret
+          <a ng-if="ctrl.secretHref" ng-href="{{ctrl.secretHref}}">{{ctrl.binding.spec.secretName}}</a>
+          <span ng-if="!ctrl.secretHref">{{ctrl.binding.spec.secretName}}</span>
+          that you may need to reference in your application.
+          <span ng-if="ctrl.showPodPresets">Its data will be available to your application as environment variables.</span>
+        </p>
+      </div>
     </div>
     <div class="alert alert-info results-info" ng-if="ctrl.bindType === 'application'">
       <span class="pficon pficon-info" aria-hidden="true"></span>
@@ -38,9 +43,11 @@
   <div class="results-status">
     <span class="pficon pficon-error-circle-o text-danger" aria-hidden="true"></span>
     <span class="sr-only">Error</span>
-    <h3 class="results-message">
-      The binding could not be created.
-    </h3>
+    <div class="results-message">
+      <h3>
+        The binding could not be created.
+      </h3>
+    </div>
   </div>
   <div ng-if="ctrl.error" class="sub-title">
     <span ng-if="ctrl.error.data.message">

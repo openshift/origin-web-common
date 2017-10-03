@@ -264,32 +264,37 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
   $templateCache.put('src/components/binding/bindResults.html',
     "<div ng-if=\"!ctrl.error && !(ctrl.binding | isBindingFailed)\">\n" +
     "  <div ng-if=\"ctrl.binding && !(ctrl.binding | isBindingReady)\" class=\"results-status\">\n" +
-    "    <span class=\"spinner spinner-sm\" aria-hidden=\"true\"></span>\n" +
+    "    <span class=\"fa fa-clock-o text-muted\" aria-hidden=\"true\"></span>\n" +
     "    <span class=\"sr-only\">Pending</span>\n" +
-    "    <h3 class=\"results-message\">\n" +
-    "      The binding is being created.\n" +
-    "    </h3>\n" +
+    "    <div class=\"results-message\">\n" +
+    "      <h3>\n" +
+    "        The binding is being created.\n" +
+    "      </h3>\n" +
+    "      <p class=\"results-message-details\">This may take several minutes.</p>\n" +
+    "    </div>\n" +
     "  </div>\n" +
     "  <div ng-if=\"(ctrl.binding | isBindingReady)\">\n" +
     "    <div class=\"results-status\">\n" +
     "      <span class=\"pficon pficon-ok\" aria-hidden=\"true\"></span>\n" +
     "      <span class=\"sr-only\">Success</span>\n" +
-    "      <h3 class=\"results-message\">\n" +
-    "        <span ng-if=\"ctrl.bindType === 'application'\">\n" +
-    "          <strong>{{ctrl.serviceToBind}}</strong> has been bound to\n" +
-    "          <strong>{{ctrl.applicationToBind}}</strong> successfully.\n" +
-    "        </span>\n" +
-    "        <span ng-if=\"ctrl.bindType !== 'application'\">\n" +
-    "          <strong>{{ctrl.serviceToBind}}</strong> binding created successfully.\n" +
-    "        </span>\n" +
-    "      </h3>\n" +
-    "    </div>\n" +
-    "    <div class=\"sub-title\">\n" +
-    "      The binding operation created the secret\n" +
-    "      <a ng-if=\"ctrl.secretHref\" ng-href=\"{{ctrl.secretHref}}\">{{ctrl.binding.spec.secretName}}</a>\n" +
-    "      <span ng-if=\"!ctrl.secretHref\">{{ctrl.binding.spec.secretName}}</span>\n" +
-    "      that you may need to reference in your application.\n" +
-    "      <span ng-if=\"ctrl.showPodPresets\">Its data will be available to your application as environment variables.</span>\n" +
+    "      <div class=\"results-message\">\n" +
+    "        <h3>\n" +
+    "          <span ng-if=\"ctrl.bindType === 'application'\">\n" +
+    "            <strong>{{ctrl.serviceToBind}}</strong> has been bound to\n" +
+    "            <strong>{{ctrl.applicationToBind}}</strong> successfully.\n" +
+    "          </span>\n" +
+    "          <span ng-if=\"ctrl.bindType !== 'application'\">\n" +
+    "            The binding <strong>{{ctrl.serviceToBind}}</strong> has been created successfully.\n" +
+    "          </span>\n" +
+    "        </h3>\n" +
+    "        <p class=\"results-message-details\">\n" +
+    "          The binding operation created the secret\n" +
+    "          <a ng-if=\"ctrl.secretHref\" ng-href=\"{{ctrl.secretHref}}\">{{ctrl.binding.spec.secretName}}</a>\n" +
+    "          <span ng-if=\"!ctrl.secretHref\">{{ctrl.binding.spec.secretName}}</span>\n" +
+    "          that you may need to reference in your application.\n" +
+    "          <span ng-if=\"ctrl.showPodPresets\">Its data will be available to your application as environment variables.</span>\n" +
+    "        </p>\n" +
+    "      </div>\n" +
     "    </div>\n" +
     "    <div class=\"alert alert-info results-info\" ng-if=\"ctrl.bindType === 'application'\">\n" +
     "      <span class=\"pficon pficon-info\" aria-hidden=\"true\"></span>\n" +
@@ -302,9 +307,11 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "  <div class=\"results-status\">\n" +
     "    <span class=\"pficon pficon-error-circle-o text-danger\" aria-hidden=\"true\"></span>\n" +
     "    <span class=\"sr-only\">Error</span>\n" +
-    "    <h3 class=\"results-message\">\n" +
-    "      The binding could not be created.\n" +
-    "    </h3>\n" +
+    "    <div class=\"results-message\">\n" +
+    "      <h3>\n" +
+    "        The binding could not be created.\n" +
+    "      </h3>\n" +
+    "    </div>\n" +
     "  </div>\n" +
     "  <div ng-if=\"ctrl.error\" class=\"sub-title\">\n" +
     "    <span ng-if=\"ctrl.error.data.message\">\n" +
