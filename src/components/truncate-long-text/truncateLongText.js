@@ -15,7 +15,7 @@ angular.module('openshiftCommonUI')
         // When expandable is on, optionally hide the collapse link so text can only be expanded. (Used for toast notifications.)
         hideCollapse: '=',
         keywords: '=highlightKeywords',  // optional keywords to highlight using the `highlightKeywords` filter
-        prettifyJson: '='                // prettifies JSON blobs when expanded, only used if expandable is true
+        linkify: '=?'
       },
       templateUrl: 'src/components/truncate-long-text/truncateLongText.html',
       link: function(scope) {

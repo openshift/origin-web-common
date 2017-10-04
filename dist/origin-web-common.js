@@ -629,8 +629,14 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "  Do not remove class `truncated-content` (here or below) even though it's not\n" +
     "  styled directly in origin-web-common.  `truncated-content` is used by\n" +
     "  origin-web-console in certain contexts.\n" +
+    "\n" +
+    "  highlightKeywords and linkify are mutually exclusive options\n" +
     "-->\n" +
-    "<span ng-if=\"!truncated\" ng-bind-html=\"content | highlightKeywords : keywords\" class=\"truncated-content\"></span>\n" +
+    "<span ng-if=\"!truncated\">\n" +
+    "  <span ng-if=\"!linkify || (highlightKeywords | size)\" ng-bind-html=\"content | highlightKeywords : keywords\" class=\"truncated-content\"></span>\n" +
+    "  <span ng-if=\"linkify && !(highlightKeywords | size)\" ng-bind-html=\"content | linkify : '_blank'\" class=\"truncated-content\"></span>\n" +
+    "</span>\n" +
+    "<!-- To avoid truncating in middle of a link, we only optionally apply linkify to expanded content -->\n" +
     "<span ng-if=\"truncated\">\n" +
     "  <span ng-if=\"!toggles.expanded\">\n" +
     "    <span ng-attr-title=\"{{content}}\" class=\"truncation-block\">\n" +
@@ -639,14 +645,13 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "    <a ng-if=\"expandable\" href=\"\" ng-click=\"toggles.expanded = true\" class=\"truncation-expand-link\">See All</a>\n" +
     "  </span>\n" +
     "  <span ng-if=\"toggles.expanded\">\n" +
-    "    <div ng-if=\"prettifyJson\" class=\"well\">\n" +
     "      <a href=\"\" ng-if=\"!hideCollapse\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a>\n" +
-    "      <span ng-bind-html=\"content | prettifyJSON | highlightKeywords : keywords\" class=\"pretty-json truncated-content\"></span>\n" +
-    "    </div>\n" +
-    "    <span ng-if=\"!prettifyJson\">\n" +
-    "      <a href=\"\" ng-if=\"!hideCollapse\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a>\n" +
-    "      <span ng-bind-html=\"content | highlightKeywords : keywords\" class=\"truncated-content\"></span>\n" +
-    "    </span>\n" +
+    "      <span ng-if=\"!linkify || (highlightKeywords | size)\"\n" +
+    "            ng-bind-html=\"content | highlightKeywords : keywords\"\n" +
+    "            class=\"truncated-content\"></span>\n" +
+    "      <span ng-if=\"linkify && !(highlightKeywords | size)\"\n" +
+    "            ng-bind-html=\"content | linkify : '_blank'\"\n" +
+    "            class=\"truncated-content\"></span>\n" +
     "  </span>\n" +
     "</span>\n"
   );
@@ -1407,7 +1412,7 @@ angular.module('openshiftCommonUI')
         // When expandable is on, optionally hide the collapse link so text can only be expanded. (Used for toast notifications.)
         hideCollapse: '=',
         keywords: '=highlightKeywords',  // optional keywords to highlight using the `highlightKeywords` filter
-        prettifyJson: '='                // prettifies JSON blobs when expanded, only used if expandable is true
+        linkify: '=?'
       },
       templateUrl: 'src/components/truncate-long-text/truncateLongText.html',
       link: function(scope) {
