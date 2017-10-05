@@ -2232,6 +2232,18 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
       _.take(notifications, 0);
     };
 
+    // Was the notification set to be hidden?
+    // This is different than !isNotificationVisible
+    var isNotificationHidden = function (notification) {
+      if (!notification.id) {
+        return false;
+      }
+
+      return _.some(notifications, function(next) {
+          return next.hidden === true && notification.id === next.id;
+      });
+    };
+
     var isNotificationPermanentlyHidden = function (notification) {
       if (!notification.id) {
         return false;
@@ -2244,6 +2256,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
     var permanentlyHideNotification = function (notificationID, namespace) {
       var key = notificationHiddenKey(notificationID, namespace);
       localStorage.setItem(key, 'true');
+      hideNotification(notificationID);
     };
 
     // Is there a visible toast notification with the same ID right now?
@@ -2271,6 +2284,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
       hideNotification: hideNotification,
       getNotifications: getNotifications,
       clearNotifications: clearNotifications,
+      isNotificationHidden: isNotificationHidden,
       isNotificationPermanentlyHidden: isNotificationPermanentlyHidden,
       permanentlyHideNotification: permanentlyHideNotification,
       isAutoDismiss: isAutoDismiss,
