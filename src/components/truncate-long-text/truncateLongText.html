@@ -2,8 +2,14 @@
   Do not remove class `truncated-content` (here or below) even though it's not
   styled directly in origin-web-common.  `truncated-content` is used by
   origin-web-console in certain contexts.
+
+  highlightKeywords and linkify are mutually exclusive options
 -->
-<span ng-if="!truncated" ng-bind-html="content | highlightKeywords : keywords" class="truncated-content"></span>
+<span ng-if="!truncated">
+  <span ng-if="!linkify || (highlightKeywords | size)" ng-bind-html="content | highlightKeywords : keywords" class="truncated-content"></span>
+  <span ng-if="linkify && !(highlightKeywords | size)" ng-bind-html="content | linkify : '_blank'" class="truncated-content"></span>
+</span>
+<!-- To avoid truncating in middle of a link, we only optionally apply linkify to expanded content -->
 <span ng-if="truncated">
   <span ng-if="!toggles.expanded">
     <span ng-attr-title="{{content}}" class="truncation-block">
@@ -12,13 +18,12 @@
     <a ng-if="expandable" href="" ng-click="toggles.expanded = true" class="truncation-expand-link">See All</a>
   </span>
   <span ng-if="toggles.expanded">
-    <div ng-if="prettifyJson" class="well">
       <a href="" ng-if="!hideCollapse" ng-click="toggles.expanded = false" class="truncation-collapse-link">Collapse</a>
-      <span ng-bind-html="content | prettifyJSON | highlightKeywords : keywords" class="pretty-json truncated-content"></span>
-    </div>
-    <span ng-if="!prettifyJson">
-      <a href="" ng-if="!hideCollapse" ng-click="toggles.expanded = false" class="truncation-collapse-link">Collapse</a>
-      <span ng-bind-html="content | highlightKeywords : keywords" class="truncated-content"></span>
-    </span>
+      <span ng-if="!linkify || (highlightKeywords | size)"
+            ng-bind-html="content | highlightKeywords : keywords"
+            class="truncated-content"></span>
+      <span ng-if="linkify && !(highlightKeywords | size)"
+            ng-bind-html="content | linkify : '_blank'"
+            class="truncated-content"></span>
   </span>
 </span>
