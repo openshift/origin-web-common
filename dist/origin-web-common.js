@@ -234,7 +234,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "        <div ng-repeat=\"serviceInstance in ctrl.bindableServiceInstances\" class=\"bind-service-selection\">\n" +
     "          <label>\n" +
     "            <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" ng-value=\"serviceInstance\">\n" +
-    "            {{ctrl.serviceClasses[serviceInstance.spec.serviceClassName].externalMetadata.displayName || serviceInstance.spec.serviceClassName}}\n" +
+    "            {{ctrl.serviceClasses[serviceInstance.spec.serviceClassRef.name].spec.externalMetadata.displayName || serviceInstance.spec.serviceClassRef.name}}\n" +
     "          </label>\n" +
     "          <div class=\"bind-description\">\n" +
     "            <span class=\"pficon pficon-info\"\n" +
@@ -333,7 +333,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "  <form>\n" +
     "    <div class=\"form-group\">\n" +
     "      <label>\n" +
-    "        <h3>Create a binding for <strong>{{ctrl.serviceClass.externalMetadata.displayName || ctrl.serviceClassName}}</strong></h3>\n" +
+    "        <h3>Create a binding for <strong>{{ctrl.serviceClass.spec.externalMetadata.displayName || ctrl.serviceClass.spec.externalName}}</strong></h3>\n" +
     "      </label>\n" +
     "      <span class=\"help-block\">Bindings create a secret containing the necessary information for an application to use this service.</span>\n" +
     "    </div>\n" +
@@ -705,7 +705,6 @@ angular.module('openshiftCommonUI').component('bindServiceForm', {
   controllerAs: 'ctrl',
   bindings: {
     serviceClass: '<',
-    serviceClassName: '<',
     showPodPresets: '<',
     applications: '<',
     formName: '=',
@@ -1440,6 +1439,10 @@ angular.module('openshiftCommonServices')
       'buildconfigs/instantiate':       {group: 'build.openshift.io',         version: 'v1',      resource: 'buildconfigs/instantiate' },
       buildconfigs:                     {group: 'build.openshift.io',         version: 'v1',      resource: 'buildconfigs' },
       configmaps:                       {version: 'v1',                       resource: 'configmaps' },
+      // Using the anticipated name for the resources, even though they aren't yet prefixed with `cluster`.
+      // https://github.com/kubernetes-incubator/service-catalog/issues/1288
+      clusterserviceclasses:            {group: 'servicecatalog.k8s.io',      resource: 'serviceclasses' },
+      clusterserviceplans:              {group: 'servicecatalog.k8s.io',      resource: 'serviceplans' },
       deployments:                      {group: 'apps',                       version: 'v1beta1', resource: 'deployments' },
       deploymentconfigs:                {group: 'apps.openshift.io',          version: 'v1',      resource: 'deploymentconfigs' },
 	    'deploymentconfigs/instantiate':  {group: 'apps.openshift.io',          version: 'v1',      resource: 'deploymentconfigs/instantiate' },
@@ -1462,9 +1465,8 @@ angular.module('openshiftCommonServices')
       selfsubjectrulesreviews:          {group: 'authorization.openshift.io', version: 'v1',      resource: 'selfsubjectrulesreviews' },
       services:                         {version: 'v1',                       resource: 'services' },
       serviceaccounts:                  {version: 'v1',                       resource: 'serviceaccounts' },
-      // TODO: add version once these reach beta
-      serviceclasses:                   {group: 'servicecatalog.k8s.io',      resource: 'serviceclasses' },
-      serviceinstancecredentials:       {group: 'servicecatalog.k8s.io',      resource: 'serviceinstancecredentials' },
+      // Using the anticipated name for this resource, even though it's not currently called servicebindings.
+      servicebindings:                  {group: 'servicecatalog.k8s.io',      resource: 'serviceinstancecredentials' },
       serviceinstances:                 {group: 'servicecatalog.k8s.io',      resource: 'serviceinstances' },
       statefulsets:                     {group: 'apps',                       version: 'v1beta1', resource: 'statefulsets' },
       templates:                        {group: 'template.openshift.io',      verison: 'v1',      resource: 'templates' }
@@ -1958,6 +1960,10 @@ angular.module('openshiftCommonUI')
     return function(kind, useTitleCase) {
       if (!kind) {
         return kind;
+      }
+
+      if (kind === 'ServiceInstance') {
+        return useTitleCase ? 'Provisioned Service' : 'provisioned service';
       }
 
       var humanized = _.startCase(kind);
@@ -3121,27 +3127,28 @@ angular.module('openshiftCommonServices')
 
 angular.module("openshiftCommonServices")
   .service("BindingService",
-           ["$filter", "$q", "AuthService", "DataService", "DNS1123_SUBDOMAIN_VALIDATION", function($filter,
+           ["$filter", "$q", "APIService", "AuthService", "DataService", "DNS1123_SUBDOMAIN_VALIDATION", function($filter,
                     $q,
+                    APIService,
                     AuthService,
                     DataService,
                     DNS1123_SUBDOMAIN_VALIDATION) {
     // The secret key this service uses for the parameters JSON blob when binding.
     var PARAMETERS_SECRET_KEY = 'parameters';
 
-    var bindingResource = {
-      group: 'servicecatalog.k8s.io',
-      resource: 'serviceinstancecredentials'
-    };
+    var bindingResource = APIService.getPreferredVersion('servicebindings');
 
     var getServiceClassForInstance = function(serviceInstance, serviceClasses) {
-      var serviceClassName = _.get(serviceInstance, 'spec.serviceClassName');
-      return _.get(serviceClasses, [serviceClassName]);
-    };
+      if (!serviceClasses) {
+        return null;
+      }
 
-    var getPlanForInstance = function(serviceInstance, serviceClass) {
-      var planName = _.get(serviceInstance, 'spec.planName');
-      return _.find(serviceClass.plans, { name: planName });
+      var serviceClassName = _.get(serviceInstance, 'spec.serviceClassRef.name');
+      if (!serviceClassName) {
+        return null;
+      }
+
+      return serviceClasses[serviceClassName];
     };
 
     var generateName = $filter('generateName');
@@ -3184,7 +3191,6 @@ angular.module("openshiftCommonServices")
     };
 
     var makeBinding = function(serviceInstance, application, parametersSecretName) {
-      var parametersSecretName;
       var instanceName = serviceInstance.metadata.name;
 
       var credentialSecretName = generateSecretName(serviceInstance.metadata.name + '-credentials-');
@@ -3228,7 +3234,11 @@ angular.module("openshiftCommonServices")
       return binding;
     };
 
-    var isServiceBindable = function(serviceInstance, serviceClasses) {
+    var isServiceBindable = function(serviceInstance, serviceClass, servicePlan) {
+      if (!serviceInstance || !serviceClass || !servicePlan) {
+        return false;
+      }
+
       // If being deleted, it is not bindable
       if (_.get(serviceInstance, 'metadata.deletionTimestamp')) {
         return false;
@@ -3239,13 +3249,7 @@ angular.module("openshiftCommonServices")
         return false;
       }
 
-      var serviceClass = getServiceClassForInstance(serviceInstance, serviceClasses);
-      if (!serviceClass) {
-        return !!serviceInstance;
-      }
-
-      var plan = getPlanForInstance(serviceInstance, serviceClass);
-      var planBindable = _.get(plan, 'bindable');
+      var planBindable = _.get(servicePlan, 'spec.bindable');
       if (planBindable === true) {
         return true;
       }
@@ -3253,8 +3257,8 @@ angular.module("openshiftCommonServices")
         return false;
       }
 
-      // If `plan.bindable` is not set, fall back to `serviceClass.bindable`.
-      return serviceClass.bindable;
+      // If `plan.spec.bindable` is not set, fall back to `serviceClass.spec.bindable`.
+      return serviceClass.spec.bindable;
     };
 
     var getPodPresetSelectorsForBindings = function(bindings) {
@@ -3296,13 +3300,15 @@ angular.module("openshiftCommonServices")
       return resourceBindings;
     };
 
-    var filterBindableServiceInstances = function(serviceInstances, serviceClasses) {
-      if (!serviceInstances && !serviceClasses) {
+    var filterBindableServiceInstances = function(serviceInstances, serviceClasses, servicePlans) {
+      if (!serviceInstances || !serviceClasses || !servicePlans) {
         return null;
       }
 
       return _.filter(serviceInstances, function (serviceInstance) {
-        return isServiceBindable(serviceInstance, serviceClasses);
+        var serviceClassName = _.get(serviceInstance, 'spec.serviceClassRef.name');
+        var servicePlanName = _.get(serviceInstance, 'spec.servicePlanRef.name');
+        return isServiceBindable(serviceInstance, serviceClasses[serviceClassName], servicePlans[servicePlanName]);
       });
     };
 
@@ -3313,7 +3319,8 @@ angular.module("openshiftCommonServices")
 
       return _.sortBy(serviceInstances,
         function(item) {
-          return _.get(serviceClasses, [item.spec.serviceClassName, 'externalMetadata', 'displayName']) || item.spec.serviceClassName;
+          var serviceClassName = _.get(item, 'spec.serviceClassRef.name');
+          return _.get(serviceClasses, [serviceClassName, 'spec', 'externalMetadata', 'displayName']) || item.spec.externalServiceClassName;
         },
         function(item) {
           return _.get(item, 'metadata.name', '');
@@ -3324,7 +3331,6 @@ angular.module("openshiftCommonServices")
     return {
       bindingResource: bindingResource,
       getServiceClassForInstance: getServiceClassForInstance,
-      getPlanForInstance: getPlanForInstance,
 
       // Create a binding for `serviceInstance`. If an `application` API object
       // is specified, also create a pod preset for that application using its

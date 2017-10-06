@@ -30,7 +30,7 @@
         <div ng-repeat="serviceInstance in ctrl.bindableServiceInstances" class="bind-service-selection">
           <label>
             <input type="radio" ng-model="ctrl.serviceToBind" ng-value="serviceInstance">
-            {{ctrl.serviceClasses[serviceInstance.spec.serviceClassName].externalMetadata.displayName || serviceInstance.spec.serviceClassName}}
+            {{ctrl.serviceClasses[serviceInstance.spec.serviceClassRef.name].spec.externalMetadata.displayName || serviceInstance.spec.serviceClassRef.name}}
           </label>
           <div class="bind-description">
             <span class="pficon pficon-info"

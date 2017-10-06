@@ -4,7 +4,6 @@ angular.module('openshiftCommonUI').component('bindServiceForm', {
   controllerAs: 'ctrl',
   bindings: {
     serviceClass: '<',
-    serviceClassName: '<',
     showPodPresets: '<',
     applications: '<',
     formName: '=',
