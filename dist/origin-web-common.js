@@ -1748,6 +1748,50 @@ angular.module('openshiftCommonUI')
 ;'use strict';
 
 angular.module('openshiftCommonUI')
+  // Returns an image URL for an icon class if available. Some icons we have
+  // color SVG images for. Depends on window.OPENSHIFT_CONSTANTS.LOGOS and
+  // window.OPENSHIFT_CONSTANTS.LOGO_BASE_URL, which is set by origin-web-console
+  // (or an extension).
+  .filter('imageForIconClass', ["isAbsoluteURLFilter", function(isAbsoluteURLFilter) {
+    return function(iconClass) {
+      if (!iconClass) {
+        return '';
+      }
+
+      var logoImage = _.get(window, ['OPENSHIFT_CONSTANTS', 'LOGOS', iconClass]);
+      if (!logoImage) {
+        return '';
+      }
+
+      // Make sure the logo base has a trailing slash.
+      var logoBaseUrl = _.get(window, 'OPENSHIFT_CONSTANTS.LOGO_BASE_URL');
+      if (!logoBaseUrl || isAbsoluteURLFilter(logoImage)) {
+        return logoImage;
+      }
+
+      if (!logoBaseUrl.endsWith('/')) {
+        logoBaseUrl += '/';
+      }
+
+      return logoBaseUrl + logoImage;
+    };
+  }]);
+;'use strict';
+
+angular.module('openshiftCommonUI')
+  .filter('isAbsoluteURL', function() {
+    return function(url) {
+      if (!url) {
+        return false;
+      }
+      var uri = new URI(url);
+      var protocol = uri.protocol();
+      return uri.is('absolute') && (protocol === 'http' || protocol === 'https');
+    };
+  });
+;'use strict';
+
+angular.module('openshiftCommonUI')
 // Usage: <span ng-bind-html="text | linkify : '_blank'"></span>
 //
 // Prefer this to the AngularJS `linky` filter since it only matches http and
