@@ -34,7 +34,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "        <div ng-repeat=\"serviceInstance in ctrl.bindableServiceInstances\" class=\"bind-service-selection\">\n" +
     "          <label>\n" +
     "            <input type=\"radio\" ng-model=\"ctrl.serviceToBind\" ng-value=\"serviceInstance\">\n" +
-    "            {{ctrl.serviceClasses[serviceInstance.spec.serviceClassRef.name].spec.externalMetadata.displayName || serviceInstance.spec.serviceClassRef.name}}\n" +
+    "            {{ctrl.serviceClasses[serviceInstance.spec.clusterServiceClassRef.name].spec.externalMetadata.displayName || serviceInstance.spec.clusterServiceClassRef.name}}\n" +
     "          </label>\n" +
     "          <div class=\"bind-description\">\n" +
     "            <span class=\"pficon pficon-info\"\n" +

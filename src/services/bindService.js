@@ -18,7 +18,7 @@ angular.module("openshiftCommonServices")
         return null;
       }
 
-      var serviceClassName = _.get(serviceInstance, 'spec.serviceClassRef.name');
+      var serviceClassName = _.get(serviceInstance, 'spec.clusterServiceClassRef.name');
       if (!serviceClassName) {
         return null;
       }
@@ -70,8 +70,8 @@ angular.module("openshiftCommonServices")
 
       var credentialSecretName = generateSecretName(serviceInstance.metadata.name + '-credentials-');
       var binding = {
-        kind: 'ServiceInstanceCredential',
-        apiVersion: 'servicecatalog.k8s.io/v1alpha1',
+        kind: 'ServiceBinding',
+        apiVersion: 'servicecatalog.k8s.io/v1beta1',
         metadata: {
           generateName: instanceName + '-'
         },
@@ -181,8 +181,8 @@ angular.module("openshiftCommonServices")
       }
 
       return _.filter(serviceInstances, function (serviceInstance) {
-        var serviceClassName = _.get(serviceInstance, 'spec.serviceClassRef.name');
-        var servicePlanName = _.get(serviceInstance, 'spec.servicePlanRef.name');
+        var serviceClassName = _.get(serviceInstance, 'spec.clusterServiceClassRef.name');
+        var servicePlanName = _.get(serviceInstance, 'spec.clusterServicePlanRef.name');
         return isServiceBindable(serviceInstance, serviceClasses[serviceClassName], servicePlans[servicePlanName]);
       });
     };
@@ -194,8 +194,8 @@ angular.module("openshiftCommonServices")
 
       return _.sortBy(serviceInstances,
         function(item) {
-          var serviceClassName = _.get(item, 'spec.serviceClassRef.name');
-          return _.get(serviceClasses, [serviceClassName, 'spec', 'externalMetadata', 'displayName']) || item.spec.externalServiceClassName;
+          var serviceClassName = _.get(item, 'spec.clusterServiceClassRef.name');
+          return _.get(serviceClasses, [serviceClassName, 'spec', 'externalMetadata', 'displayName']) || item.spec.externalClusterServiceClassName;
         },
         function(item) {
           return _.get(item, 'metadata.name', '');
