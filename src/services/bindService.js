@@ -39,17 +39,17 @@ angular.module("openshiftCommonServices")
       return generateName(secretNamePrefix, generateNameLength);
     };
 
-    var makeParametersSecret = function(secretName, parameters, binding) {
+    var makeParametersSecret = function(secretName, parameters, owner) {
       var secret = {
         apiVersion: 'v1',
         kind: 'Secret',
         metadata: {
           name: secretName,
           ownerReferences: [{
-            apiVersion: binding.apiVersion,
-            kind: binding.kind,
-            name: binding.metadata.name,
-            uid: binding.metadata.uid,
+            apiVersion: owner.apiVersion,
+            kind: owner.kind,
+            name: owner.metadata.name,
+            uid: owner.metadata.uid,
             controller: false,
             // TODO: Change to true when garbage collection works with service
             // catalog resources. Setting to true now results in a 403 Forbidden
@@ -206,6 +206,8 @@ angular.module("openshiftCommonServices")
     return {
       bindingResource: bindingResource,
       getServiceClassForInstance: getServiceClassForInstance,
+      makeParametersSecret: makeParametersSecret,
+      generateSecretName: generateSecretName,
 
       // Create a binding for `serviceInstance`. If an `application` API object
       // is specified, also create a pod preset for that application using its
