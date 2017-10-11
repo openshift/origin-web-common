@@ -1,12 +1,12 @@
 {
   "author": "Red Hat",
   "name": "origin-web-common",
-  "version": "0.0.65",
+  "version": "0.0.66",
   "license": "Apache-2.0",
   "description": "Library of common services and components for OpenShift Web Console.",
   "homepage": "https://github.com/openshift/origin-web-common.git",
   "dependencies": {
-    "angular": "1.5.11"
+    "angular": "^1.5.11"
   },
   "devDependencies": {
     "bower": "^1.8.2",
