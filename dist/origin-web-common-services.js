@@ -1126,7 +1126,7 @@ angular.module("openshiftCommonServices")
         return null;
       }
 
-      var serviceClassName = _.get(serviceInstance, 'spec.serviceClassRef.name');
+      var serviceClassName = _.get(serviceInstance, 'spec.clusterServiceClassRef.name');
       if (!serviceClassName) {
         return null;
       }
@@ -1178,8 +1178,8 @@ angular.module("openshiftCommonServices")
 
       var credentialSecretName = generateSecretName(serviceInstance.metadata.name + '-credentials-');
       var binding = {
-        kind: 'ServiceInstanceCredential',
-        apiVersion: 'servicecatalog.k8s.io/v1alpha1',
+        kind: 'ServiceBinding',
+        apiVersion: 'servicecatalog.k8s.io/v1beta1',
         metadata: {
           generateName: instanceName + '-'
         },
@@ -1289,8 +1289,8 @@ angular.module("openshiftCommonServices")
       }
 
       return _.filter(serviceInstances, function (serviceInstance) {
-        var serviceClassName = _.get(serviceInstance, 'spec.serviceClassRef.name');
-        var servicePlanName = _.get(serviceInstance, 'spec.servicePlanRef.name');
+        var serviceClassName = _.get(serviceInstance, 'spec.clusterServiceClassRef.name');
+        var servicePlanName = _.get(serviceInstance, 'spec.clusterServicePlanRef.name');
         return isServiceBindable(serviceInstance, serviceClasses[serviceClassName], servicePlans[servicePlanName]);
       });
     };
@@ -1302,8 +1302,8 @@ angular.module("openshiftCommonServices")
 
       return _.sortBy(serviceInstances,
         function(item) {
-          var serviceClassName = _.get(item, 'spec.serviceClassRef.name');
-          return _.get(serviceClasses, [serviceClassName, 'spec', 'externalMetadata', 'displayName']) || item.spec.externalServiceClassName;
+          var serviceClassName = _.get(item, 'spec.clusterServiceClassRef.name');
+          return _.get(serviceClasses, [serviceClassName, 'spec', 'externalMetadata', 'displayName']) || item.spec.externalClusterServiceClassName;
         },
         function(item) {
           return _.get(item, 'metadata.name', '');
@@ -3671,10 +3671,8 @@ angular.module('openshiftCommonServices')
       'buildconfigs/instantiate':       {group: 'build.openshift.io',         version: 'v1',      resource: 'buildconfigs/instantiate' },
       buildconfigs:                     {group: 'build.openshift.io',         version: 'v1',      resource: 'buildconfigs' },
       configmaps:                       {version: 'v1',                       resource: 'configmaps' },
-      // Using the anticipated name for the resources, even though they aren't yet prefixed with `cluster`.
-      // https://github.com/kubernetes-incubator/service-catalog/issues/1288
-      clusterserviceclasses:            {group: 'servicecatalog.k8s.io',      resource: 'serviceclasses' },
-      clusterserviceplans:              {group: 'servicecatalog.k8s.io',      resource: 'serviceplans' },
+      clusterserviceclasses:            {group: 'servicecatalog.k8s.io',      version: 'v1beta1', resource: 'clusterserviceclasses' },
+      clusterserviceplans:              {group: 'servicecatalog.k8s.io',      version: 'v1beta1', resource: 'clusterserviceplans' },
       deployments:                      {group: 'apps',                       version: 'v1beta1', resource: 'deployments' },
       deploymentconfigs:                {group: 'apps.openshift.io',          version: 'v1',      resource: 'deploymentconfigs' },
 	    'deploymentconfigs/instantiate':  {group: 'apps.openshift.io',          version: 'v1',      resource: 'deploymentconfigs/instantiate' },
@@ -3697,9 +3695,8 @@ angular.module('openshiftCommonServices')
       selfsubjectrulesreviews:          {group: 'authorization.openshift.io', version: 'v1',      resource: 'selfsubjectrulesreviews' },
       services:                         {version: 'v1',                       resource: 'services' },
       serviceaccounts:                  {version: 'v1',                       resource: 'serviceaccounts' },
-      // Using the anticipated name for this resource, even though it's not currently called servicebindings.
-      servicebindings:                  {group: 'servicecatalog.k8s.io',      resource: 'serviceinstancecredentials' },
-      serviceinstances:                 {group: 'servicecatalog.k8s.io',      resource: 'serviceinstances' },
+      servicebindings:                  {group: 'servicecatalog.k8s.io',      version: 'v1beta1', resource: 'servicebindings' },
+      serviceinstances:                 {group: 'servicecatalog.k8s.io',      version: 'v1beta1', resource: 'serviceinstances' },
       statefulsets:                     {group: 'apps',                       version: 'v1beta1', resource: 'statefulsets' },
       templates:                        {group: 'template.openshift.io',      verison: 'v1',      resource: 'templates' }
   });
