@@ -2215,7 +2215,7 @@ angular.module("openshiftCommonUI")
         }
 
         // Replace any URLs with links.
-        return text.replace(/https?:\/\/[A-Za-z0-9._%+-]+\S*[^\s.;,(){}<>"\u201d\u2019]/gm, function(str) {
+        return text.replace(/https?:\/\/[A-Za-z0-9._%+-]+[^\s<]*[^\s.,()\[\]{}<>"\u201d\u2019]/gm, function(str) {
           if (target) {
             return "<a href=\"" + str + "\" target=\"" + target + "\">" + str + " <i class=\"fa fa-external-link\" aria-hidden=\"true\"></i></a>";
           }
