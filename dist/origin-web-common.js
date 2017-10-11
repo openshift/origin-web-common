@@ -2026,6 +2026,45 @@ angular.module('openshiftCommonUI')
       return !!annotationFilter(deployment, 'deploymentConfig');
     };
   }])
+  .filter('serviceClassDisplayName', function() {
+    return function(serviceClass) {
+      var serviceClassDisplayName = _.get(serviceClass, 'spec.externalMetadata.displayName');
+      if (serviceClassDisplayName) {
+        return serviceClassDisplayName;
+      }
+
+      var serviceClassExternalName = _.get(serviceClass, 'spec.externalName');
+      if (serviceClassExternalName) {
+        return serviceClassExternalName;
+      }
+
+      return _.get(serviceClass, 'metadata.name');
+    };
+  })
+  .filter('serviceInstanceDisplayName', ["serviceClassDisplayNameFilter", function(serviceClassDisplayNameFilter) {
+    return function(instance, serviceClass) {
+      if (serviceClass) {
+        return serviceClassDisplayNameFilter(serviceClass);
+      }
+
+      return _.get(instance, 'metadata.name');
+    };
+  }])
+  .filter('serviceInstanceStatus', ["isServiceInstanceReadyFilter", function(isServiceInstanceReadyFilter) {
+    return function(instance) {
+      var status = 'Pending';
+      var conditions = _.get(instance, 'status.conditions');
+      var instanceError = _.find(conditions, {type: 'Failed', status: 'True'});
+
+      if (instanceError) {
+        status = 'Failed';
+      } else if (isServiceInstanceReadyFilter(instance)) {
+        status = 'Ready';
+      }
+
+      return status;
+    };
+  }])
 ;
 ;'use strict';
 angular.module('openshiftCommonUI')
