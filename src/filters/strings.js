@@ -3,7 +3,7 @@ angular.module('openshiftCommonUI')
   .filter('camelToLower', function() {
     return function(str) {
       if (!str) {
-        return str;
+        return '';
       }
 
       // Use the special logic in _.startCase to handle camel case strings, kebab
@@ -14,40 +14,20 @@ angular.module('openshiftCommonUI')
   .filter('upperFirst', function() {
     // Uppercase the first letter of a string (without making any other changes).
     // Different than `capitalize` because it doesn't lowercase other letters.
-    return function(str) {
-      if (!str) {
-        return str;
-      }
-
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    };
+    return _.upperFirst;
   })
-  .filter('sentenceCase', function(camelToLowerFilter, upperFirstFilter) {
+  .filter('sentenceCase', function(camelToLowerFilter) {
     // Converts a camel case string to sentence case
     return function(str) {
-      if (!str) {
-        return str;
-      }
-
-      // Unfortunately, _.lowerCase() and _.upperFirst() aren't in our lodash version.
       var lower = camelToLowerFilter(str);
-      return upperFirstFilter(lower);
+      return _.upperFirst(lower);
     };
   })
   .filter('startCase', function () {
-    return function(str) {
-      if (!str) {
-        return str;
-      }
-
-      // https://lodash.com/docs#startCase
-      return _.startCase(str);
-    };
+    return _.startCase;
   })
   .filter('capitalize', function() {
-    return function(input) {
-      return _.capitalize(input);
-    };
+    return _.capitalize;
   })
   .filter('isMultiline', function() {
     return function(str, ignoreTrailing) {

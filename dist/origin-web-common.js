@@ -1472,55 +1472,42 @@ angular.module('openshiftCommonServices')
 
 angular.module('openshiftCommonUI')
   .filter("alertStatus", function() {
-    return function (type) {
-      var status;
-
+    return function(type) {
+      type = type || '';
       // API events have just two types: Normal, Warning
       // our notifications have four: info, success, error, and warning
       switch(type.toLowerCase()) {
         case 'error':
-          status = 'alert-danger';
-          break;
+          return 'alert-danger';
         case 'warning':
-          status = 'alert-warning';
-          break;
+          return 'alert-warning';
         case 'success':
-          status = 'alert-success';
-          break;
+          return 'alert-success';
         case 'normal':
-          status = 'alert-info';
-          break;
-        default:
-          status = 'alert-info';
+          return 'alert-info';
       }
 
-      return status;
+      return 'alert-info';
     };
   })
   .filter('alertIcon', function() {
-    return function (type) {
-      var icon;
+    return function(type) {
+      type = type || '';
 
       // API events have just two types: Normal, Warning
       // our notifications have four: info, success, error, and warning
       switch(type.toLowerCase()) {
         case 'error':
-          icon = 'pficon pficon-error-circle-o';
-          break;
+          return 'pficon pficon-error-circle-o';
         case 'warning':
-          icon = 'pficon pficon-warning-triangle-o';
-          break;
+          return 'pficon pficon-warning-triangle-o';
         case 'success':
-          icon = 'pficon pficon-ok';
-          break;
+          return 'pficon pficon-ok';
         case 'normal':
-          icon = 'pficon pficon-info';
-          break;
-        default:
-          icon = 'pficon pficon-info';
+          return 'pficon pficon-info';
       }
 
-      return icon;
+      return 'pficon pficon-info';
     };
   });
 ;'use strict';
@@ -1751,24 +1738,24 @@ angular.module('openshiftCommonUI')
   // color SVG images for. Depends on window.OPENSHIFT_CONSTANTS.LOGOS and
   // window.OPENSHIFT_CONSTANTS.LOGO_BASE_URL, which is set by origin-web-console
   // (or an extension).
-  .filter('imageForIconClass', ["isAbsoluteURLFilter", function(isAbsoluteURLFilter) {
+  .filter('imageForIconClass', ["$window", "isAbsoluteURLFilter", function($window, isAbsoluteURLFilter) {
     return function(iconClass) {
       if (!iconClass) {
         return '';
       }
 
-      var logoImage = _.get(window, ['OPENSHIFT_CONSTANTS', 'LOGOS', iconClass]);
+      var logoImage = _.get($window, ['OPENSHIFT_CONSTANTS', 'LOGOS', iconClass]);
       if (!logoImage) {
         return '';
       }
 
       // Make sure the logo base has a trailing slash.
-      var logoBaseUrl = _.get(window, 'OPENSHIFT_CONSTANTS.LOGO_BASE_URL');
+      var logoBaseUrl = _.get($window, 'OPENSHIFT_CONSTANTS.LOGO_BASE_URL');
       if (!logoBaseUrl || isAbsoluteURLFilter(logoImage)) {
         return logoImage;
       }
 
-      if (!logoBaseUrl.endsWith('/')) {
+      if (!_.endsWith(logoBaseUrl, '/')) {
         logoBaseUrl += '/';
       }
 
@@ -1780,7 +1767,7 @@ angular.module('openshiftCommonUI')
 angular.module('openshiftCommonUI')
   .filter('isAbsoluteURL', function() {
     return function(url) {
-      if (!url) {
+      if (!url || !_.isString(url)) {
         return false;
       }
       var uri = new URI(url);
@@ -2033,18 +2020,18 @@ angular.module('openshiftCommonUI')
         return serviceClassDisplayName;
       }
 
-      var serviceClassExternalName = _.get(serviceClass, 'spec.externalName');
-      if (serviceClassExternalName) {
-        return serviceClassExternalName;
-      }
-
-      return _.get(serviceClass, 'metadata.name');
+      return _.get(serviceClass, 'spec.externalName');
     };
   })
   .filter('serviceInstanceDisplayName', ["serviceClassDisplayNameFilter", function(serviceClassDisplayNameFilter) {
     return function(instance, serviceClass) {
       if (serviceClass) {
         return serviceClassDisplayNameFilter(serviceClass);
+      }
+
+      var externalServiceClassName = _.get(instance, 'spec.externalClusterServiceClassName');
+      if (externalServiceClassName) {
+        return externalServiceClassName;
       }
 
       return _.get(instance, 'metadata.name');
@@ -2071,7 +2058,7 @@ angular.module('openshiftCommonUI')
   .filter('camelToLower', function() {
     return function(str) {
       if (!str) {
-        return str;
+        return '';
       }
 
       // Use the special logic in _.startCase to handle camel case strings, kebab
@@ -2082,40 +2069,20 @@ angular.module('openshiftCommonUI')
   .filter('upperFirst', function() {
     // Uppercase the first letter of a string (without making any other changes).
     // Different than `capitalize` because it doesn't lowercase other letters.
-    return function(str) {
-      if (!str) {
-        return str;
-      }
-
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    };
+    return _.upperFirst;
   })
-  .filter('sentenceCase', ["camelToLowerFilter", "upperFirstFilter", function(camelToLowerFilter, upperFirstFilter) {
+  .filter('sentenceCase', ["camelToLowerFilter", function(camelToLowerFilter) {
     // Converts a camel case string to sentence case
     return function(str) {
-      if (!str) {
-        return str;
-      }
-
-      // Unfortunately, _.lowerCase() and _.upperFirst() aren't in our lodash version.
       var lower = camelToLowerFilter(str);
-      return upperFirstFilter(lower);
+      return _.upperFirst(lower);
     };
   }])
   .filter('startCase', function () {
-    return function(str) {
-      if (!str) {
-        return str;
-      }
-
-      // https://lodash.com/docs#startCase
-      return _.startCase(str);
-    };
+    return _.startCase;
   })
   .filter('capitalize', function() {
-    return function(input) {
-      return _.capitalize(input);
-    };
+    return _.capitalize;
   })
   .filter('isMultiline', function() {
     return function(str, ignoreTrailing) {
@@ -2177,14 +2144,14 @@ angular.module('openshiftCommonUI')
   .filter('size', function() {
     return _.size;
   })
-  .filter('hashSize', ["$log", function($log) {
+  .filter('hashSize', function() {
     return function(hash) {
       if (!hash) {
         return 0;
       }
       return Object.keys(hash).length;
     };
-  }])
+  })
   // Wraps _.filter. Works with hashes, unlike ngFilter, which only works
   // with arrays.
   .filter('filterCollection', function() {
@@ -2209,6 +2176,10 @@ angular.module('openshiftCommonUI')
   })
   .filter("getErrorDetails", ["upperFirstFilter", function(upperFirstFilter) {
     return function(result, capitalize) {
+      if (!result) {
+        return "";
+      }
+
       var error = result.data || {};
       if (error.message) {
         return capitalize ? upperFirstFilter(error.message) : error.message;
@@ -5896,19 +5867,14 @@ angular.module("openshiftCommonUI")
         switch(size) {
           case WINDOW_SIZE_XXS:
             return false; // Nothing is below xxs
-            break;
           case WINDOW_SIZE_XS:
             return window.innerWidth < BREAKPOINTS.screenXsMin;
-            break;
           case WINDOW_SIZE_SM:
             return window.innerWidth < BREAKPOINTS.screenSmMin;
-            break;
           case WINDOW_SIZE_MD:
             return window.innerWidth < BREAKPOINTS.screenMdMin;
-            break;
           case WINDOW_SIZE_LG:
             return window.innerWidth < BREAKPOINTS.screenLgMin;
-            break;
           default:
             return true;
         }
@@ -5918,16 +5884,12 @@ angular.module("openshiftCommonUI")
         switch(size) {
           case WINDOW_SIZE_XS:
             return window.innerWidth >= BREAKPOINTS.screenXsMin;
-            break;
           case WINDOW_SIZE_SM:
             return window.innerWidth >= BREAKPOINTS.screenSmMin;
-            break;
           case WINDOW_SIZE_MD:
             return window.innerWidth >= BREAKPOINTS.screenMdMin;
-            break;
           case WINDOW_SIZE_LG:
             return window.innerWidth >= BREAKPOINTS.screenLgMin;
-            break;
           default:
             return true;
         }
@@ -6017,7 +5979,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
     };
 
     var clearNotifications = function () {
-      _.take(notifications, 0);
+      notifications.length = 0;
     };
 
     var isNotificationPermanentlyHidden = function (notification) {

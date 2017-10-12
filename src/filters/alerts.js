@@ -2,54 +2,41 @@
 
 angular.module('openshiftCommonUI')
   .filter("alertStatus", function() {
-    return function (type) {
-      var status;
-
+    return function(type) {
+      type = type || '';
       // API events have just two types: Normal, Warning
       // our notifications have four: info, success, error, and warning
       switch(type.toLowerCase()) {
         case 'error':
-          status = 'alert-danger';
-          break;
+          return 'alert-danger';
         case 'warning':
-          status = 'alert-warning';
-          break;
+          return 'alert-warning';
         case 'success':
-          status = 'alert-success';
-          break;
+          return 'alert-success';
         case 'normal':
-          status = 'alert-info';
-          break;
-        default:
-          status = 'alert-info';
+          return 'alert-info';
       }
 
-      return status;
+      return 'alert-info';
     };
   })
   .filter('alertIcon', function() {
-    return function (type) {
-      var icon;
+    return function(type) {
+      type = type || '';
 
       // API events have just two types: Normal, Warning
       // our notifications have four: info, success, error, and warning
       switch(type.toLowerCase()) {
         case 'error':
-          icon = 'pficon pficon-error-circle-o';
-          break;
+          return 'pficon pficon-error-circle-o';
         case 'warning':
-          icon = 'pficon pficon-warning-triangle-o';
-          break;
+          return 'pficon pficon-warning-triangle-o';
         case 'success':
-          icon = 'pficon pficon-ok';
-          break;
+          return 'pficon pficon-ok';
         case 'normal':
-          icon = 'pficon pficon-info';
-          break;
-        default:
-          icon = 'pficon pficon-info';
+          return 'pficon pficon-info';
       }
 
-      return icon;
+      return 'pficon pficon-info';
     };
   });
