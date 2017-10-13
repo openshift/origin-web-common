@@ -5,24 +5,24 @@ angular.module('openshiftCommonUI')
   // color SVG images for. Depends on window.OPENSHIFT_CONSTANTS.LOGOS and
   // window.OPENSHIFT_CONSTANTS.LOGO_BASE_URL, which is set by origin-web-console
   // (or an extension).
-  .filter('imageForIconClass', function(isAbsoluteURLFilter) {
+  .filter('imageForIconClass', function($window, isAbsoluteURLFilter) {
     return function(iconClass) {
       if (!iconClass) {
         return '';
       }
 
-      var logoImage = _.get(window, ['OPENSHIFT_CONSTANTS', 'LOGOS', iconClass]);
+      var logoImage = _.get($window, ['OPENSHIFT_CONSTANTS', 'LOGOS', iconClass]);
       if (!logoImage) {
         return '';
       }
 
       // Make sure the logo base has a trailing slash.
-      var logoBaseUrl = _.get(window, 'OPENSHIFT_CONSTANTS.LOGO_BASE_URL');
+      var logoBaseUrl = _.get($window, 'OPENSHIFT_CONSTANTS.LOGO_BASE_URL');
       if (!logoBaseUrl || isAbsoluteURLFilter(logoImage)) {
         return logoImage;
       }
 
-      if (!logoBaseUrl.endsWith('/')) {
+      if (!_.endsWith(logoBaseUrl, '/')) {
         logoBaseUrl += '/';
       }
 

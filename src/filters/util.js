@@ -7,7 +7,7 @@ angular.module('openshiftCommonUI')
   .filter('size', function() {
     return _.size;
   })
-  .filter('hashSize', function($log) {
+  .filter('hashSize', function() {
     return function(hash) {
       if (!hash) {
         return 0;
@@ -39,6 +39,10 @@ angular.module('openshiftCommonUI')
   })
   .filter("getErrorDetails", function(upperFirstFilter) {
     return function(result, capitalize) {
+      if (!result) {
+        return "";
+      }
+
       var error = result.data || {};
       if (error.message) {
         return capitalize ? upperFirstFilter(error.message) : error.message;

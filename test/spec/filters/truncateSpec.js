@@ -1,16 +1,15 @@
-describe("TruncateFilter", function() {
+describe("Filter: truncate", function() {
+  'use strict';
 
   var $scope;
   var $filter;
 
   beforeEach(inject(function (_$rootScope_, _$filter_) {
-
     $scope = _$rootScope_;
     $filter = _$filter_;
   }));
 
   beforeEach(function () {
-
     $scope.params = {
       str: 'Operation cannot be fulfilled on namespaces\n"ups-broker": The system is ensuring all content is removed\nfrom this namespace. Upon completion, this\nnamespace will automatically be purged by the system.\n',
       charLimit: 200,

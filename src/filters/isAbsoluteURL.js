@@ -3,7 +3,7 @@
 angular.module('openshiftCommonUI')
   .filter('isAbsoluteURL', function() {
     return function(url) {
-      if (!url) {
+      if (!url || !_.isString(url)) {
         return false;
       }
       var uri = new URI(url);

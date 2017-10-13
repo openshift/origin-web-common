@@ -49,7 +49,7 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
     };
 
     var clearNotifications = function () {
-      _.take(notifications, 0);
+      notifications.length = 0;
     };
 
     var isNotificationPermanentlyHidden = function (notification) {

@@ -1,4 +1,5 @@
 node_modules
+coverage
 .tmp
 .bundle
 .idea
@@ -7,5 +8,3 @@ phantomjsdriver.log
 .DS_Store
 test/test-results.xml
 npm-debug.log
-
-

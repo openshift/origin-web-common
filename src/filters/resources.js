@@ -181,18 +181,18 @@ angular.module('openshiftCommonUI')
         return serviceClassDisplayName;
       }
 
-      var serviceClassExternalName = _.get(serviceClass, 'spec.externalName');
-      if (serviceClassExternalName) {
-        return serviceClassExternalName;
-      }
-
-      return _.get(serviceClass, 'metadata.name');
+      return _.get(serviceClass, 'spec.externalName');
     };
   })
   .filter('serviceInstanceDisplayName', function(serviceClassDisplayNameFilter) {
     return function(instance, serviceClass) {
       if (serviceClass) {
         return serviceClassDisplayNameFilter(serviceClass);
+      }
+
+      var externalServiceClassName = _.get(instance, 'spec.externalClusterServiceClassName');
+      if (externalServiceClassName) {
+        return externalServiceClassName;
       }
 
       return _.get(instance, 'metadata.name');

@@ -48,7 +48,7 @@ module.exports = function(config) {
     // use dots reporter, as travis terminal does not support escaping sequences
     // possible values: 'dots', 'progress'
     // CLI --reporters progress
-    reporters: ['progress', 'junit'],
+    reporters: ['progress', 'junit', 'coverage'],
 
     junitReporter: {
       // will be resolved to basePath (in the same way as files/exclude patterns)
@@ -57,7 +57,6 @@ module.exports = function(config) {
 
     // web server port
     port: 8443,
-
 
     colors: true,
 
@@ -90,6 +89,14 @@ module.exports = function(config) {
 
     // report which specs are slower than 500ms
     // CLI --report-slower-than 500
-    reportSlowerThan: 500
+    reportSlowerThan: 500,
+
+    preprocessors: {
+      // source files, that you wanna generate coverage for
+      // do not include tests or libraries
+      'src/filters/*.js': ['coverage'],
+      'src/services/*.js': ['coverage'],
+      'src/ui-services/*.js': ['coverage']
+    }
   });
 };
