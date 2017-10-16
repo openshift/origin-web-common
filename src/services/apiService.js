@@ -209,12 +209,26 @@ angular.module('openshiftCommonServices')
         AuthService.withUser();
         return;
       }
-      // Otherwise go to the error page, the server might be down.  Can't use Navigate.toErrorPage or it will create a circular dependency
-      $window.location.href = URI('error').query({
-        error_description: "Unable to load details about the server. If the problem continues, please contact your system administrator.",
-        error: "API_DISCOVERY"
-      }).toString();
-      return;
+      var fatal = false;
+      _.each(APIS_CFG.API_DISCOVERY_ERRORS, function(discoveryError) {
+        if (discoveryError.fatal) {
+          Logger.error('API discovery failed (fatal error)', discoveryError);
+          fatal = true;
+          return;
+        }
+
+        Logger.warn('API discovery failed', discoveryError);
+      });
+      if (fatal) {
+        // Go to the error page on fatal errors, the server might be down.
+        // Can't use Navigate.toErrorPage or it will create a circular
+        // dependency
+        $window.location.href = URI('error').query({
+          error_description: "Unable to load details about the server. If the problem continues, please contact your system administrator.",
+          error: "API_DISCOVERY"
+        }).toString();
+        return;
+      }
     }
 
     resource = toResourceGroupVersion(resource);
@@ -342,7 +356,7 @@ angular.module('openshiftCommonServices')
 
   // Provides us a way to ensure we consistently use the
   // correct {resource, group} for API calls.  Version
-  // will typically fallback to the preferredVersion of the API 
+  // will typically fallback to the preferredVersion of the API
   var getPreferredVersion = function(resource) {
     var preferred = API_PREFERRED_VERSIONS[resource];
     if(!preferred) {
