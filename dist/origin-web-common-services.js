@@ -2135,6 +2135,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
       this._watchInFlight(key, false);
       this._watchOptions(key, null);
     }
+    handle = null;
   };
 
   // Takes an array of watch handles and unwatches them
