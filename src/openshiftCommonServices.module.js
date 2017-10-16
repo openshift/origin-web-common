@@ -54,7 +54,8 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
       API_DISCOVERY_ERRORS.push({
         data: data,
         textStatus: textStatus,
-        xhr: jqXHR
+        xhr: jqXHR,
+        fatal: true
       });
     });
 
@@ -68,7 +69,8 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
       API_DISCOVERY_ERRORS.push({
         data: data,
         textStatus: textStatus,
-        xhr: jqXHR
+        xhr: jqXHR,
+        fatal: true
       });
     });
 
@@ -128,26 +130,10 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
       API_DISCOVERY_ERRORS.push({
         data: data,
         textStatus: textStatus,
-        xhr: jqXHR
+        xhr: jqXHR,
+        fatal: true
       });
     });
-
-  // Additional servers can be defined for debugging and prototyping against new servers not yet served by the aggregator
-  // There can not be any conflicts in the groups/resources from these API servers.
-  var additionalDeferreds = [];
-  _.each(window.OPENSHIFT_CONFIG.additionalServers, function(server) {
-   var baseURL = (server.protocol ? (server.protocol + "://") : protocol) + server.hostPort + server.prefix;
-   additionalDeferreds.push($.get(baseURL)
-    .then(_.partial(getGroups, baseURL, server), function(data, textStatus, jqXHR) {
-      if (server.required !== false) {
-        API_DISCOVERY_ERRORS.push({
-          data: data,
-          textStatus: textStatus,
-          xhr: jqXHR
-        });
-      }
-    }));
-  });
 
   // Will be called on success or failure
   var discoveryFinished = function() {
@@ -164,7 +150,6 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
     osDeferred,
     apisDeferred
   ];
-  allDeferreds = allDeferreds.concat(additionalDeferreds);
   $.when.apply(this, allDeferreds).always(discoveryFinished);
 });
 
