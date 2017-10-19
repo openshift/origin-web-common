@@ -423,6 +423,11 @@ div.hopscotch-bubble .hopscotch-nav-button.prev {
 .toast-action-divider {
   color: #9c9c9c;
 }
+.toast-notification-details {
+  margin-right: -15px;
+  max-height: 300px;
+  overflow-y: auto;
+}
 .toast-notification-details .truncated-content {
   white-space: pre-line;
 }
