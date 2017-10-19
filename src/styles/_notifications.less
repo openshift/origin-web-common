@@ -2,8 +2,15 @@
   color: @gray-light;
 }
 
-.toast-notification-details .truncated-content {
-  white-space: pre-line;
+.toast-notification-details {
+  // so that expanded text isn't unbounded
+  // fixes https://github.com/openshift/origin-web-console/issues/2284
+  margin-right: -15px;
+  max-height: 300px;
+  overflow-y: auto;
+  .truncated-content {
+    white-space: pre-line;
+  }
 }
 
 .toast-notification-message {
