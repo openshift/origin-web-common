@@ -940,7 +940,17 @@ angular.module("openshiftCommonServices")
     // Permisive mode will cause no checks to be done for the user actions.
     var permissiveMode = false;
 
-    var REVIEW_RESOURCES = ["localresourceaccessreviews", "localsubjectaccessreviews", "resourceaccessreviews", "selfsubjectaccessreviews", "selfsubjectrulesreviews", "subjectaccessreviews"];
+    var REVIEW_RESOURCES = ["localresourceaccessreviews",
+                        "localsubjectaccessreviews",
+                        "resourceaccessreviews",
+                        "selfsubjectaccessreviews",
+                        "selfsubjectrulesreviews",
+                        "subjectaccessreviews",
+                        "subjectrulesreviews",
+                        "podsecuritypolicyreviews",
+                        "podsecuritypolicysubjectreviews",
+                        "podsecuritypolicyselfsubjectreviews",
+                        "tokenreviews"];
 
     // Transform data from:
     // rules = {resources: ["jobs"], apiGroups: ["extensions"], verbs:["create","delete","get","list","update"]}
