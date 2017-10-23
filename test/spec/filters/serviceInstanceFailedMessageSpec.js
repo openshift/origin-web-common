@@ -12,8 +12,8 @@ describe("Filter: serviceInstanceFailedMessage", function() {
       "uid": "6a31b3ce-aec9-11e7-bae6-0242ac110002",
     },
     "spec": {
-      "externalClusterServiceClassName": "mariadb-persistent",
-      "externalClusterServicePlanName": "default",
+      "clusterServiceClassExternalName": "mariadb-persistent",
+      "clusterServicePlanExternalName": "default",
       "clusterServiceClassRef": {
         "name": "475554bf-aec9-11e7-8d0c-b6c718ff6445",
         "uid": "581f692a-aec9-11e7-bae6-0242ac110002",

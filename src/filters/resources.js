@@ -190,9 +190,9 @@ angular.module('openshiftCommonUI')
         return serviceClassDisplayNameFilter(serviceClass);
       }
 
-      var externalServiceClassName = _.get(instance, 'spec.externalClusterServiceClassName');
-      if (externalServiceClassName) {
-        return externalServiceClassName;
+      var serviceClassExternalName = _.get(instance, 'spec.clusterServiceClassExternalName');
+      if (serviceClassExternalName) {
+        return serviceClassExternalName;
       }
 
       return _.get(instance, 'metadata.name');

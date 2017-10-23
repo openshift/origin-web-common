@@ -23,7 +23,7 @@ describe("Filter: serviceInstanceDisplayName", function() {
       name: 'jenkins-ephemeral-2jk9x'
     },
     spec: {
-      externalClusterServiceClassName: 'jenkins-ephemeral'
+      clusterServiceClassExternalName: 'jenkins-ephemeral'
     }
   };
 
@@ -43,7 +43,7 @@ describe("Filter: serviceInstanceDisplayName", function() {
     expect(result).toEqual("jenkins-ephemeral");
   });
 
-  it('should fall back to spec.externalClusterServiceClassName when no service class', function() {
+  it('should fall back to spec.clusterServiceClassExternalName when no service class', function() {
     var result = serviceInstanceDisplayNameFilter(mockServiceInstance);
     expect(result).toEqual("jenkins-ephemeral");
   });
