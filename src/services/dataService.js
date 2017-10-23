@@ -1011,7 +1011,12 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
           self._listInFlight(key, false);
           var deferred = self._listDeferred(key);
           delete self._listDeferredMap[key];
-          deferred.reject(data, status, headers, config);
+          deferred.reject({
+            data: data,
+            status: status,
+            headers: headers,
+            config: config
+          });
 
           if (!_.get(opts, 'errorNotification', true)) {
             return;
@@ -1034,7 +1039,12 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
         self._listInFlight(key, false);
         var deferred = self._listDeferred(key);
         delete self._listDeferredMap[key];
-        deferred.reject(data, status, headers, config);
+        deferred.reject({
+          data: data,
+          status: status,
+          headers: headers,
+          config: config
+        });
 
         if (!_.get(opts, 'errorNotification', true)) {
           return;
