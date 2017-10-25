@@ -12,7 +12,7 @@ describe("Filter: serviceInstanceReadyMessage", function() {
       "uid": "6a31b3ce-aec9-11e7-bae6-0242ac110002",
     },
     "spec": {
-      "externalClusterServiceClassName": "mariadb-persistent",
+      "clusterServiceClassExternalName": "mariadb-persistent",
       "externalClusterServicePlanName": "default",
       "clusterServiceClassRef": {
         "name": "475554bf-aec9-11e7-8d0c-b6c718ff6445",

@@ -2014,9 +2014,9 @@ angular.module('openshiftCommonUI')
         return serviceClassDisplayNameFilter(serviceClass);
       }
 
-      var externalServiceClassName = _.get(instance, 'spec.externalClusterServiceClassName');
-      if (externalServiceClassName) {
-        return externalServiceClassName;
+      var serviceClassExternalName = _.get(instance, 'spec.clusterServiceClassExternalName');
+      if (serviceClassExternalName) {
+        return serviceClassExternalName;
       }
 
       return _.get(instance, 'metadata.name');
@@ -3336,7 +3336,7 @@ angular.module("openshiftCommonServices")
       return _.sortBy(serviceInstances,
         function(item) {
           var serviceClassName = _.get(item, 'spec.clusterServiceClassRef.name');
-          return _.get(serviceClasses, [serviceClassName, 'spec', 'externalMetadata', 'displayName']) || item.spec.externalClusterServiceClassName;
+          return _.get(serviceClasses, [serviceClassName, 'spec', 'externalMetadata', 'displayName']) || item.spec.clusterServiceClassExternalName;
         },
         function(item) {
           return _.get(item, 'metadata.name', '');

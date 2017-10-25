@@ -1312,7 +1312,7 @@ angular.module("openshiftCommonServices")
       return _.sortBy(serviceInstances,
         function(item) {
           var serviceClassName = _.get(item, 'spec.clusterServiceClassRef.name');
-          return _.get(serviceClasses, [serviceClassName, 'spec', 'externalMetadata', 'displayName']) || item.spec.externalClusterServiceClassName;
+          return _.get(serviceClasses, [serviceClassName, 'spec', 'externalMetadata', 'displayName']) || item.spec.clusterServiceClassExternalName;
         },
         function(item) {
           return _.get(item, 'metadata.name', '');
