@@ -3329,19 +3329,12 @@ angular.module("openshiftCommonServices")
     };
 
     var sortServiceInstances = function(serviceInstances, serviceClasses) {
-      if (!serviceInstances && !serviceClasses) {
-        return null;
-      }
+      var getServiceClassDisplayName = function(serviceInstance) {
+        var serviceClassName = _.get(serviceInstance, 'spec.clusterServiceClassRef.name');
+        return _.get(serviceClasses, [serviceClassName, 'spec', 'externalMetadata', 'displayName']) || serviceInstance.spec.clusterServiceClassExternalName;
+      };
 
-      return _.sortBy(serviceInstances,
-        function(item) {
-          var serviceClassName = _.get(item, 'spec.clusterServiceClassRef.name');
-          return _.get(serviceClasses, [serviceClassName, 'spec', 'externalMetadata', 'displayName']) || item.spec.clusterServiceClassExternalName;
-        },
-        function(item) {
-          return _.get(item, 'metadata.name', '');
-        }
-      );
+      return _.sortBy(serviceInstances, [ getServiceClassDisplayName, 'metadata.name' ]);
     };
 
     return {
