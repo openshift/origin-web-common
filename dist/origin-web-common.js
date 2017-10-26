@@ -3329,19 +3329,12 @@ angular.module("openshiftCommonServices")
     };
 
     var sortServiceInstances = function(serviceInstances, serviceClasses) {
-      if (!serviceInstances && !serviceClasses) {
-        return null;
-      }
+      var getServiceClassDisplayName = function(serviceInstance) {
+        var serviceClassName = _.get(serviceInstance, 'spec.clusterServiceClassRef.name');
+        return _.get(serviceClasses, [serviceClassName, 'spec', 'externalMetadata', 'displayName']) || serviceInstance.spec.clusterServiceClassExternalName;
+      };
 
-      return _.sortBy(serviceInstances,
-        function(item) {
-          var serviceClassName = _.get(item, 'spec.clusterServiceClassRef.name');
-          return _.get(serviceClasses, [serviceClassName, 'spec', 'externalMetadata', 'displayName']) || item.spec.clusterServiceClassExternalName;
-        },
-        function(item) {
-          return _.get(item, 'metadata.name', '');
-        }
-      );
+      return _.sortBy(serviceInstances, [ getServiceClassDisplayName, 'metadata.name' ]);
     };
 
     return {
@@ -5301,6 +5294,60 @@ angular.module('openshiftCommonServices')
           }
         };
     }]);
+;'use strict';
+
+angular.module('openshiftCommonServices')
+  .factory('PromiseUtils', ["$q", function($q) {
+    return {
+      // Returns a promise that is resolved or rejected only after all promises
+      // complete. `promises` is a collection of promises. `null` or
+      // `undefined` values are treated as "complete."
+      //
+      // Different than `$q.all` in that it will always wait for all promises.
+      // `$q.all` short circuits as soon as one fails.
+      //
+      // Also unlike `$q.all`, this method does not return any values when
+      // resolving or reasons when rejecting the promise.
+      waitForAll: function(promises) {
+        var total = _.size(promises);
+        if (!total) {
+          return $q.when();
+        }
+
+        var deferred = $q.defer();
+        var complete = 0;
+        var failed = false;
+        var checkDone = function() {
+          if (complete < total) {
+            return;
+          }
+
+          if (failed) {
+            deferred.reject();
+          } else {
+            deferred.resolve();
+          }
+        };
+
+        _.each(promises, function(promise) {
+          if (!promise) {
+            complete++;
+            checkDone();
+            return;
+          }
+
+          promise.catch(function() {
+            failed = true;
+          }).finally(function() {
+            complete++;
+            checkDone();
+          });
+        });
+
+        return deferred.promise;
+      }
+    };
+  }]);
 ;'use strict';
 
 angular.module("openshiftCommonServices")
