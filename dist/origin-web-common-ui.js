@@ -113,7 +113,7 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "            <strong>{{ctrl.applicationToBind}}</strong> successfully.\n" +
     "          </span>\n" +
     "          <span ng-if=\"ctrl.bindType !== 'application'\">\n" +
-    "            The binding <strong>{{ctrl.serviceToBind}}</strong> has been created successfully.\n" +
+    "            The binding <strong>{{ctrl.binding.metadata.name}}</strong> has been created successfully.\n" +
     "          </span>\n" +
     "        </h3>\n" +
     "        <p class=\"results-message-details\">\n" +
