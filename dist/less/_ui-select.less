@@ -1,4 +1,9 @@
 /* Fix some styles with the angular-ui-select bootstrap theme that isn't right when combined with all of our styles */
+
+// ensure ui-select dropdown overlays when appended to body
+body > .ui-select-bootstrap.open {
+  z-index: @zindex-modal;
+}
 .ui-select-bootstrap {
   .ui-select-choices-row {
     > span {
