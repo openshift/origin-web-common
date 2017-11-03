@@ -14,7 +14,8 @@ module.exports = function (grunt) {
               'clean': 'Deletes the content of the dist directory.',
               'build': 'Builds the project into the dist directory.',
               'test': 'Executes the karma testsuite.',
-              'watch': 'Automatically rebuild /dist whenever /src files change.'
+              'watch': 'Automatically rebuild /dist whenever /src files change.',
+              'jshint': 'Scan source JavaScript files for errors or potential problems'
             },
             groups: {
               'Basic project tasks': ['help', 'clean', 'build', 'test']
@@ -131,12 +132,33 @@ module.exports = function (grunt) {
           src: 'dist/origin-web-common.js',
           dest: 'dist/origin-web-common.min.js'
         }
+      },
+      jshint: {
+        options: {
+          jshintrc: '.jshintrc',
+          reporter: require('jshint-stylish')
+        },
+        all: {
+          src: [
+            'Gruntfile.js',
+            'src/{,*/}*.js'
+          ]
+        }
       }
     });
 
     // You can specify which modules to build as arguments of the build task.
     grunt.registerTask('build', 'Create bootstrap build files', function () {
-      grunt.task.run(['clean', 'ngtemplates', 'concat', 'copy', 'ngAnnotate', 'less', 'uglify:build', 'test']);
+      grunt.task.run([
+        'clean',
+        'ngtemplates', 'concat',
+        'copy',
+        'ngAnnotate',
+        'less',
+        'uglify:build',
+        'test',
+        'jshint'
+      ]);
     });
 
     // Runs all the tasks of build with the exception of tests
