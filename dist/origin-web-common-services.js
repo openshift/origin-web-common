@@ -467,6 +467,18 @@ angular.module('openshiftCommonServices')
     return "The API version "+version+" for kind " + kind + " is not supported by this server";
   };
 
+  // Exclude duplicate kinds we know about that map to the same storage as another
+  //  group/kind.  This is unusual, so we are special casing these.
+  var dedupeGroups = [{group: 'authorization.openshift.io'}];
+  var dedupeKinds = [{group: 'extensions', kind: 'HorizontalPodAutoscaler'}];
+
+  var excludeKindFromAPIGroupList = function(groupName, resourceKind) {
+    return !!(
+          _.find(dedupeKinds, {group: groupName, kind: resourceKind}) ||
+          _.find(dedupeGroups, {group: groupName})
+      );
+  };
+
   // Returns an array of available kinds, including their group
   var calculateAvailableKinds = function(includeClusterScoped) {
     var kinds = [];
@@ -497,6 +509,7 @@ angular.module('openshiftCommonServices')
 
    // Kinds under api groups
     _.each(APIS_CFG.groups, function(group) {
+
       // Use the console's default version first, and the server's preferred version second
       var preferredVersion = defaultVersion[group.name] || group.preferredVersion;
       _.each(group.versions[preferredVersion].resources, function(resource) {
@@ -505,9 +518,8 @@ angular.module('openshiftCommonServices')
           return;
         }
 
-        // Exclude duplicate kinds we know about that map to the same storage as another group/kind
-        // This is unusual, so we are special casing these
-        if (group.name === "extensions" && resource.kind === "HorizontalPodAutoscaler") {
+
+        if(excludeKindFromAPIGroupList(group.name, resource.kind)) {
           return;
         }
 
