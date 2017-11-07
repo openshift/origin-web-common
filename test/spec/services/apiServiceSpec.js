@@ -111,28 +111,61 @@ describe("APIService", function() {
       [
         {"resource":"selfsubjectrulesreviews","group":"authorization.openshift.io","version":"v1"},
         {resource: 'selfsubjectrulesreviews', group: 'authorization.openshift.io', version: 'v1', protocol: undefined, hostPort: 'localhost:8443', prefix: '/apis', namespaced: true, verbs: ['create']}
-      ],
-      [
-        {"resource":"replicationcontrollerdummies","group":"extensions","version":"v1beta1"},
-        undefined
       ]
     ];
     _.each(rgvs, _.spread(function(rgv, expectedAPIInfo) {
-      it('should result in ' + JSON.stringify(expectedAPIInfo) + ' when called with ' + JSON.stringify(rgv), function() {
-        var actualAPIInfo = APIService.apiInfo(rgv);
-        if(actualAPIInfo) {
-          expect(actualAPIInfo.resource).toEqual(expectedAPIInfo.resource);
-          expect(actualAPIInfo.group).toEqual(expectedAPIInfo.group);
-          expect(actualAPIInfo.version).toEqual(expectedAPIInfo.version);
-          expect(actualAPIInfo.hostPort).toEqual(expectedAPIInfo.hostPort);
-          expect(actualAPIInfo.prefix).toEqual(expectedAPIInfo.prefix);
-          expect(actualAPIInfo.namespaced).toEqual(expectedAPIInfo.namespaced);
-          expect(actualAPIInfo.verbs).toEqual(expectedAPIInfo.verbs);
-        } else {
-          expect(actualAPIInfo).toEqual(expectedAPIInfo);
-        }
-      });
+        it('should return the correct resource', function() {
+          var actualAPIInfo = APIService.apiInfo(rgv);
+          if(actualAPIInfo) {
+            expect(actualAPIInfo.resource).toEqual(expectedAPIInfo.resource);
+          }
+        });
+        it('should return the correct group', function() {
+          var actualAPIInfo = APIService.apiInfo(rgv);
+          if(actualAPIInfo) {
+            expect(actualAPIInfo.group).toEqual(expectedAPIInfo.group);
+          }
+        });
+        it('should return the correct version', function() {
+          var actualAPIInfo = APIService.apiInfo(rgv);
+          if(actualAPIInfo) {
+            expect(actualAPIInfo.version).toEqual(expectedAPIInfo.version);
+          }
+        });
+        it('should return the correct hostPort', function() {
+          var actualAPIInfo = APIService.apiInfo(rgv);
+          if(actualAPIInfo) {
+            expect(actualAPIInfo.hostPort).toEqual(expectedAPIInfo.hostPort);
+          }
+        });
+        it('should return the correct prefix', function() {
+          var actualAPIInfo = APIService.apiInfo(rgv);
+          if(actualAPIInfo) {
+            expect(actualAPIInfo.prefix).toEqual(expectedAPIInfo.prefix);
+          }
+        });
+        it('should return the correct namespaced', function() {
+          var actualAPIInfo = APIService.apiInfo(rgv);
+          if(actualAPIInfo) {
+            expect(actualAPIInfo.namespaced).toEqual(expectedAPIInfo.namespaced);
+          }
+        });
+        it('should return the correct verbs', function() {
+          var actualAPIInfo = APIService.apiInfo(rgv);
+          if(actualAPIInfo) {
+            expect(actualAPIInfo.verbs).toEqual(expectedAPIInfo.verbs);
+          }
+        });
     }));
+
+    it('should return undefined if the rgb is unknown', function() {
+      var invalid = APIService.apiInfo({
+        resource: "foo",
+        group: "bar",
+        version: "baz"
+      });
+      expect(invalid).toEqual(undefined);
+    });
   });
 
   describe("#parseGroupVersion", function(){
@@ -394,21 +427,44 @@ describe("APIService", function() {
       });
     });
 
-    // this tests a hard-coded filter list within calculateAvailableKinds
-    it('should not return duplicate kinds that map to the same storage as another group/kind', function() {
-      var allKinds = APIService.availableKinds(true);
-      var kindsToExclude = [{kind: 'HorizontalPodAutoscaler', group: 'extensions'}];
-      // the same as above, but in the correct group, validating that we do still list these kinds
-      var matchingKindsToInclude = [{kind: 'HorizontalPodAutoscaler', group: 'autoscaling'}];
+    // These test a hard-coded filter list within calculateAvailableKinds
+    describe('deduplicated kinds from #availableKinds', function() {
+      // These kinds either no longer exist or have been moved (for example, now
+      // are listed under a different group).  They still exist, but should be
+      // ignored in favor of the preferred alias.
+      it('should NOT return kind:HorizontalPodAutoscaler with group: extensions', function() {
+        var allKinds = APIService.availableKinds(true);
+        var toExclude = { group: 'extensions', kind: 'HorizontalPodAutoscaler' };
 
-      _.each(kindsToExclude, function(kind) {
-        expect(_.find(allKinds, kind)).toEqual(undefined);
+        expect(_.find(allKinds, toExclude)).toEqual(undefined);
       });
-      _.each(matchingKindsToInclude, function(kind) {
-        expect(_.find(allKinds, kind)).toEqual(kind);
+
+      it('should NOT return any resource with group: authorization.openshift.io', function() {
+        var allKinds = APIService.availableKinds(true);
+        var toExclude = { group: 'authorization.openshift.io' };
+        var shouldNotFind = _.filter(allKinds, toExclude);
+
+        expect(shouldNotFind.length).toEqual(0);
+      });
+
+      // Positive versions of the above tests, to ensure that our
+      // filter is not too greedy and eliminating kinds that that
+      // we expect should be returned in place of the kinds above.
+      it('should return kind:HorizontalPodAutoscaler with group: autoscaling', function() {
+        var allKinds = APIService.availableKinds(true);
+        var toInclude = { group: 'autoscaling', kind: 'HorizontalPodAutoscaler' };
+
+        expect(_.find(allKinds, toInclude)).toEqual(toInclude);
+      });
+
+      it('should include resources with group rbac.autorization.k8s.io', function() {
+        var allKinds = APIService.availableKinds(true);
+        var toInclude =  {group: 'rbac.authorization.k8s.io'};
+        var found  = _.filter(allKinds, toInclude);
+
+        expect(found.length >= 1).toBe(true);
       });
     });
-
   });
 
 });
