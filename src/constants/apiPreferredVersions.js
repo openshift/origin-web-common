@@ -21,6 +21,7 @@ angular.module('openshiftCommonServices')
       horizontalpodautoscalers:         {group: 'autoscaling',                version: 'v1',      resource: 'horizontalpodautoscalers' },
       imagestreams:                     {group: 'image.openshift.io',         version: 'v1',      resource: 'imagestreams' },
       imagestreamtags:                  {group: 'image.openshift.io',         version: 'v1',      resource: 'imagestreamtags' },
+      imagestreamimages:                {group: 'image.openshift.io',         version: 'v1',      resource: 'imagestreamimages' },
       limitranges:                      {version: 'v1',                       resource: 'limitranges' },
       pods:                             {version: 'v1',                       resource: 'pods' },
       'pods/log':                       {version: 'v1',                       resource: 'pods/log' },
