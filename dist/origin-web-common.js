@@ -1456,6 +1456,7 @@ angular.module('openshiftCommonServices')
       servicebindings:                  {group: 'servicecatalog.k8s.io',      version: 'v1beta1', resource: 'servicebindings' },
       serviceinstances:                 {group: 'servicecatalog.k8s.io',      version: 'v1beta1', resource: 'serviceinstances' },
       statefulsets:                     {group: 'apps',                       version: 'v1beta1', resource: 'statefulsets' },
+      storageclasses:                   {group: 'storage.k8s.io',             version: 'v1',      resource: 'storageclasses'},
       templates:                        {group: 'template.openshift.io',      verison: 'v1',      resource: 'templates' },
       users:                            {group: 'user.openshift.io',          version: 'v1',      resource: 'users' }
   });
