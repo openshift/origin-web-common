@@ -1441,6 +1441,7 @@ angular.module('openshiftCommonServices')
       limitranges:                      {version: 'v1',                       resource: 'limitranges' },
       pods:                             {version: 'v1',                       resource: 'pods' },
       'pods/log':                       {version: 'v1',                       resource: 'pods/log' },
+      processedtemplates:               {group: 'template.openshift.io',      version: 'v1',      resource: 'processedtemplates' },
       projects:                         {group: 'project.openshift.io',       version: 'v1',      resource: 'projects' },
       projectrequests:                  {group: 'project.openshift.io',       version: 'v1',      resource: 'projectrequests' },
       persistentvolumeclaims:           {version: 'v1',                       resource: 'persistentvolumeclaims' },
