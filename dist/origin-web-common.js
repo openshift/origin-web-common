@@ -3208,7 +3208,8 @@ angular.module("openshiftCommonServices")
     // The secret key this service uses for the parameters JSON blob when binding.
     var PARAMETERS_SECRET_KEY = 'parameters';
 
-    var bindingResource = APIService.getPreferredVersion('servicebindings');
+    var serviceBindingsVersion = APIService.getPreferredVersion('servicebindings');
+    var secretsVersion = APIService.getPreferredVersion('secrets');
 
     var getServiceClassForInstance = function(serviceInstance, serviceClasses) {
       if (!serviceClasses) {
@@ -3394,7 +3395,7 @@ angular.module("openshiftCommonServices")
     };
 
     return {
-      bindingResource: bindingResource,
+      bindingResource: serviceBindingsVersion,
       getServiceClassForInstance: getServiceClassForInstance,
       makeParametersSecret: makeParametersSecret,
       generateSecretName: generateSecretName,
@@ -3414,7 +3415,7 @@ angular.module("openshiftCommonServices")
           namespace: serviceInstance.metadata.namespace
         };
 
-        var promise = DataService.create(bindingResource, null, newBinding, context);
+        var promise = DataService.create(serviceBindingsVersion, null, newBinding, context);
         if (!parametersSecretName) {
           return promise;
         }
@@ -3422,7 +3423,7 @@ angular.module("openshiftCommonServices")
         // Create the secret as well if the binding has parameters.
         return promise.then(function(binding) {
           var parametersSecret = makeParametersSecret(parametersSecretName, parameters, binding);
-          return DataService.create("secrets", null, parametersSecret, context).then(function() {
+          return DataService.create(secretsVersion, null, parametersSecret, context).then(function() {
             return binding;
           });
         });
