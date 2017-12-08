@@ -2811,9 +2811,11 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
 angular.module('openshiftCommonServices')
 .provider('DeleteTokenLogoutService', function() {
 
-  this.$get = function($q, $injector, Logger) {
+  this.$get = function(
+    $q,
+    $injector,
+    Logger) {
     var authLogger = Logger.get("auth");
-
     return {
       logout: function(user, token) {
         authLogger.log("DeleteTokenLogoutService.logout()", user, token);
@@ -2824,13 +2826,16 @@ angular.module('openshiftCommonServices')
           return $q.when({});
         }
 
-        // Lazily get the data service. Can't explicitly depend on it or we get circular dependencies.
+        // Lazy load services to eliminate circular dependencies.
+        var APIService = $injector.get('APIService');
         var DataService = $injector.get('DataService');
+
+        var oAuthAccessTokensVersion = APIService.getPreferredVersion('oauthaccesstokens');
         // Use the token to delete the token
         // Never trigger a login when deleting our token
         var opts = {http: {auth: {token: token, triggerLogin: false}}};
         // TODO: Change this to return a promise that "succeeds" even if the token delete fails?
-        return DataService.delete("oauthaccesstokens", token, {}, opts);
+        return DataService.delete(oAuthAccessTokensVersion, token, {}, opts);
       },
     };
   };
@@ -3788,6 +3793,7 @@ angular.module('openshiftCommonServices')
       imagestreamimages:                {group: 'image.openshift.io',         version: 'v1',      resource: 'imagestreamimages' },
       imagestreamimports:               {group: 'image.openshift.io',         version: 'v1',      resource: 'imagestreamimports' },
       limitranges:                      {version: 'v1',                       resource: 'limitranges' },
+      oauthaccesstokens:                {group: 'oauth.openshift.io',         version: 'v1',      resource: 'oauthaccesstokens' },
       pods:                             {version: 'v1',                       resource: 'pods' },
       'pods/log':                       {version: 'v1',                       resource: 'pods/log' },
       processedtemplates:               {group: 'template.openshift.io',      version: 'v1',      resource: 'processedtemplates' },
