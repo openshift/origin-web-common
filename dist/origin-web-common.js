@@ -2614,13 +2614,22 @@ angular.module('openshiftCommonServices')
 ;'use strict';
 
 angular.module("openshiftCommonServices").
-service("ApplicationsService", ["$q", "DataService", function($q, DataService) {
+service("ApplicationsService", ["$q", "APIService", "DataService", function(
+  $q,
+  APIService,
+  DataService) {
+
+  var deploymentsVersion = APIService.getPreferredVersion('deployments');
+  var deploymentConfigsVersion = APIService.getPreferredVersion('deploymentconfigs');
+  var replicationControllersVersion = APIService.getPreferredVersion('replicationcontrollers');
+  var replicaSetsVersion = APIService.getPreferredVersion('replicasets');
+  var statefulSetsVersion = APIService.getPreferredVersion('statefulsets');
 
   // List replication controllers in a namespace that are NOT managed by a
   // deployment config. Note: This will not return replication controllers that
   // have been orphaned by `oc delete dc/foo --cascade=false`.
   var listStandaloneReplicationControllers = function(context) {
-    return DataService.list('replicationcontrollers', context, null, {
+    return DataService.list(replicationControllersVersion, context, null, {
       http: {
         params: {
           // If the replica set has a `openshift.io/deployment-config-name`
@@ -2635,7 +2644,7 @@ service("ApplicationsService", ["$q", "DataService", function($q, DataService) {
   // Note: This will not return replica sets that have been orphaned by
   // `oc delete deployment/foo --cascade=false`.
   var listStandaloneReplicaSets = function(context) {
-    return DataService.list({group: 'extensions', resource: 'replicasets'}, context, null, {
+    return DataService.list(replicaSetsVersion, context, null, {
       http: {
         params: {
           // If the replica set has a `pod-template-hash` label, it's managed
@@ -2651,11 +2660,11 @@ service("ApplicationsService", ["$q", "DataService", function($q, DataService) {
     var promises = [];
 
     // Load all the "application" types
-    promises.push(DataService.list('deploymentconfigs', context));
+    promises.push(DataService.list(deploymentConfigsVersion, context));
     promises.push(listStandaloneReplicationControllers(context));
-    promises.push(DataService.list({group: 'apps', resource: 'deployments'}, context));
+    promises.push(DataService.list(deploymentsVersion, context));
     promises.push(listStandaloneReplicaSets(context));
-    promises.push(DataService.list({group: 'apps', resource: 'statefulsets'}, context));
+    promises.push(DataService.list(statefulSetsVersion, context));
 
     $q.all(promises).then(_.spread(function(deploymentConfigData, replicationControllerData, deploymentData, replicaSetData, statefulSetData) {
       var deploymentConfigs = _.toArray(deploymentConfigData.by('metadata.name'));
