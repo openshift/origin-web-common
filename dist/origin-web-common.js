@@ -5144,9 +5144,10 @@ angular.module('openshiftCommonServices')
 
 angular.module('openshiftCommonServices')
   .factory('ProjectsService',
-           ["$location", "$q", "$rootScope", "AuthService", "AuthorizationService", "DataService", "Logger", "RecentlyViewedProjectsService", "annotationNameFilter", function($location,
+           ["$location", "$q", "$rootScope", "APIService", "AuthService", "AuthorizationService", "DataService", "Logger", "RecentlyViewedProjectsService", "annotationNameFilter", function($location,
                     $q,
                     $rootScope,
+                    APIService,
                     AuthService,
                     AuthorizationService,
                     DataService,
@@ -5157,6 +5158,8 @@ angular.module('openshiftCommonServices')
       // Cache project data when we can so we don't request it on every page load.
       var cachedProjectData;
       var cachedProjectDataIncomplete = false;
+      var projectsVersion = APIService.getPreferredVersion('projects');
+      var projectRequestsVersion = APIService.getPreferredVersion('projectrequests');
 
       var clearCachedProjectData = function() {
         Logger.debug('ProjectsService: clearing project cache');
@@ -5192,7 +5195,7 @@ angular.module('openshiftCommonServices')
                         project: undefined
                       };
                       return DataService
-                              .get('projects', projectName, context, {errorNotification: false})
+                              .get(projectsVersion, projectName, context, {errorNotification: false})
                               .then(function(project) {
                                 return AuthorizationService
                                         .getProjectRules(projectName)
@@ -5242,7 +5245,7 @@ angular.module('openshiftCommonServices')
             }
 
             Logger.debug('ProjectsService: listing projects, force refresh', forceRefresh);
-            return DataService.list('projects', {}).then(function(projectData) {
+            return DataService.list(projectsVersion, {}).then(function(projectData) {
               cachedProjectData = projectData;
               return projectData;
             }, function(error) {
@@ -5261,14 +5264,14 @@ angular.module('openshiftCommonServices')
             // Wrap `DataService.watch` so we can update the cached projects
             // list on changes. TODO: We might want to disable watches entirely
             // if we know the project list is large.
-            return DataService.watch('projects', context, function(projectData) {
+            return DataService.watch(projectsVersion, context, function(projectData) {
               cachedProjectData = projectData;
               callback(projectData);
             });
           },
 
           update: function(projectName, data) {
-            return DataService.update('projects', projectName, cleanEditableAnnotations(data), {
+            return DataService.update(projectsVersion, projectName, cleanEditableAnnotations(data), {
               projectName: projectName
             }, {
               errorNotification: false
@@ -5292,7 +5295,7 @@ angular.module('openshiftCommonServices')
               description: description
             };
             return DataService
-              .create('projectrequests', null, projectRequest, {})
+              .create(projectRequestsVersion, null, projectRequest, {})
               .then(function(project) {
                 RecentlyViewedProjectsService.addProjectUID(project.metadata.uid);
                 if (cachedProjectData) {
@@ -5303,11 +5306,11 @@ angular.module('openshiftCommonServices')
           },
 
           canCreate: function() {
-            return DataService.get("projectrequests", null, {}, { errorNotification: false});
+            return DataService.get(projectRequestsVersion, null, {}, { errorNotification: false});
           },
 
           delete: function(project) {
-            return DataService.delete('projects', project.metadata.name, {}).then(function(deletedProject) {
+            return DataService.delete(projectsVersion, project.metadata.name, {}).then(function(deletedProject) {
               if (cachedProjectData) {
                 cachedProjectData.update(project, 'DELETED');
               }
