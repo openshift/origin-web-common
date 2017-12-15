@@ -260,6 +260,14 @@ angular.module('openshiftCommonServices')
     return new ResourceGroupVersion(resource, group, version);
   };
 
+
+  var toAPIVersion = function(resourceGroupVersion) {
+    if (resourceGroupVersion.group) {
+      return resourceGroupVersion.group + '/' + resourceGroupVersion.version;
+    }
+    return resourceGroupVersion.version;
+  };
+
   // normalizeResource lowercases the first segment of the given resource. subresources can be case-sensitive.
   function normalizeResource(resource) {
     if (!resource) {
@@ -556,6 +564,8 @@ angular.module('openshiftCommonServices')
   };
 
   return {
+    toAPIVersion: toAPIVersion,
+
     toResourceGroupVersion: toResourceGroupVersion,
 
     parseGroupVersion: parseGroupVersion,
