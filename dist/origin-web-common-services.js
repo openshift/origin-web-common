@@ -3777,7 +3777,7 @@ angular.module('openshiftCommonServices')
       'deploymentconfigs/instantiate':  {group: 'apps.openshift.io',          version: 'v1',      resource: 'deploymentconfigs/instantiate' },
       'deploymentconfigs/rollback':     {group: 'apps.openshift.io',          version: 'v1',      resource: 'deploymentconfigs/rollback' },
       'deploymentconfigs/log':          {group: 'apps.openshift.io',          version: 'v1',      resource: 'deploymentconfigs/log' },
-      endpoints:                        {version: 'v1',                       resoource: 'endpoints'},
+      endpoints:                        {version: 'v1',                       resource: 'endpoints'},
       events:                           {version: 'v1',                       resource: 'events' },
       horizontalpodautoscalers:         {group: 'autoscaling',                version: 'v1',      resource: 'horizontalpodautoscalers' },
       imagestreams:                     {group: 'image.openshift.io',         version: 'v1',      resource: 'imagestreams' },
