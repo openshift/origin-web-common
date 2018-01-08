@@ -5219,7 +5219,7 @@ angular.module('openshiftCommonServices')
       };
 
       return {
-        get: function(projectName) {
+        get: function(projectName, opts) {
           return  AuthService
                     .withUser()
                     .then(function() {
@@ -5247,6 +5247,9 @@ angular.module('openshiftCommonServices')
                                         });
                               }, function(e) {
                                 context.projectPromise.reject(e);
+                                if ((e.status === 403 || e.status === 404) && _.get(opts, 'skipErrorNotFound')) {
+                                  return $q.reject({notFound: true});
+                                }
                                 var description = 'The project could not be loaded.';
                                 var type = 'error';
                                 if(e.status === 403) {
