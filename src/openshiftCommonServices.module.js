@@ -8,6 +8,9 @@ angular.module('openshiftCommonServices', ['ab-base64'])
   .config(function(AuthServiceProvider) {
     AuthServiceProvider.UserStore('MemoryUserStore');
   })
+  .config(function() {
+    // hi mom.
+  })
   .constant("API_CFG", _.get(window.OPENSHIFT_CONFIG, "api", {}))
   .constant("APIS_CFG", _.get(window.OPENSHIFT_CONFIG, "apis", {}))
   .constant("AUTH_CFG", _.get(window.OPENSHIFT_CONFIG, "auth", {}))
@@ -152,5 +155,3 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
   ];
   $.when.apply(this, allDeferreds).always(discoveryFinished);
 });
-
-
