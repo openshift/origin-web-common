@@ -147,7 +147,7 @@ angular.module('openshiftCommonServices')
 
           create: function(name, displayName, description) {
             var projectRequest = {
-              apiVersion: "v1",
+              apiVersion: APIService.toAPIVersion(projectRequestsVersion),
               kind: "ProjectRequest",
               metadata: {
                 name: name
@@ -155,6 +155,7 @@ angular.module('openshiftCommonServices')
               displayName: displayName,
               description: description
             };
+
             return DataService
               .create(projectRequestsVersion, null, projectRequest, {})
               .then(function(project) {
