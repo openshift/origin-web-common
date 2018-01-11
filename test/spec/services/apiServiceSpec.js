@@ -7,6 +7,21 @@ describe("APIService", function() {
     });
   });
 
+  describe('#toAPIVersion', () => {
+    var tc = [
+      ['build.openshift.io/v1', {group: 'build.openshift.io',         version: 'v1',      resource: 'builds' }],
+      ['build.openshift.io/v1', {group: 'build.openshift.io',         version: 'v1',      resource: 'buildconfigs' }],
+      ['v1', {version: 'v1',                       resource: 'configmaps' }],
+      [undefined, {resource: 'kangaroos'}],
+    ];
+
+    _.each(tc, _.spread((output, input) => {
+      it('should convert ' + JSON.stringify(input) + ' into ' + output, () => {
+        expect( APIService.toAPIVersion(input) ).toEqual(output);
+      });
+    }));
+  });
+
   describe("#toResourceGroupVersion", function() {
 
     var tc = [
