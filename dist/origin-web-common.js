@@ -630,13 +630,13 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
     "    <a ng-if=\"expandable\" href=\"\" ng-click=\"toggles.expanded = true\" class=\"truncation-expand-link\">See All</a>\n" +
     "  </span>\n" +
     "  <span ng-if=\"toggles.expanded\">\n" +
-    "      <a href=\"\" ng-if=\"!hideCollapse\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a>\n" +
-    "      <span ng-if=\"!linkify || (highlightKeywords | size)\"\n" +
-    "            ng-bind-html=\"content | highlightKeywords : keywords\"\n" +
-    "            class=\"truncated-content\"></span>\n" +
-    "      <span ng-if=\"linkify && !(highlightKeywords | size)\"\n" +
-    "            ng-bind-html=\"content | linkify : '_blank'\"\n" +
-    "            class=\"truncated-content\"></span>\n" +
+    "    <span ng-if=\"!linkify || (highlightKeywords | size)\"\n" +
+    "          ng-bind-html=\"content | highlightKeywords : keywords\"\n" +
+    "          class=\"truncated-content\"></span>\n" +
+    "    <span ng-if=\"linkify && !(highlightKeywords | size)\"\n" +
+    "          ng-bind-html=\"content | linkify : '_blank'\"\n" +
+    "          class=\"truncated-content\"></span>\n" +
+    "    <a href=\"\" ng-if=\"!hideCollapse\" ng-click=\"toggles.expanded = false\" class=\"truncation-collapse-link\">Collapse</a>\n" +
     "  </span>\n" +
     "</span>\n"
   );
