@@ -74,7 +74,14 @@ angular.module('openshiftCommonServices')
     var makeState = function(then) {
       var nonce = String(new Date().getTime()) + "-" + getRandomInts(8).join("");
       try {
-        window.localStorage[nonceKey] = nonce;
+        if (window.localStorage[nonceKey] && window.localStorage[nonceKey].length > 10) {
+          // Reuse an existing nonce if we have one, so that when multiple tabs get kicked to a login screen,
+          // any of them can succeed, not just the last login flow that was started. The nonce gets cleared when the login flow completes.
+          nonce = window.localStorage[nonceKey];
+        } else {
+          // Otherwise store the new nonce for comparison in parseState()
+          window.localStorage[nonceKey] = nonce;
+        }
       } catch(e) {
         authLogger.log("RedirectLoginService.makeState, localStorage error: ", e);
       }
