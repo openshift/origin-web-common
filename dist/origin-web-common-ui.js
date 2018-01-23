@@ -1330,7 +1330,9 @@ angular.module('openshiftCommonUI')
       "loggingDataPrefix":        ["openshift.io/logging.data.prefix"],
       "idledAt":                  ["idling.alpha.openshift.io/idled-at"],
       "idledPreviousScale":       ["idling.alpha.openshift.io/previous-scale"],
-      "systemOnly":               ["authorization.openshift.io/system-only"]
+      "systemOnly":               ["authorization.openshift.io/system-only"],
+      "hpaConditions":            ["autoscaling.alpha.kubernetes.io/conditions"],
+      "hpaMetrics":               ["autoscaling.alpha.kubernetes.io/metrics"]
     };
     return function(annotationKey) {
       return annotationMap[annotationKey] || null;
