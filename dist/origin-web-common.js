@@ -1595,11 +1595,21 @@ angular.module('openshiftCommonUI')
     };
   }])
   .filter('imageStreamTagIconClass', ["imageStreamTagAnnotationFilter", function(imageStreamTagAnnotationFilter) {
-  return function(resource, /* optional */ tagName) {
-    var icon = imageStreamTagAnnotationFilter(resource, "iconClass", tagName);
-    return (icon) ? icon : "fa fa-cube";
-  };
-}]);
+    return function(resource, /* optional */ tagName) {
+      var icon = imageStreamTagAnnotationFilter(resource, "iconClass", tagName);
+      return (icon) ? icon : "fa fa-cube";
+    };
+  }])
+  .filter('hpaConditions', ["annotationFilter", function(annotationFilter) {
+    return function(hpa) {
+      return JSON.parse(annotationFilter(hpa, 'hpaConditions'));
+    };
+  }])
+  .filter('hpaMetrics', ["annotationFilter", function(annotationFilter) {
+    return function(hpa) {
+      return JSON.parse(annotationFilter(hpa, 'hpaMetrics'));
+    };
+  }]);
 ;'use strict';
 
 angular
