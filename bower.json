@@ -43,6 +43,7 @@
     "angular-scenario": "~1.5.11"
   },
   "resolutions": {
-    "jquery": "~2.1.4"
+    "jquery": "~2.1.4",
+    "lodash": "~3.10.1"
   }
 }
