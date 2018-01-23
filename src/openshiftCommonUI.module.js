@@ -22,6 +22,14 @@ angular.module('openshiftCommonUI', [])
   maxlength: 253,
   description: 'Name must consist of lower-case letters, numbers, periods, and hyphens. It must start and end with a letter or a number.'
 })
+// URI_PATH_FRAGMENT_VALIDATION patterns must consist of following characters:
+// a-z A-Z 0-9 . - _ ~ ! $ & ' ( ) * + , ; = : @
+// https://stackoverflow.com/questions/4669692/valid-characters-for-directory-part-of-a-url-for-short-links
+.constant('URI_PATH_FRAGMENT_VALIDATION', {
+  pattern: /^[a-zA-Z0-9.\-_~!$&'()*+,;=:@]+$/,
+  minlength: 8,
+  description: 'Value must consist of characters that can be contained URI path segment.'
+})
 // http://stackoverflow.com/questions/9038625/detect-if-device-is-ios
 .constant('IS_IOS', /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
 
