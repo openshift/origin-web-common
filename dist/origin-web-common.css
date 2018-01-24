@@ -415,6 +415,9 @@ div.hopscotch-bubble .hopscotch-nav-button.prev {
   margin-top: 0;
   padding: 10px 40px 10px 20px;
 }
+.origin-modal-popup textarea {
+  resize: vertical;
+}
 .origin-modal-popup-backdrop.modal-backdrop {
   background-color: transparent;
   cursor: not-allowed;

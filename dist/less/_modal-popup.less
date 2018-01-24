@@ -86,6 +86,10 @@
     margin-top: 0;
     padding: 10px @grid-gutter-width 10px (@grid-gutter-width / 2);
   }
+
+  textarea {
+    resize: vertical; // so the textarea cannot be resized wider than the popup
+  }
 }
 
 .origin-modal-popup-backdrop.modal-backdrop {
