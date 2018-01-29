@@ -2768,6 +2768,28 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
     return new URI({protocol: protocol, hostname: hostPort}).toString();
   };
 
+  DataService.prototype._getAPIServerVersion = function(path) {
+    var protocol = window.location.protocol === "http:" ? "http" : "https";
+    var versionURL = new URI({
+      protocol: protocol,
+      hostname: API_CFG.k8s.hostPort,
+      path: path
+    }).toString();
+    return $http.get(versionURL, {
+      headers: {
+        Accept: 'application/json'
+      }
+    });
+  };
+
+  DataService.prototype.getKubernetesMasterVersion = function() {
+    return this._getAPIServerVersion('/version');
+  };
+
+  DataService.prototype.getOpenShiftMasterVersion = function() {
+    return this._getAPIServerVersion('/version/openshift');
+  };
+
   // Used by ProjectsService when a list fails.
   DataService.prototype.createData = function(array) {
     return new Data(array);
