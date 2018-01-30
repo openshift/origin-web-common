@@ -59,7 +59,6 @@ angular.module("openshiftCommonUI")
 
           // opening the modal with settings scope as parent
           var modalInstance = $uibModal.open({
-            animation: true,
             templateUrl: 'src/components/delete-project/delete-project-modal.html',
             controller: 'DeleteProjectModalController',
             scope: scope
@@ -95,4 +94,3 @@ angular.module("openshiftCommonUI")
       }
     };
   });
-
