@@ -28,7 +28,9 @@ angular.module('openshiftCommonUI')
       "loggingDataPrefix":        ["openshift.io/logging.data.prefix"],
       "idledAt":                  ["idling.alpha.openshift.io/idled-at"],
       "idledPreviousScale":       ["idling.alpha.openshift.io/previous-scale"],
-      "systemOnly":               ["authorization.openshift.io/system-only"]
+      "systemOnly":               ["authorization.openshift.io/system-only"],
+      "hpaConditions":            ["autoscaling.alpha.kubernetes.io/conditions"],
+      "hpaMetrics":               ["autoscaling.alpha.kubernetes.io/metrics"]
     };
     return function(annotationKey) {
       return annotationMap[annotationKey] || null;
@@ -84,8 +86,18 @@ angular.module('openshiftCommonUI')
     };
   })
   .filter('imageStreamTagIconClass', function(imageStreamTagAnnotationFilter) {
-  return function(resource, /* optional */ tagName) {
-    var icon = imageStreamTagAnnotationFilter(resource, "iconClass", tagName);
-    return (icon) ? icon : "fa fa-cube";
-  };
-});
+    return function(resource, /* optional */ tagName) {
+      var icon = imageStreamTagAnnotationFilter(resource, "iconClass", tagName);
+      return (icon) ? icon : "fa fa-cube";
+    };
+  })
+  .filter('hpaConditions', function(annotationFilter) {
+    return function(hpa) {
+      return JSON.parse(annotationFilter(hpa, 'hpaConditions'));
+    };
+  })
+  .filter('hpaMetrics', function(annotationFilter) {
+    return function(hpa) {
+      return JSON.parse(annotationFilter(hpa, 'hpaMetrics'));
+    };
+  });
