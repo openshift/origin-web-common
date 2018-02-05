@@ -69,7 +69,7 @@ describe("APIService", function() {
       [{kind: 'PodTemplate', group: ''}, {"resource":"podtemplates","group":"","version":"v1"}],
       [{kind: 'HorizontalPodAutoscaler', group: 'autoscaling'}, {"resource":"horizontalpodautoscalers","group":"autoscaling","version":"v1"}],
       [{kind: 'DaemonSet', group: 'extensions'}, {"resource":"daemonsets","group":"extensions","version":"v1beta1"}],
-      [{kind: 'RoleBinding', group: 'rbac.authorization.k8s.io'}, {"resource":"rolebindings","group":"rbac.authorization.k8s.io","version":"v1beta1"}],
+      [{kind: 'RoleBinding', group: 'rbac.authorization.k8s.io'}, {"resource":"rolebindings","group":"rbac.authorization.k8s.io","version":"v1"}],
       [{kind: 'PodPreset', group: 'settings.k8s.io'}, {"resource":"podpresets","group":"settings.k8s.io","version":"v1alpha1"}],
       [{kind: 'Policy', group: 'authorization.openshift.io'}, {"resource":"policies","group":"authorization.openshift.io","version":"v1"}],
       [{kind: 'Template', group: 'template.openshift.io'}, {"resource":"templates","group":"template.openshift.io","version":"v1"}],
@@ -432,9 +432,16 @@ describe("APIService", function() {
       // These kinds either no longer exist or have been moved (for example, now
       // are listed under a different group).  They still exist, but should be
       // ignored in favor of the preferred alias.
-      it('should NOT return kind:HorizontalPodAutoscaler with group: extensions', function() {
+      it('should NOT return kind: HorizontalPodAutoscaler with group: extensions', function() {
         var allKinds = APIService.availableKinds(true);
         var toExclude = { group: 'extensions', kind: 'HorizontalPodAutoscaler' };
+
+        expect(_.find(allKinds, toExclude)).toEqual(undefined);
+      });
+
+      it('should NOT return kind: DaemonSet with group: extensions', function() {
+        var allKinds = APIService.availableKinds(true);
+        var toExclude = { group: 'extensions', kind: 'DaemonSet' };
 
         expect(_.find(allKinds, toExclude)).toEqual(undefined);
       });

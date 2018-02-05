@@ -3,6 +3,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
    "v1":{
       "bindings":{
          "name":"bindings",
+         "singularName":"",
          "namespaced":true,
          "kind":"Binding",
          "verbs":[
@@ -11,6 +12,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "componentstatuses":{
          "name":"componentstatuses",
+         "singularName":"",
          "namespaced":false,
          "kind":"ComponentStatus",
          "verbs":[
@@ -23,6 +25,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "configmaps":{
          "name":"configmaps",
+         "singularName":"",
          "namespaced":true,
          "kind":"ConfigMap",
          "verbs":[
@@ -41,6 +44,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "endpoints":{
          "name":"endpoints",
+         "singularName":"",
          "namespaced":true,
          "kind":"Endpoints",
          "verbs":[
@@ -59,6 +63,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "events":{
          "name":"events",
+         "singularName":"",
          "namespaced":true,
          "kind":"Event",
          "verbs":[
@@ -77,6 +82,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "limitranges":{
          "name":"limitranges",
+         "singularName":"",
          "namespaced":true,
          "kind":"LimitRange",
          "verbs":[
@@ -95,12 +101,12 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "namespaces":{
          "name":"namespaces",
+         "singularName":"",
          "namespaced":false,
          "kind":"Namespace",
          "verbs":[
             "create",
             "delete",
-            "deletecollection",
             "get",
             "list",
             "patch",
@@ -113,6 +119,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "namespaces/finalize":{
          "name":"namespaces/finalize",
+         "singularName":"",
          "namespaced":false,
          "kind":"Namespace",
          "verbs":[
@@ -121,6 +128,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "namespaces/status":{
          "name":"namespaces/status",
+         "singularName":"",
          "namespaced":false,
          "kind":"Namespace",
          "verbs":[
@@ -131,6 +139,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "nodes":{
          "name":"nodes",
+         "singularName":"",
          "namespaced":false,
          "kind":"Node",
          "verbs":[
@@ -150,6 +159,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "nodes/proxy":{
          "name":"nodes/proxy",
+         "singularName":"",
          "namespaced":false,
          "kind":"Node",
          "verbs":[
@@ -158,6 +168,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "nodes/status":{
          "name":"nodes/status",
+         "singularName":"",
          "namespaced":false,
          "kind":"Node",
          "verbs":[
@@ -168,6 +179,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "persistentvolumeclaims":{
          "name":"persistentvolumeclaims",
+         "singularName":"",
          "namespaced":true,
          "kind":"PersistentVolumeClaim",
          "verbs":[
@@ -186,6 +198,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "persistentvolumeclaims/status":{
          "name":"persistentvolumeclaims/status",
+         "singularName":"",
          "namespaced":true,
          "kind":"PersistentVolumeClaim",
          "verbs":[
@@ -196,6 +209,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "persistentvolumes":{
          "name":"persistentvolumes",
+         "singularName":"",
          "namespaced":false,
          "kind":"PersistentVolume",
          "verbs":[
@@ -214,6 +228,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "persistentvolumes/status":{
          "name":"persistentvolumes/status",
+         "singularName":"",
          "namespaced":false,
          "kind":"PersistentVolume",
          "verbs":[
@@ -224,6 +239,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "pods":{
          "name":"pods",
+         "singularName":"",
          "namespaced":true,
          "kind":"Pod",
          "verbs":[
@@ -239,10 +255,14 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
          ],
          "shortNames":[
             "po"
+         ],
+         "categories":[
+            "all"
          ]
       },
       "pods/attach":{
          "name":"pods/attach",
+         "singularName":"",
          "namespaced":true,
          "kind":"Pod",
          "verbs":[
@@ -251,6 +271,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "pods/binding":{
          "name":"pods/binding",
+         "singularName":"",
          "namespaced":true,
          "kind":"Binding",
          "verbs":[
@@ -259,7 +280,10 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "pods/eviction":{
          "name":"pods/eviction",
+         "singularName":"",
          "namespaced":true,
+         "group":"policy",
+         "version":"v1beta1",
          "kind":"Eviction",
          "verbs":[
             "create"
@@ -267,6 +291,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "pods/exec":{
          "name":"pods/exec",
+         "singularName":"",
          "namespaced":true,
          "kind":"Pod",
          "verbs":[
@@ -275,6 +300,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "pods/log":{
          "name":"pods/log",
+         "singularName":"",
          "namespaced":true,
          "kind":"Pod",
          "verbs":[
@@ -283,6 +309,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "pods/portforward":{
          "name":"pods/portforward",
+         "singularName":"",
          "namespaced":true,
          "kind":"Pod",
          "verbs":[
@@ -291,6 +318,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "pods/proxy":{
          "name":"pods/proxy",
+         "singularName":"",
          "namespaced":true,
          "kind":"Pod",
          "verbs":[
@@ -299,6 +327,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "pods/status":{
          "name":"pods/status",
+         "singularName":"",
          "namespaced":true,
          "kind":"Pod",
          "verbs":[
@@ -309,6 +338,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "podtemplates":{
          "name":"podtemplates",
+         "singularName":"",
          "namespaced":true,
          "kind":"PodTemplate",
          "verbs":[
@@ -324,6 +354,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "replicationcontrollers":{
          "name":"replicationcontrollers",
+         "singularName":"",
          "namespaced":true,
          "kind":"ReplicationController",
          "verbs":[
@@ -338,11 +369,17 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
          ],
          "shortNames":[
             "rc"
+         ],
+         "categories":[
+            "all"
          ]
       },
       "replicationcontrollers/scale":{
          "name":"replicationcontrollers/scale",
+         "singularName":"",
          "namespaced":true,
+         "group":"autoscaling",
+         "version":"v1",
          "kind":"Scale",
          "verbs":[
             "get",
@@ -352,6 +389,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "replicationcontrollers/status":{
          "name":"replicationcontrollers/status",
+         "singularName":"",
          "namespaced":true,
          "kind":"ReplicationController",
          "verbs":[
@@ -362,6 +400,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "resourcequotas":{
          "name":"resourcequotas",
+         "singularName":"",
          "namespaced":true,
          "kind":"ResourceQuota",
          "verbs":[
@@ -380,6 +419,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "resourcequotas/status":{
          "name":"resourcequotas/status",
+         "singularName":"",
          "namespaced":true,
          "kind":"ResourceQuota",
          "verbs":[
@@ -390,6 +430,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "secrets":{
          "name":"secrets",
+         "singularName":"",
          "namespaced":true,
          "kind":"Secret",
          "verbs":[
@@ -405,6 +446,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "securitycontextconstraints":{
          "name":"securitycontextconstraints",
+         "singularName":"",
          "namespaced":false,
          "kind":"SecurityContextConstraints",
          "verbs":[
@@ -423,6 +465,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "serviceaccounts":{
          "name":"serviceaccounts",
+         "singularName":"",
          "namespaced":true,
          "kind":"ServiceAccount",
          "verbs":[
@@ -441,6 +484,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "services":{
          "name":"services",
+         "singularName":"",
          "namespaced":true,
          "kind":"Service",
          "verbs":[
@@ -452,10 +496,17 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
             "proxy",
             "update",
             "watch"
+         ],
+         "shortNames":[
+            "svc"
+         ],
+         "categories":[
+            "all"
          ]
       },
       "services/proxy":{
          "name":"services/proxy",
+         "singularName":"",
          "namespaced":true,
          "kind":"Service",
          "verbs":[
@@ -464,6 +515,7 @@ window.OPENSHIFT_CONFIG.api.k8s.resources = {
       },
       "services/status":{
          "name":"services/status",
+         "singularName":"",
          "namespaced":true,
          "kind":"Service",
          "verbs":[
@@ -480,6 +532,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
    "v1":{
       "appliedclusterresourcequotas":{
          "name":"appliedclusterresourcequotas",
+         "singularName":"",
          "namespaced":true,
          "kind":"AppliedClusterResourceQuota",
          "verbs":[
@@ -489,6 +542,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "buildconfigs":{
          "name":"buildconfigs",
+         "singularName":"",
          "namespaced":true,
          "kind":"BuildConfig",
          "verbs":[
@@ -500,10 +554,14 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
             "patch",
             "update",
             "watch"
+         ],
+         "shortNames":[
+            "bc"
          ]
       },
       "buildconfigs/instantiate":{
          "name":"buildconfigs/instantiate",
+         "singularName":"",
          "namespaced":true,
          "kind":"BuildRequest",
          "verbs":[
@@ -512,6 +570,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "buildconfigs/instantiatebinary":{
          "name":"buildconfigs/instantiatebinary",
+         "singularName":"",
          "namespaced":true,
          "kind":"BinaryBuildRequestOptions",
          "verbs":[
@@ -520,6 +579,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "buildconfigs/webhooks":{
          "name":"buildconfigs/webhooks",
+         "singularName":"",
          "namespaced":true,
          "kind":"Build",
          "verbs":[
@@ -528,6 +588,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "builds":{
          "name":"builds",
+         "singularName":"",
          "namespaced":true,
          "kind":"Build",
          "verbs":[
@@ -543,6 +604,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "builds/clone":{
          "name":"builds/clone",
+         "singularName":"",
          "namespaced":true,
          "kind":"BuildRequest",
          "verbs":[
@@ -551,6 +613,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "builds/details":{
          "name":"builds/details",
+         "singularName":"",
          "namespaced":true,
          "kind":"Build",
          "verbs":[
@@ -559,6 +622,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "builds/log":{
          "name":"builds/log",
+         "singularName":"",
          "namespaced":true,
          "kind":"BuildLog",
          "verbs":[
@@ -567,6 +631,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "clusternetworks":{
          "name":"clusternetworks",
+         "singularName":"",
          "namespaced":false,
          "kind":"ClusterNetwork",
          "verbs":[
@@ -580,38 +645,9 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
             "watch"
          ]
       },
-      "clusterpolicies":{
-         "name":"clusterpolicies",
-         "namespaced":false,
-         "kind":"ClusterPolicy",
-         "verbs":[
-            "create",
-            "delete",
-            "deletecollection",
-            "get",
-            "list",
-            "patch",
-            "update",
-            "watch"
-         ]
-      },
-      "clusterpolicybindings":{
-         "name":"clusterpolicybindings",
-         "namespaced":false,
-         "kind":"ClusterPolicyBinding",
-         "verbs":[
-            "create",
-            "delete",
-            "deletecollection",
-            "get",
-            "list",
-            "patch",
-            "update",
-            "watch"
-         ]
-      },
       "clusterresourcequotas":{
          "name":"clusterresourcequotas",
+         "singularName":"",
          "namespaced":false,
          "kind":"ClusterResourceQuota",
          "verbs":[
@@ -623,10 +659,14 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
             "patch",
             "update",
             "watch"
+         ],
+         "shortNames":[
+            "clusterquota"
          ]
       },
       "clusterresourcequotas/status":{
          "name":"clusterresourcequotas/status",
+         "singularName":"",
          "namespaced":false,
          "kind":"ClusterResourceQuota",
          "verbs":[
@@ -637,6 +677,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "clusterrolebindings":{
          "name":"clusterrolebindings",
+         "singularName":"",
          "namespaced":false,
          "kind":"ClusterRoleBinding",
          "verbs":[
@@ -650,6 +691,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "clusterroles":{
          "name":"clusterroles",
+         "singularName":"",
          "namespaced":false,
          "kind":"ClusterRole",
          "verbs":[
@@ -661,16 +703,9 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
             "update"
          ]
       },
-      "deploymentconfigrollbacks":{
-         "name":"deploymentconfigrollbacks",
-         "namespaced":true,
-         "kind":"DeploymentConfigRollback",
-         "verbs":[
-            "create"
-         ]
-      },
       "deploymentconfigs":{
          "name":"deploymentconfigs",
+         "singularName":"",
          "namespaced":true,
          "kind":"DeploymentConfig",
          "verbs":[
@@ -682,10 +717,14 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
             "patch",
             "update",
             "watch"
+         ],
+         "shortNames":[
+            "dc"
          ]
       },
       "deploymentconfigs/instantiate":{
          "name":"deploymentconfigs/instantiate",
+         "singularName":"",
          "namespaced":true,
          "kind":"DeploymentRequest",
          "verbs":[
@@ -694,6 +733,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "deploymentconfigs/log":{
          "name":"deploymentconfigs/log",
+         "singularName":"",
          "namespaced":true,
          "kind":"DeploymentLog",
          "verbs":[
@@ -702,6 +742,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "deploymentconfigs/rollback":{
          "name":"deploymentconfigs/rollback",
+         "singularName":"",
          "namespaced":true,
          "kind":"DeploymentConfigRollback",
          "verbs":[
@@ -710,7 +751,10 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "deploymentconfigs/scale":{
          "name":"deploymentconfigs/scale",
+         "singularName":"",
          "namespaced":true,
+         "group":"extensions",
+         "version":"v1beta1",
          "kind":"Scale",
          "verbs":[
             "get",
@@ -720,6 +764,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "deploymentconfigs/status":{
          "name":"deploymentconfigs/status",
+         "singularName":"",
          "namespaced":true,
          "kind":"DeploymentConfig",
          "verbs":[
@@ -730,6 +775,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "egressnetworkpolicies":{
          "name":"egressnetworkpolicies",
+         "singularName":"",
          "namespaced":true,
          "kind":"EgressNetworkPolicy",
          "verbs":[
@@ -743,16 +789,9 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
             "watch"
          ]
       },
-      "generatedeploymentconfigs":{
-         "name":"generatedeploymentconfigs",
-         "namespaced":true,
-         "kind":"DeploymentConfig",
-         "verbs":[
-
-         ]
-      },
       "groups":{
          "name":"groups",
+         "singularName":"",
          "namespaced":false,
          "kind":"Group",
          "verbs":[
@@ -768,6 +807,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "hostsubnets":{
          "name":"hostsubnets",
+         "singularName":"",
          "namespaced":false,
          "kind":"HostSubnet",
          "verbs":[
@@ -783,6 +823,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "identities":{
          "name":"identities",
+         "singularName":"",
          "namespaced":false,
          "kind":"Identity",
          "verbs":[
@@ -798,6 +839,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "images":{
          "name":"images",
+         "singularName":"",
          "namespaced":false,
          "kind":"Image",
          "verbs":[
@@ -813,6 +855,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "imagesignatures":{
          "name":"imagesignatures",
+         "singularName":"",
          "namespaced":false,
          "kind":"ImageSignature",
          "verbs":[
@@ -822,14 +865,19 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "imagestreamimages":{
          "name":"imagestreamimages",
+         "singularName":"",
          "namespaced":true,
          "kind":"ImageStreamImage",
          "verbs":[
             "get"
+         ],
+         "shortNames":[
+            "isimage"
          ]
       },
       "imagestreamimports":{
          "name":"imagestreamimports",
+         "singularName":"",
          "namespaced":true,
          "kind":"ImageStreamImport",
          "verbs":[
@@ -838,6 +886,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "imagestreammappings":{
          "name":"imagestreammappings",
+         "singularName":"",
          "namespaced":true,
          "kind":"ImageStreamMapping",
          "verbs":[
@@ -846,6 +895,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "imagestreams":{
          "name":"imagestreams",
+         "singularName":"",
          "namespaced":true,
          "kind":"ImageStream",
          "verbs":[
@@ -857,10 +907,14 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
             "patch",
             "update",
             "watch"
+         ],
+         "shortNames":[
+            "is"
          ]
       },
       "imagestreams/secrets":{
          "name":"imagestreams/secrets",
+         "singularName":"",
          "namespaced":true,
          "kind":"SecretList",
          "verbs":[
@@ -869,6 +923,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "imagestreams/status":{
          "name":"imagestreams/status",
+         "singularName":"",
          "namespaced":true,
          "kind":"ImageStream",
          "verbs":[
@@ -879,6 +934,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "imagestreamtags":{
          "name":"imagestreamtags",
+         "singularName":"",
          "namespaced":true,
          "kind":"ImageStreamTag",
          "verbs":[
@@ -888,10 +944,14 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
             "list",
             "patch",
             "update"
+         ],
+         "shortNames":[
+            "istag"
          ]
       },
       "localresourceaccessreviews":{
          "name":"localresourceaccessreviews",
+         "singularName":"",
          "namespaced":true,
          "kind":"LocalResourceAccessReview",
          "verbs":[
@@ -900,6 +960,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "localsubjectaccessreviews":{
          "name":"localsubjectaccessreviews",
+         "singularName":"",
          "namespaced":true,
          "kind":"LocalSubjectAccessReview",
          "verbs":[
@@ -908,6 +969,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "netnamespaces":{
          "name":"netnamespaces",
+         "singularName":"",
          "namespaced":false,
          "kind":"NetNamespace",
          "verbs":[
@@ -923,6 +985,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "oauthaccesstokens":{
          "name":"oauthaccesstokens",
+         "singularName":"",
          "namespaced":false,
          "kind":"OAuthAccessToken",
          "verbs":[
@@ -938,6 +1001,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "oauthauthorizetokens":{
          "name":"oauthauthorizetokens",
+         "singularName":"",
          "namespaced":false,
          "kind":"OAuthAuthorizeToken",
          "verbs":[
@@ -953,6 +1017,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "oauthclientauthorizations":{
          "name":"oauthclientauthorizations",
+         "singularName":"",
          "namespaced":false,
          "kind":"OAuthClientAuthorization",
          "verbs":[
@@ -968,6 +1033,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "oauthclients":{
          "name":"oauthclients",
+         "singularName":"",
          "namespaced":false,
          "kind":"OAuthClient",
          "verbs":[
@@ -983,6 +1049,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "podsecuritypolicyreviews":{
          "name":"podsecuritypolicyreviews",
+         "singularName":"",
          "namespaced":true,
          "kind":"PodSecurityPolicyReview",
          "verbs":[
@@ -991,6 +1058,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "podsecuritypolicyselfsubjectreviews":{
          "name":"podsecuritypolicyselfsubjectreviews",
+         "singularName":"",
          "namespaced":true,
          "kind":"PodSecurityPolicySelfSubjectReview",
          "verbs":[
@@ -999,44 +1067,16 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "podsecuritypolicysubjectreviews":{
          "name":"podsecuritypolicysubjectreviews",
+         "singularName":"",
          "namespaced":true,
          "kind":"PodSecurityPolicySubjectReview",
          "verbs":[
             "create"
          ]
       },
-      "policies":{
-         "name":"policies",
-         "namespaced":true,
-         "kind":"Policy",
-         "verbs":[
-            "create",
-            "delete",
-            "deletecollection",
-            "get",
-            "list",
-            "patch",
-            "update",
-            "watch"
-         ]
-      },
-      "policybindings":{
-         "name":"policybindings",
-         "namespaced":true,
-         "kind":"PolicyBinding",
-         "verbs":[
-            "create",
-            "delete",
-            "deletecollection",
-            "get",
-            "list",
-            "patch",
-            "update",
-            "watch"
-         ]
-      },
       "processedtemplates":{
          "name":"processedtemplates",
+         "singularName":"",
          "namespaced":true,
          "kind":"Template",
          "verbs":[
@@ -1045,6 +1085,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "projectrequests":{
          "name":"projectrequests",
+         "singularName":"",
          "namespaced":false,
          "kind":"ProjectRequest",
          "verbs":[
@@ -1054,6 +1095,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "projects":{
          "name":"projects",
+         "singularName":"",
          "namespaced":false,
          "kind":"Project",
          "verbs":[
@@ -1068,6 +1110,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "resourceaccessreviews":{
          "name":"resourceaccessreviews",
+         "singularName":"",
          "namespaced":true,
          "kind":"ResourceAccessReview",
          "verbs":[
@@ -1076,6 +1119,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "rolebindingrestrictions":{
          "name":"rolebindingrestrictions",
+         "singularName":"",
          "namespaced":true,
          "kind":"RoleBindingRestriction",
          "verbs":[
@@ -1091,6 +1135,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "rolebindings":{
          "name":"rolebindings",
+         "singularName":"",
          "namespaced":true,
          "kind":"RoleBinding",
          "verbs":[
@@ -1104,6 +1149,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "roles":{
          "name":"roles",
+         "singularName":"",
          "namespaced":true,
          "kind":"Role",
          "verbs":[
@@ -1117,6 +1163,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "routes":{
          "name":"routes",
+         "singularName":"",
          "namespaced":true,
          "kind":"Route",
          "verbs":[
@@ -1132,6 +1179,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "routes/status":{
          "name":"routes/status",
+         "singularName":"",
          "namespaced":true,
          "kind":"Route",
          "verbs":[
@@ -1142,6 +1190,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "selfsubjectrulesreviews":{
          "name":"selfsubjectrulesreviews",
+         "singularName":"",
          "namespaced":true,
          "kind":"SelfSubjectRulesReview",
          "verbs":[
@@ -1150,6 +1199,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "subjectaccessreviews":{
          "name":"subjectaccessreviews",
+         "singularName":"",
          "namespaced":true,
          "kind":"SubjectAccessReview",
          "verbs":[
@@ -1158,6 +1208,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "subjectrulesreviews":{
          "name":"subjectrulesreviews",
+         "singularName":"",
          "namespaced":true,
          "kind":"SubjectRulesReview",
          "verbs":[
@@ -1166,6 +1217,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "templates":{
          "name":"templates",
+         "singularName":"",
          "namespaced":true,
          "kind":"Template",
          "verbs":[
@@ -1181,6 +1233,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "useridentitymappings":{
          "name":"useridentitymappings",
+         "singularName":"",
          "namespaced":false,
          "kind":"UserIdentityMapping",
          "verbs":[
@@ -1193,6 +1246,7 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
       },
       "users":{
          "name":"users",
+         "singularName":"",
          "namespaced":false,
          "kind":"User",
          "verbs":[
@@ -1210,6 +1264,818 @@ window.OPENSHIFT_CONFIG.api.openshift.resources = {
 };
 
 window.OPENSHIFT_CONFIG.apis.groups = {
+   "apiregistration.k8s.io":{
+      "name":"apiregistration.k8s.io",
+      "preferredVersion":"v1beta1",
+      "versions":{
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"apiregistration.k8s.io/v1beta1",
+            "resources":{
+               "apiservices":{
+                  "name":"apiservices",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"APIService",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "apiservices/status":{
+                  "name":"apiservices/status",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"APIService",
+                  "verbs":[
+                     "update"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "extensions":{
+      "name":"extensions",
+      "preferredVersion":"v1beta1",
+      "versions":{
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"extensions/v1beta1",
+            "resources":{
+               "daemonsets":{
+                  "name":"daemonsets",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"DaemonSet",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "ds"
+                  ]
+               },
+               "daemonsets/status":{
+                  "name":"daemonsets/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"DaemonSet",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "deployments":{
+                  "name":"deployments",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Deployment",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "deploy"
+                  ]
+               },
+               "deployments/rollback":{
+                  "name":"deployments/rollback",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"DeploymentRollback",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "deployments/scale":{
+                  "name":"deployments/scale",
+                  "singularName":"",
+                  "namespaced":true,
+                  "group":"extensions",
+                  "version":"v1beta1",
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "deployments/status":{
+                  "name":"deployments/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Deployment",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "ingresses":{
+                  "name":"ingresses",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Ingress",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "ing"
+                  ]
+               },
+               "ingresses/status":{
+                  "name":"ingresses/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Ingress",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "networkpolicies":{
+                  "name":"networkpolicies",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"NetworkPolicy",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "netpol"
+                  ]
+               },
+               "podsecuritypolicies":{
+                  "name":"podsecuritypolicies",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"PodSecurityPolicy",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "psp"
+                  ]
+               },
+               "replicasets":{
+                  "name":"replicasets",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ReplicaSet",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "rs"
+                  ]
+               },
+               "replicasets/scale":{
+                  "name":"replicasets/scale",
+                  "singularName":"",
+                  "namespaced":true,
+                  "group":"extensions",
+                  "version":"v1beta1",
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "replicasets/status":{
+                  "name":"replicasets/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ReplicaSet",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "replicationcontrollers":{
+                  "name":"replicationcontrollers",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ReplicationControllerDummy",
+                  "verbs":[
+
+                  ]
+               },
+               "replicationcontrollers/scale":{
+                  "name":"replicationcontrollers/scale",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "apps":{
+      "name":"apps",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"apps/v1",
+            "resources":{
+               "controllerrevisions":{
+                  "name":"controllerrevisions",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ControllerRevision",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "daemonsets":{
+                  "name":"daemonsets",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"DaemonSet",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "ds"
+                  ],
+                  "categories":[
+                     "all"
+                  ]
+               },
+               "daemonsets/status":{
+                  "name":"daemonsets/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"DaemonSet",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "deployments":{
+                  "name":"deployments",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Deployment",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "deploy"
+                  ],
+                  "categories":[
+                     "all"
+                  ]
+               },
+               "deployments/scale":{
+                  "name":"deployments/scale",
+                  "singularName":"",
+                  "namespaced":true,
+                  "group":"autoscaling",
+                  "version":"v1",
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "deployments/status":{
+                  "name":"deployments/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Deployment",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "replicasets":{
+                  "name":"replicasets",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ReplicaSet",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "rs"
+                  ],
+                  "categories":[
+                     "all"
+                  ]
+               },
+               "replicasets/scale":{
+                  "name":"replicasets/scale",
+                  "singularName":"",
+                  "namespaced":true,
+                  "group":"autoscaling",
+                  "version":"v1",
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "replicasets/status":{
+                  "name":"replicasets/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ReplicaSet",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "statefulsets":{
+                  "name":"statefulsets",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"StatefulSet",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "sts"
+                  ],
+                  "categories":[
+                     "all"
+                  ]
+               },
+               "statefulsets/scale":{
+                  "name":"statefulsets/scale",
+                  "singularName":"",
+                  "namespaced":true,
+                  "group":"autoscaling",
+                  "version":"v1",
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "statefulsets/status":{
+                  "name":"statefulsets/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"StatefulSet",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               }
+            }
+         },
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"apps/v1beta1",
+            "resources":{
+               "controllerrevisions":{
+                  "name":"controllerrevisions",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ControllerRevision",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "deployments":{
+                  "name":"deployments",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Deployment",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "deploy"
+                  ],
+                  "categories":[
+                     "all"
+                  ]
+               },
+               "deployments/rollback":{
+                  "name":"deployments/rollback",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"DeploymentRollback",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "deployments/scale":{
+                  "name":"deployments/scale",
+                  "singularName":"",
+                  "namespaced":true,
+                  "group":"apps",
+                  "version":"v1beta1",
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "deployments/status":{
+                  "name":"deployments/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Deployment",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "statefulsets":{
+                  "name":"statefulsets",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"StatefulSet",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "sts"
+                  ],
+                  "categories":[
+                     "all"
+                  ]
+               },
+               "statefulsets/scale":{
+                  "name":"statefulsets/scale",
+                  "singularName":"",
+                  "namespaced":true,
+                  "group":"apps",
+                  "version":"v1beta1",
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "statefulsets/status":{
+                  "name":"statefulsets/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"StatefulSet",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               }
+            }
+         },
+         "v1beta2":{
+            "version":"v1beta2",
+            "groupVersion":"apps/v1beta2",
+            "resources":{
+               "controllerrevisions":{
+                  "name":"controllerrevisions",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ControllerRevision",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "daemonsets":{
+                  "name":"daemonsets",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"DaemonSet",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "ds"
+                  ],
+                  "categories":[
+                     "all"
+                  ]
+               },
+               "daemonsets/status":{
+                  "name":"daemonsets/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"DaemonSet",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "deployments":{
+                  "name":"deployments",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Deployment",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "deploy"
+                  ],
+                  "categories":[
+                     "all"
+                  ]
+               },
+               "deployments/scale":{
+                  "name":"deployments/scale",
+                  "singularName":"",
+                  "namespaced":true,
+                  "group":"apps",
+                  "version":"v1beta2",
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "deployments/status":{
+                  "name":"deployments/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Deployment",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "replicasets":{
+                  "name":"replicasets",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ReplicaSet",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "rs"
+                  ],
+                  "categories":[
+                     "all"
+                  ]
+               },
+               "replicasets/scale":{
+                  "name":"replicasets/scale",
+                  "singularName":"",
+                  "namespaced":true,
+                  "group":"apps",
+                  "version":"v1beta2",
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "replicasets/status":{
+                  "name":"replicasets/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ReplicaSet",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "statefulsets":{
+                  "name":"statefulsets",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"StatefulSet",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "sts"
+                  ],
+                  "categories":[
+                     "all"
+                  ]
+               },
+               "statefulsets/scale":{
+                  "name":"statefulsets/scale",
+                  "singularName":"",
+                  "namespaced":true,
+                  "group":"apps",
+                  "version":"v1beta2",
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "statefulsets/status":{
+                  "name":"statefulsets/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"StatefulSet",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "events.k8s.io":{
+      "name":"events.k8s.io",
+      "preferredVersion":"v1beta1",
+      "versions":{
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"events.k8s.io/v1beta1",
+            "resources":{
+               "events":{
+                  "name":"events",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Event",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "ev"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
    "authentication.k8s.io":{
       "name":"authentication.k8s.io",
       "preferredVersion":"v1",
@@ -1220,6 +2086,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
             "resources":{
                "tokenreviews":{
                   "name":"tokenreviews",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"TokenReview",
                   "verbs":[
@@ -1234,6 +2101,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
             "resources":{
                "tokenreviews":{
                   "name":"tokenreviews",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"TokenReview",
                   "verbs":[
@@ -1255,6 +2123,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
             "resources":{
                "localsubjectaccessreviews":{
                   "name":"localsubjectaccessreviews",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"LocalSubjectAccessReview",
                   "verbs":[
@@ -1263,14 +2132,25 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "selfsubjectaccessreviews":{
                   "name":"selfsubjectaccessreviews",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"SelfSubjectAccessReview",
                   "verbs":[
                      "create"
                   ]
                },
+               "selfsubjectrulesreviews":{
+                  "name":"selfsubjectrulesreviews",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"SelfSubjectRulesReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
                "subjectaccessreviews":{
                   "name":"subjectaccessreviews",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"SubjectAccessReview",
                   "verbs":[
@@ -1285,6 +2165,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
             "resources":{
                "localsubjectaccessreviews":{
                   "name":"localsubjectaccessreviews",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"LocalSubjectAccessReview",
                   "verbs":[
@@ -1293,14 +2174,25 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "selfsubjectaccessreviews":{
                   "name":"selfsubjectaccessreviews",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"SelfSubjectAccessReview",
                   "verbs":[
                      "create"
                   ]
                },
+               "selfsubjectrulesreviews":{
+                  "name":"selfsubjectrulesreviews",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"SelfSubjectRulesReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
                "subjectaccessreviews":{
                   "name":"subjectaccessreviews",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"SubjectAccessReview",
                   "verbs":[
@@ -1322,6 +2214,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
             "resources":{
                "horizontalpodautoscalers":{
                   "name":"horizontalpodautoscalers",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"HorizontalPodAutoscaler",
                   "verbs":[
@@ -1336,10 +2229,14 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                   ],
                   "shortNames":[
                      "hpa"
+                  ],
+                  "categories":[
+                     "all"
                   ]
                },
                "horizontalpodautoscalers/status":{
                   "name":"horizontalpodautoscalers/status",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"HorizontalPodAutoscaler",
                   "verbs":[
@@ -1350,12 +2247,13 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                }
             }
          },
-         "v2alpha1":{
-            "version":"v2alpha1",
-            "groupVersion":"autoscaling/v2alpha1",
+         "v2beta1":{
+            "version":"v2beta1",
+            "groupVersion":"autoscaling/v2beta1",
             "resources":{
                "horizontalpodautoscalers":{
                   "name":"horizontalpodautoscalers",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"HorizontalPodAutoscaler",
                   "verbs":[
@@ -1370,10 +2268,14 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                   ],
                   "shortNames":[
                      "hpa"
+                  ],
+                  "categories":[
+                     "all"
                   ]
                },
                "horizontalpodautoscalers/status":{
                   "name":"horizontalpodautoscalers/status",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"HorizontalPodAutoscaler",
                   "verbs":[
@@ -1397,6 +2299,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
             "resources":{
                "jobs":{
                   "name":"jobs",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"Job",
                   "verbs":[
@@ -1408,12 +2311,52 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                      "patch",
                      "update",
                      "watch"
+                  ],
+                  "categories":[
+                     "all"
                   ]
                },
                "jobs/status":{
                   "name":"jobs/status",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"Job",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               }
+            }
+         },
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"batch/v1beta1",
+            "resources":{
+               "cronjobs":{
+                  "name":"cronjobs",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"CronJob",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "categories":[
+                     "all"
+                  ]
+               },
+               "cronjobs/status":{
+                  "name":"cronjobs/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"CronJob",
                   "verbs":[
                      "get",
                      "patch",
@@ -1428,6 +2371,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
             "resources":{
                "cronjobs":{
                   "name":"cronjobs",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"CronJob",
                   "verbs":[
@@ -1439,37 +2383,16 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                      "patch",
                      "update",
                      "watch"
+                  ],
+                  "categories":[
+                     "all"
                   ]
                },
                "cronjobs/status":{
                   "name":"cronjobs/status",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"CronJob",
-                  "verbs":[
-                     "get",
-                     "patch",
-                     "update"
-                  ]
-               },
-               "scheduledjobs":{
-                  "name":"scheduledjobs",
-                  "namespaced":true,
-                  "kind":"ScheduledJob",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ]
-               },
-               "scheduledjobs/status":{
-                  "name":"scheduledjobs/status",
-                  "namespaced":true,
-                  "kind":"ScheduledJob",
                   "verbs":[
                      "get",
                      "patch",
@@ -1491,6 +2414,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
             "resources":{
                "certificatesigningrequests":{
                   "name":"certificatesigningrequests",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"CertificateSigningRequest",
                   "verbs":[
@@ -1509,6 +2433,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "certificatesigningrequests/approval":{
                   "name":"certificatesigningrequests/approval",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"CertificateSigningRequest",
                   "verbs":[
@@ -1517,6 +2442,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "certificatesigningrequests/status":{
                   "name":"certificatesigningrequests/status",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"CertificateSigningRequest",
                   "verbs":[
@@ -1528,146 +2454,17 @@ window.OPENSHIFT_CONFIG.apis.groups = {
       },
       "hostPrefix":null
    },
-   "extensions":{
-      "name":"extensions",
-      "preferredVersion":"v1beta1",
+   "networking.k8s.io":{
+      "name":"networking.k8s.io",
+      "preferredVersion":"v1",
       "versions":{
-         "v1beta1":{
-            "version":"v1beta1",
-            "groupVersion":"extensions/v1beta1",
+         "v1":{
+            "version":"v1",
+            "groupVersion":"networking.k8s.io/v1",
             "resources":{
-               "daemonsets":{
-                  "name":"daemonsets",
-                  "namespaced":true,
-                  "kind":"DaemonSet",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ],
-                  "shortNames":[
-                     "ds"
-                  ]
-               },
-               "daemonsets/status":{
-                  "name":"daemonsets/status",
-                  "namespaced":true,
-                  "kind":"DaemonSet",
-                  "verbs":[
-                     "get",
-                     "patch",
-                     "update"
-                  ]
-               },
-               "deployments":{
-                  "name":"deployments",
-                  "namespaced":true,
-                  "kind":"Deployment",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ],
-                  "shortNames":[
-                     "deploy"
-                  ]
-               },
-               "deployments/rollback":{
-                  "name":"deployments/rollback",
-                  "namespaced":true,
-                  "kind":"DeploymentRollback",
-                  "verbs":[
-                     "create"
-                  ]
-               },
-               "deployments/scale":{
-                  "name":"deployments/scale",
-                  "namespaced":true,
-                  "kind":"Scale",
-                  "verbs":[
-                     "get",
-                     "patch",
-                     "update"
-                  ]
-               },
-               "deployments/status":{
-                  "name":"deployments/status",
-                  "namespaced":true,
-                  "kind":"Deployment",
-                  "verbs":[
-                     "get",
-                     "patch",
-                     "update"
-                  ]
-               },
-               "horizontalpodautoscalers":{
-                  "name":"horizontalpodautoscalers",
-                  "namespaced":true,
-                  "kind":"HorizontalPodAutoscaler",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ],
-                  "shortNames":[
-                     "hpa"
-                  ]
-               },
-               "horizontalpodautoscalers/status":{
-                  "name":"horizontalpodautoscalers/status",
-                  "namespaced":true,
-                  "kind":"HorizontalPodAutoscaler",
-                  "verbs":[
-                     "get",
-                     "patch",
-                     "update"
-                  ]
-               },
-               "ingresses":{
-                  "name":"ingresses",
-                  "namespaced":true,
-                  "kind":"Ingress",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ],
-                  "shortNames":[
-                     "ing"
-                  ]
-               },
-               "ingresses/status":{
-                  "name":"ingresses/status",
-                  "namespaced":true,
-                  "kind":"Ingress",
-                  "verbs":[
-                     "get",
-                     "patch",
-                     "update"
-                  ]
-               },
                "networkpolicies":{
                   "name":"networkpolicies",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"NetworkPolicy",
                   "verbs":[
@@ -1679,95 +2476,9 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                      "patch",
                      "update",
                      "watch"
-                  ]
-               },
-               "podsecuritypolicies":{
-                  "name":"podsecuritypolicies",
-                  "namespaced":false,
-                  "kind":"PodSecurityPolicy",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
                   ],
                   "shortNames":[
-                     "psp"
-                  ]
-               },
-               "replicasets":{
-                  "name":"replicasets",
-                  "namespaced":true,
-                  "kind":"ReplicaSet",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ],
-                  "shortNames":[
-                     "rs"
-                  ]
-               },
-               "replicasets/scale":{
-                  "name":"replicasets/scale",
-                  "namespaced":true,
-                  "kind":"Scale",
-                  "verbs":[
-                     "get",
-                     "patch",
-                     "update"
-                  ]
-               },
-               "replicasets/status":{
-                  "name":"replicasets/status",
-                  "namespaced":true,
-                  "kind":"ReplicaSet",
-                  "verbs":[
-                     "get",
-                     "patch",
-                     "update"
-                  ]
-               },
-               "replicationcontrollers":{
-                  "name":"replicationcontrollers",
-                  "namespaced":true,
-                  "kind":"ReplicationControllerDummy",
-                  "verbs":[
-
-                  ]
-               },
-               "replicationcontrollers/scale":{
-                  "name":"replicationcontrollers/scale",
-                  "namespaced":true,
-                  "kind":"Scale",
-                  "verbs":[
-                     "get",
-                     "patch",
-                     "update"
-                  ]
-               },
-               "thirdpartyresources":{
-                  "name":"thirdpartyresources",
-                  "namespaced":false,
-                  "kind":"ThirdPartyResource",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
+                     "netpol"
                   ]
                }
             }
@@ -1785,6 +2496,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
             "resources":{
                "poddisruptionbudgets":{
                   "name":"poddisruptionbudgets",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"PodDisruptionBudget",
                   "verbs":[
@@ -1803,6 +2515,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "poddisruptionbudgets/status":{
                   "name":"poddisruptionbudgets/status",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"PodDisruptionBudget",
                   "verbs":[
@@ -1816,16 +2529,156 @@ window.OPENSHIFT_CONFIG.apis.groups = {
       },
       "hostPrefix":null
    },
-   "rbac.authorization.k8s.io":{
-      "name":"rbac.authorization.k8s.io",
-      "preferredVersion":"v1beta1",
+   "authorization.openshift.io":{
+      "name":"authorization.openshift.io",
+      "preferredVersion":"v1",
       "versions":{
-         "v1beta1":{
-            "version":"v1beta1",
-            "groupVersion":"rbac.authorization.k8s.io/v1beta1",
+         "v1":{
+            "version":"v1",
+            "groupVersion":"authorization.openshift.io/v1",
             "resources":{
                "clusterrolebindings":{
                   "name":"clusterrolebindings",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"ClusterRoleBinding",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "get",
+                     "list",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "clusterroles":{
+                  "name":"clusterroles",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"ClusterRole",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "get",
+                     "list",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "localresourceaccessreviews":{
+                  "name":"localresourceaccessreviews",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"LocalResourceAccessReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "localsubjectaccessreviews":{
+                  "name":"localsubjectaccessreviews",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"LocalSubjectAccessReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "resourceaccessreviews":{
+                  "name":"resourceaccessreviews",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"ResourceAccessReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "rolebindingrestrictions":{
+                  "name":"rolebindingrestrictions",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"RoleBindingRestriction",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "rolebindings":{
+                  "name":"rolebindings",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"RoleBinding",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "get",
+                     "list",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "roles":{
+                  "name":"roles",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Role",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "get",
+                     "list",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "selfsubjectrulesreviews":{
+                  "name":"selfsubjectrulesreviews",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"SelfSubjectRulesReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "subjectaccessreviews":{
+                  "name":"subjectaccessreviews",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"SubjectAccessReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "subjectrulesreviews":{
+                  "name":"subjectrulesreviews",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"SubjectRulesReview",
+                  "verbs":[
+                     "create"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "rbac.authorization.k8s.io":{
+      "name":"rbac.authorization.k8s.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"rbac.authorization.k8s.io/v1",
+            "resources":{
+               "clusterrolebindings":{
+                  "name":"clusterrolebindings",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"ClusterRoleBinding",
                   "verbs":[
@@ -1841,6 +2694,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "clusterroles":{
                   "name":"clusterroles",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"ClusterRole",
                   "verbs":[
@@ -1856,6 +2710,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "rolebindings":{
                   "name":"rolebindings",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"RoleBinding",
                   "verbs":[
@@ -1871,6 +2726,77 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "roles":{
                   "name":"roles",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Role",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               }
+            }
+         },
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"rbac.authorization.k8s.io/v1beta1",
+            "resources":{
+               "clusterrolebindings":{
+                  "name":"clusterrolebindings",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"ClusterRoleBinding",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "clusterroles":{
+                  "name":"clusterroles",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"ClusterRole",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "rolebindings":{
+                  "name":"rolebindings",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"RoleBinding",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "roles":{
+                  "name":"roles",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"Role",
                   "verbs":[
@@ -1899,6 +2825,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
             "resources":{
                "podpresets":{
                   "name":"podpresets",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"PodPreset",
                   "verbs":[
@@ -1921,12 +2848,13 @@ window.OPENSHIFT_CONFIG.apis.groups = {
       "name":"storage.k8s.io",
       "preferredVersion":"v1",
       "versions":{
-         "v1beta1":{
-            "version":"v1beta1",
-            "groupVersion":"storage.k8s.io/v1beta1",
+         "v1":{
+            "version":"v1",
+            "groupVersion":"storage.k8s.io/v1",
             "resources":{
                "storageclasses":{
                   "name":"storageclasses",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"StorageClass",
                   "verbs":[
@@ -1945,12 +2873,13 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                }
             }
          },
-         "v1":{
-            "version":"v1",
-            "groupVersion":"storage.k8s.io/v1",
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"storage.k8s.io/v1beta1",
             "resources":{
                "storageclasses":{
                   "name":"storageclasses",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"StorageClass",
                   "verbs":[
@@ -1972,18 +2901,86 @@ window.OPENSHIFT_CONFIG.apis.groups = {
       },
       "hostPrefix":null
    },
-   "apps":{
-      "name":"apps",
+   "admissionregistration.k8s.io":{
+      "name":"admissionregistration.k8s.io",
       "preferredVersion":"v1beta1",
       "versions":{
          "v1beta1":{
             "version":"v1beta1",
-            "groupVersion":"apps/v1beta1",
+            "groupVersion":"admissionregistration.k8s.io/v1beta1",
             "resources":{
-               "deployments":{
-                  "name":"deployments",
-                  "namespaced":true,
-                  "kind":"Deployment",
+               "mutatingwebhookconfigurations":{
+                  "name":"mutatingwebhookconfigurations",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"MutatingWebhookConfiguration",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "validatingwebhookconfigurations":{
+                  "name":"validatingwebhookconfigurations",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"ValidatingWebhookConfiguration",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               }
+            }
+         },
+         "v1alpha1":{
+            "version":"v1alpha1",
+            "groupVersion":"admissionregistration.k8s.io/v1alpha1",
+            "resources":{
+               "initializerconfigurations":{
+                  "name":"initializerconfigurations",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"InitializerConfiguration",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "apiextensions.k8s.io":{
+      "name":"apiextensions.k8s.io",
+      "preferredVersion":"v1beta1",
+      "versions":{
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"apiextensions.k8s.io/v1beta1",
+            "resources":{
+               "customresourcedefinitions":{
+                  "name":"customresourcedefinitions",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"CustomResourceDefinition",
                   "verbs":[
                      "create",
                      "delete",
@@ -1995,41 +2992,36 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                      "watch"
                   ],
                   "shortNames":[
-                     "deploy"
+                     "crd"
                   ]
                },
-               "deployments/rollback":{
-                  "name":"deployments/rollback",
-                  "namespaced":true,
-                  "kind":"DeploymentRollback",
+               "customresourcedefinitions/status":{
+                  "name":"customresourcedefinitions/status",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"CustomResourceDefinition",
                   "verbs":[
-                     "create"
-                  ]
-               },
-               "deployments/scale":{
-                  "name":"deployments/scale",
-                  "namespaced":true,
-                  "kind":"Scale",
-                  "verbs":[
-                     "get",
-                     "patch",
                      "update"
                   ]
-               },
-               "deployments/status":{
-                  "name":"deployments/status",
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "apps.openshift.io":{
+      "name":"apps.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"apps.openshift.io/v1",
+            "resources":{
+               "deploymentconfigs":{
+                  "name":"deploymentconfigs",
+                  "singularName":"",
                   "namespaced":true,
-                  "kind":"Deployment",
-                  "verbs":[
-                     "get",
-                     "patch",
-                     "update"
-                  ]
-               },
-               "statefulsets":{
-                  "name":"statefulsets",
-                  "namespaced":true,
-                  "kind":"StatefulSet",
+                  "kind":"DeploymentConfig",
                   "verbs":[
                      "create",
                      "delete",
@@ -2039,12 +3031,59 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                      "patch",
                      "update",
                      "watch"
+                  ],
+                  "shortNames":[
+                     "dc"
+                  ],
+                  "categories":[
+                     "all"
                   ]
                },
-               "statefulsets/status":{
-                  "name":"statefulsets/status",
+               "deploymentconfigs/instantiate":{
+                  "name":"deploymentconfigs/instantiate",
+                  "singularName":"",
                   "namespaced":true,
-                  "kind":"StatefulSet",
+                  "kind":"DeploymentRequest",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "deploymentconfigs/log":{
+                  "name":"deploymentconfigs/log",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"DeploymentLog",
+                  "verbs":[
+                     "get"
+                  ]
+               },
+               "deploymentconfigs/rollback":{
+                  "name":"deploymentconfigs/rollback",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"DeploymentConfigRollback",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "deploymentconfigs/scale":{
+                  "name":"deploymentconfigs/scale",
+                  "singularName":"",
+                  "namespaced":true,
+                  "group":"extensions",
+                  "version":"v1beta1",
+                  "kind":"Scale",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "deploymentconfigs/status":{
+                  "name":"deploymentconfigs/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"DeploymentConfig",
                   "verbs":[
                      "get",
                      "patch",
@@ -2056,36 +3095,235 @@ window.OPENSHIFT_CONFIG.apis.groups = {
       },
       "hostPrefix":null
    },
-   "security.openshift.io":{
-      "name":"security.openshift.io",
+   "build.openshift.io":{
+      "name":"build.openshift.io",
       "preferredVersion":"v1",
       "versions":{
          "v1":{
             "version":"v1",
-            "groupVersion":"security.openshift.io/v1",
+            "groupVersion":"build.openshift.io/v1",
             "resources":{
-               "podsecuritypolicyreviews":{
-                  "name":"podsecuritypolicyreviews",
+               "buildconfigs":{
+                  "name":"buildconfigs",
+                  "singularName":"",
                   "namespaced":true,
-                  "kind":"PodSecurityPolicyReview",
+                  "kind":"BuildConfig",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "bc"
+                  ],
+                  "categories":[
+                     "all"
+                  ]
+               },
+               "buildconfigs/instantiate":{
+                  "name":"buildconfigs/instantiate",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"BuildRequest",
                   "verbs":[
                      "create"
                   ]
                },
-               "podsecuritypolicyselfsubjectreviews":{
-                  "name":"podsecuritypolicyselfsubjectreviews",
+               "buildconfigs/instantiatebinary":{
+                  "name":"buildconfigs/instantiatebinary",
+                  "singularName":"",
                   "namespaced":true,
-                  "kind":"PodSecurityPolicySelfSubjectReview",
+                  "kind":"BinaryBuildRequestOptions",
+                  "verbs":[
+
+                  ]
+               },
+               "buildconfigs/webhooks":{
+                  "name":"buildconfigs/webhooks",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Build",
+                  "verbs":[
+
+                  ]
+               },
+               "builds":{
+                  "name":"builds",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Build",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "categories":[
+                     "all"
+                  ]
+               },
+               "builds/clone":{
+                  "name":"builds/clone",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"BuildRequest",
                   "verbs":[
                      "create"
                   ]
                },
-               "podsecuritypolicysubjectreviews":{
-                  "name":"podsecuritypolicysubjectreviews",
+               "builds/details":{
+                  "name":"builds/details",
+                  "singularName":"",
                   "namespaced":true,
-                  "kind":"PodSecurityPolicySubjectReview",
+                  "kind":"Build",
+                  "verbs":[
+                     "update"
+                  ]
+               },
+               "builds/log":{
+                  "name":"builds/log",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"BuildLog",
+                  "verbs":[
+                     "get"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "image.openshift.io":{
+      "name":"image.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"image.openshift.io/v1",
+            "resources":{
+               "images":{
+                  "name":"images",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"Image",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "imagesignatures":{
+                  "name":"imagesignatures",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"ImageSignature",
+                  "verbs":[
+                     "create",
+                     "delete"
+                  ]
+               },
+               "imagestreamimages":{
+                  "name":"imagestreamimages",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ImageStreamImage",
+                  "verbs":[
+                     "get"
+                  ],
+                  "shortNames":[
+                     "isimage"
+                  ]
+               },
+               "imagestreamimports":{
+                  "name":"imagestreamimports",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ImageStreamImport",
                   "verbs":[
                      "create"
+                  ]
+               },
+               "imagestreammappings":{
+                  "name":"imagestreammappings",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ImageStreamMapping",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "imagestreams":{
+                  "name":"imagestreams",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ImageStream",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "is"
+                  ],
+                  "categories":[
+                     "all"
+                  ]
+               },
+               "imagestreams/secrets":{
+                  "name":"imagestreams/secrets",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"SecretList",
+                  "verbs":[
+                     "get"
+                  ]
+               },
+               "imagestreams/status":{
+                  "name":"imagestreams/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ImageStream",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "imagestreamtags":{
+                  "name":"imagestreamtags",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ImageStreamTag",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "get",
+                     "list",
+                     "patch",
+                     "update"
+                  ],
+                  "shortNames":[
+                     "istag"
                   ]
                }
             }
@@ -2103,6 +3341,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
             "resources":{
                "clusternetworks":{
                   "name":"clusternetworks",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"ClusterNetwork",
                   "verbs":[
@@ -2118,6 +3357,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "egressnetworkpolicies":{
                   "name":"egressnetworkpolicies",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"EgressNetworkPolicy",
                   "verbs":[
@@ -2133,6 +3373,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "hostsubnets":{
                   "name":"hostsubnets",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"HostSubnet",
                   "verbs":[
@@ -2148,6 +3389,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "netnamespaces":{
                   "name":"netnamespaces",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"NetNamespace",
                   "verbs":[
@@ -2166,339 +3408,6 @@ window.OPENSHIFT_CONFIG.apis.groups = {
       },
       "hostPrefix":null
    },
-   "route.openshift.io":{
-      "name":"route.openshift.io",
-      "preferredVersion":"v1",
-      "versions":{
-         "v1":{
-            "version":"v1",
-            "groupVersion":"route.openshift.io/v1",
-            "resources":{
-               "routes":{
-                  "name":"routes",
-                  "namespaced":true,
-                  "kind":"Route",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ]
-               },
-               "routes/status":{
-                  "name":"routes/status",
-                  "namespaced":true,
-                  "kind":"Route",
-                  "verbs":[
-                     "get",
-                     "patch",
-                     "update"
-                  ]
-               }
-            }
-         }
-      },
-      "hostPrefix":null
-   },
-   "image.openshift.io":{
-      "name":"image.openshift.io",
-      "preferredVersion":"v1",
-      "versions":{
-         "v1":{
-            "version":"v1",
-            "groupVersion":"image.openshift.io/v1",
-            "resources":{
-               "images":{
-                  "name":"images",
-                  "namespaced":false,
-                  "kind":"Image",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ]
-               },
-               "imagesignatures":{
-                  "name":"imagesignatures",
-                  "namespaced":false,
-                  "kind":"ImageSignature",
-                  "verbs":[
-                     "create",
-                     "delete"
-                  ]
-               },
-               "imagestreamimages":{
-                  "name":"imagestreamimages",
-                  "namespaced":true,
-                  "kind":"ImageStreamImage",
-                  "verbs":[
-                     "get"
-                  ]
-               },
-               "imagestreamimports":{
-                  "name":"imagestreamimports",
-                  "namespaced":true,
-                  "kind":"ImageStreamImport",
-                  "verbs":[
-                     "create"
-                  ]
-               },
-               "imagestreammappings":{
-                  "name":"imagestreammappings",
-                  "namespaced":true,
-                  "kind":"ImageStreamMapping",
-                  "verbs":[
-                     "create"
-                  ]
-               },
-               "imagestreams":{
-                  "name":"imagestreams",
-                  "namespaced":true,
-                  "kind":"ImageStream",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ]
-               },
-               "imagestreams/secrets":{
-                  "name":"imagestreams/secrets",
-                  "namespaced":true,
-                  "kind":"SecretList",
-                  "verbs":[
-                     "get"
-                  ]
-               },
-               "imagestreams/status":{
-                  "name":"imagestreams/status",
-                  "namespaced":true,
-                  "kind":"ImageStream",
-                  "verbs":[
-                     "get",
-                     "patch",
-                     "update"
-                  ]
-               },
-               "imagestreamtags":{
-                  "name":"imagestreamtags",
-                  "namespaced":true,
-                  "kind":"ImageStreamTag",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "get",
-                     "list",
-                     "patch",
-                     "update"
-                  ]
-               }
-            }
-         }
-      },
-      "hostPrefix":null
-   },
-   "authorization.openshift.io":{
-      "name":"authorization.openshift.io",
-      "preferredVersion":"v1",
-      "versions":{
-         "v1":{
-            "version":"v1",
-            "groupVersion":"authorization.openshift.io/v1",
-            "resources":{
-               "clusterpolicies":{
-                  "name":"clusterpolicies",
-                  "namespaced":false,
-                  "kind":"ClusterPolicy",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ]
-               },
-               "clusterpolicybindings":{
-                  "name":"clusterpolicybindings",
-                  "namespaced":false,
-                  "kind":"ClusterPolicyBinding",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ]
-               },
-               "clusterrolebindings":{
-                  "name":"clusterrolebindings",
-                  "namespaced":false,
-                  "kind":"ClusterRoleBinding",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "get",
-                     "list",
-                     "patch",
-                     "update"
-                  ]
-               },
-               "clusterroles":{
-                  "name":"clusterroles",
-                  "namespaced":false,
-                  "kind":"ClusterRole",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "get",
-                     "list",
-                     "patch",
-                     "update"
-                  ]
-               },
-               "localresourceaccessreviews":{
-                  "name":"localresourceaccessreviews",
-                  "namespaced":true,
-                  "kind":"LocalResourceAccessReview",
-                  "verbs":[
-                     "create"
-                  ]
-               },
-               "localsubjectaccessreviews":{
-                  "name":"localsubjectaccessreviews",
-                  "namespaced":true,
-                  "kind":"LocalSubjectAccessReview",
-                  "verbs":[
-                     "create"
-                  ]
-               },
-               "policies":{
-                  "name":"policies",
-                  "namespaced":true,
-                  "kind":"Policy",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ]
-               },
-               "policybindings":{
-                  "name":"policybindings",
-                  "namespaced":true,
-                  "kind":"PolicyBinding",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ]
-               },
-               "resourceaccessreviews":{
-                  "name":"resourceaccessreviews",
-                  "namespaced":true,
-                  "kind":"ResourceAccessReview",
-                  "verbs":[
-                     "create"
-                  ]
-               },
-               "rolebindingrestrictions":{
-                  "name":"rolebindingrestrictions",
-                  "namespaced":true,
-                  "kind":"RoleBindingRestriction",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ]
-               },
-               "rolebindings":{
-                  "name":"rolebindings",
-                  "namespaced":true,
-                  "kind":"RoleBinding",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "get",
-                     "list",
-                     "patch",
-                     "update"
-                  ]
-               },
-               "roles":{
-                  "name":"roles",
-                  "namespaced":true,
-                  "kind":"Role",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "get",
-                     "list",
-                     "patch",
-                     "update"
-                  ]
-               },
-               "selfsubjectrulesreviews":{
-                  "name":"selfsubjectrulesreviews",
-                  "namespaced":true,
-                  "kind":"SelfSubjectRulesReview",
-                  "verbs":[
-                     "create"
-                  ]
-               },
-               "subjectaccessreviews":{
-                  "name":"subjectaccessreviews",
-                  "namespaced":true,
-                  "kind":"SubjectAccessReview",
-                  "verbs":[
-                     "create"
-                  ]
-               },
-               "subjectrulesreviews":{
-                  "name":"subjectrulesreviews",
-                  "namespaced":true,
-                  "kind":"SubjectRulesReview",
-                  "verbs":[
-                     "create"
-                  ]
-               }
-            }
-         }
-      },
-      "hostPrefix":null
-   },
    "oauth.openshift.io":{
       "name":"oauth.openshift.io",
       "preferredVersion":"v1",
@@ -2509,6 +3418,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
             "resources":{
                "oauthaccesstokens":{
                   "name":"oauthaccesstokens",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"OAuthAccessToken",
                   "verbs":[
@@ -2524,6 +3434,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "oauthauthorizetokens":{
                   "name":"oauthauthorizetokens",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"OAuthAuthorizeToken",
                   "verbs":[
@@ -2539,6 +3450,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "oauthclientauthorizations":{
                   "name":"oauthclientauthorizations",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"OAuthClientAuthorization",
                   "verbs":[
@@ -2554,6 +3466,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "oauthclients":{
                   "name":"oauthclients",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"OAuthClient",
                   "verbs":[
@@ -2582,6 +3495,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
             "resources":{
                "projectrequests":{
                   "name":"projectrequests",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"ProjectRequest",
                   "verbs":[
@@ -2591,6 +3505,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "projects":{
                   "name":"projects",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"Project",
                   "verbs":[
@@ -2608,97 +3523,6 @@ window.OPENSHIFT_CONFIG.apis.groups = {
       },
       "hostPrefix":null
    },
-   "build.openshift.io":{
-      "name":"build.openshift.io",
-      "preferredVersion":"v1",
-      "versions":{
-         "v1":{
-            "version":"v1",
-            "groupVersion":"build.openshift.io/v1",
-            "resources":{
-               "buildconfigs":{
-                  "name":"buildconfigs",
-                  "namespaced":true,
-                  "kind":"BuildConfig",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ]
-               },
-               "buildconfigs/instantiate":{
-                  "name":"buildconfigs/instantiate",
-                  "namespaced":true,
-                  "kind":"BuildRequest",
-                  "verbs":[
-                     "create"
-                  ]
-               },
-               "buildconfigs/instantiatebinary":{
-                  "name":"buildconfigs/instantiatebinary",
-                  "namespaced":true,
-                  "kind":"BinaryBuildRequestOptions",
-                  "verbs":[
-
-                  ]
-               },
-               "buildconfigs/webhooks":{
-                  "name":"buildconfigs/webhooks",
-                  "namespaced":true,
-                  "kind":"Build",
-                  "verbs":[
-
-                  ]
-               },
-               "builds":{
-                  "name":"builds",
-                  "namespaced":true,
-                  "kind":"Build",
-                  "verbs":[
-                     "create",
-                     "delete",
-                     "deletecollection",
-                     "get",
-                     "list",
-                     "patch",
-                     "update",
-                     "watch"
-                  ]
-               },
-               "builds/clone":{
-                  "name":"builds/clone",
-                  "namespaced":true,
-                  "kind":"BuildRequest",
-                  "verbs":[
-                     "create"
-                  ]
-               },
-               "builds/details":{
-                  "name":"builds/details",
-                  "namespaced":true,
-                  "kind":"Build",
-                  "verbs":[
-                     "update"
-                  ]
-               },
-               "builds/log":{
-                  "name":"builds/log",
-                  "namespaced":true,
-                  "kind":"BuildLog",
-                  "verbs":[
-                     "get"
-                  ]
-               }
-            }
-         }
-      },
-      "hostPrefix":null
-   },
    "quota.openshift.io":{
       "name":"quota.openshift.io",
       "preferredVersion":"v1",
@@ -2709,6 +3533,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
             "resources":{
                "appliedclusterresourcequotas":{
                   "name":"appliedclusterresourcequotas",
+                  "singularName":"",
                   "namespaced":true,
                   "kind":"AppliedClusterResourceQuota",
                   "verbs":[
@@ -2718,6 +3543,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "clusterresourcequotas":{
                   "name":"clusterresourcequotas",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"ClusterResourceQuota",
                   "verbs":[
@@ -2729,16 +3555,203 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                      "patch",
                      "update",
                      "watch"
+                  ],
+                  "shortNames":[
+                     "clusterquota"
                   ]
                },
                "clusterresourcequotas/status":{
                   "name":"clusterresourcequotas/status",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"ClusterResourceQuota",
                   "verbs":[
                      "get",
                      "patch",
                      "update"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "route.openshift.io":{
+      "name":"route.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"route.openshift.io/v1",
+            "resources":{
+               "routes":{
+                  "name":"routes",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Route",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "categories":[
+                     "all"
+                  ]
+               },
+               "routes/status":{
+                  "name":"routes/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Route",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "security.openshift.io":{
+      "name":"security.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"security.openshift.io/v1",
+            "resources":{
+               "podsecuritypolicyreviews":{
+                  "name":"podsecuritypolicyreviews",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"PodSecurityPolicyReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "podsecuritypolicyselfsubjectreviews":{
+                  "name":"podsecuritypolicyselfsubjectreviews",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"PodSecurityPolicySelfSubjectReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "podsecuritypolicysubjectreviews":{
+                  "name":"podsecuritypolicysubjectreviews",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"PodSecurityPolicySubjectReview",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "securitycontextconstraints":{
+                  "name":"securitycontextconstraints",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"SecurityContextConstraints",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ],
+                  "shortNames":[
+                     "scc"
+                  ]
+               }
+            }
+         }
+      },
+      "hostPrefix":null
+   },
+   "template.openshift.io":{
+      "name":"template.openshift.io",
+      "preferredVersion":"v1",
+      "versions":{
+         "v1":{
+            "version":"v1",
+            "groupVersion":"template.openshift.io/v1",
+            "resources":{
+               "brokertemplateinstances":{
+                  "name":"brokertemplateinstances",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"BrokerTemplateInstance",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "processedtemplates":{
+                  "name":"processedtemplates",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Template",
+                  "verbs":[
+                     "create"
+                  ]
+               },
+               "templateinstances":{
+                  "name":"templateinstances",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"TemplateInstance",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "templateinstances/status":{
+                  "name":"templateinstances/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"TemplateInstance",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "templates":{
+                  "name":"templates",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"Template",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
                   ]
                }
             }
@@ -2756,6 +3769,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
             "resources":{
                "groups":{
                   "name":"groups",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"Group",
                   "verbs":[
@@ -2771,6 +3785,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "identities":{
                   "name":"identities",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"Identity",
                   "verbs":[
@@ -2786,6 +3801,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "useridentitymappings":{
                   "name":"useridentitymappings",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"UserIdentityMapping",
                   "verbs":[
@@ -2798,6 +3814,7 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                },
                "users":{
                   "name":"users",
+                  "singularName":"",
                   "namespaced":false,
                   "kind":"User",
                   "verbs":[
@@ -2816,18 +3833,19 @@ window.OPENSHIFT_CONFIG.apis.groups = {
       },
       "hostPrefix":null
    },
-   "apps.openshift.io":{
-      "name":"apps.openshift.io",
-      "preferredVersion":"v1",
+   "servicecatalog.k8s.io":{
+      "name":"servicecatalog.k8s.io",
+      "preferredVersion":"v1beta1",
       "versions":{
-         "v1":{
-            "version":"v1",
-            "groupVersion":"apps.openshift.io/v1",
+         "v1beta1":{
+            "version":"v1beta1",
+            "groupVersion":"servicecatalog.k8s.io/v1beta1",
             "resources":{
-               "deploymentconfigs":{
-                  "name":"deploymentconfigs",
-                  "namespaced":true,
-                  "kind":"DeploymentConfig",
+               "clusterservicebrokers":{
+                  "name":"clusterservicebrokers",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"ClusterServiceBroker",
                   "verbs":[
                      "create",
                      "delete",
@@ -2839,75 +3857,22 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                      "watch"
                   ]
                },
-               "deploymentconfigs/instantiate":{
-                  "name":"deploymentconfigs/instantiate",
-                  "namespaced":true,
-                  "kind":"DeploymentRequest",
-                  "verbs":[
-                     "create"
-                  ]
-               },
-               "deploymentconfigs/log":{
-                  "name":"deploymentconfigs/log",
-                  "namespaced":true,
-                  "kind":"DeploymentLog",
-                  "verbs":[
-                     "get"
-                  ]
-               },
-               "deploymentconfigs/rollback":{
-                  "name":"deploymentconfigs/rollback",
-                  "namespaced":true,
-                  "kind":"DeploymentConfigRollback",
-                  "verbs":[
-                     "create"
-                  ]
-               },
-               "deploymentconfigs/scale":{
-                  "name":"deploymentconfigs/scale",
-                  "namespaced":true,
-                  "kind":"Scale",
+               "clusterservicebrokers/status":{
+                  "name":"clusterservicebrokers/status",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"ClusterServiceBroker",
                   "verbs":[
                      "get",
                      "patch",
                      "update"
                   ]
                },
-               "deploymentconfigs/status":{
-                  "name":"deploymentconfigs/status",
-                  "namespaced":true,
-                  "kind":"DeploymentConfig",
-                  "verbs":[
-                     "get",
-                     "patch",
-                     "update"
-                  ]
-               }
-            }
-         }
-      },
-      "hostPrefix":null
-   },
-   "template.openshift.io":{
-      "name":"template.openshift.io",
-      "preferredVersion":"v1",
-      "versions":{
-         "v1":{
-            "version":"v1",
-            "groupVersion":"template.openshift.io/v1",
-            "resources":{
-               "processedtemplates":{
-                  "name":"processedtemplates",
-                  "namespaced":true,
-                  "kind":"Template",
-                  "verbs":[
-                     "create"
-                  ]
-               },
-               "templates":{
-                  "name":"templates",
-                  "namespaced":true,
-                  "kind":"Template",
+               "clusterserviceclasses":{
+                  "name":"clusterserviceclasses",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"ClusterServiceClass",
                   "verbs":[
                      "create",
                      "delete",
@@ -2917,6 +3882,109 @@ window.OPENSHIFT_CONFIG.apis.groups = {
                      "patch",
                      "update",
                      "watch"
+                  ]
+               },
+               "clusterserviceclasses/status":{
+                  "name":"clusterserviceclasses/status",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"ClusterServiceClass",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "clusterserviceplans":{
+                  "name":"clusterserviceplans",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"ClusterServicePlan",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "clusterserviceplans/status":{
+                  "name":"clusterserviceplans/status",
+                  "singularName":"",
+                  "namespaced":false,
+                  "kind":"ClusterServicePlan",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "servicebindings":{
+                  "name":"servicebindings",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ServiceBinding",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "servicebindings/status":{
+                  "name":"servicebindings/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ServiceBinding",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "serviceinstances":{
+                  "name":"serviceinstances",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ServiceInstance",
+                  "verbs":[
+                     "create",
+                     "delete",
+                     "deletecollection",
+                     "get",
+                     "list",
+                     "patch",
+                     "update",
+                     "watch"
+                  ]
+               },
+               "serviceinstances/reference":{
+                  "name":"serviceinstances/reference",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ServiceInstance",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
+                  ]
+               },
+               "serviceinstances/status":{
+                  "name":"serviceinstances/status",
+                  "singularName":"",
+                  "namespaced":true,
+                  "kind":"ServiceInstance",
+                  "verbs":[
+                     "get",
+                     "patch",
+                     "update"
                   ]
                }
             }

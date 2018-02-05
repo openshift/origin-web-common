@@ -220,6 +220,7 @@ angular.module('openshiftCommonServices')
 .factory('APIService', function(API_CFG,
                                 APIS_CFG,
                                 API_PREFERRED_VERSIONS,
+                                API_DEDUPLICATION,
                                 AuthService,
                                 Constants,
                                 Logger,
@@ -467,6 +468,7 @@ angular.module('openshiftCommonServices')
     if (apiObject && apiObject.apiVersion) { version = apiObject.apiVersion; }
     return "Invalid kind ("+kind+") or API version ("+version+")";
   };
+
   var unsupportedObjectKindOrVersion = function(apiObject) {
     var kind = "<none>";
     var version = "<none>";
@@ -475,15 +477,11 @@ angular.module('openshiftCommonServices')
     return "The API version "+version+" for kind " + kind + " is not supported by this server";
   };
 
-  // Exclude duplicate kinds we know about that map to the same storage as another
-  //  group/kind.  This is unusual, so we are special casing these.
-  var dedupeGroups = [{group: 'authorization.openshift.io'}];
-  var dedupeKinds = [{group: 'extensions', kind: 'HorizontalPodAutoscaler'}];
 
   var excludeKindFromAPIGroupList = function(groupName, resourceKind) {
     return !!(
-          _.find(dedupeKinds, {group: groupName, kind: resourceKind}) ||
-          _.find(dedupeGroups, {group: groupName})
+          _.find(API_DEDUPLICATION.kinds, {group: groupName, kind: resourceKind}) ||
+          _.find(API_DEDUPLICATION.groups, {group: groupName})
       );
   };
 
@@ -3800,6 +3798,18 @@ angular.module('openshiftCommonServices')
     return $ws;
   };
 });
+;'use strict';
+
+angular.module('openshiftCommonServices')
+  .constant('API_DEDUPLICATION', {
+    // Exclude duplicate kinds we know about that map to the same storage as another
+    //  group/kind.  This is unusual, so we are special casing these.
+    groups: [{group: 'authorization.openshift.io'}],
+    kinds: [
+      {group: 'extensions', kind: 'HorizontalPodAutoscaler'},
+      {group: 'extensions', kind: 'DaemonSet'}
+    ]
+  });
 ;'use strict';
 
 angular.module('openshiftCommonServices')
