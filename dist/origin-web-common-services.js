@@ -3844,7 +3844,7 @@ angular.module('openshiftCommonServices')
       projects:                         {group: 'project.openshift.io',       version: 'v1',      resource: 'projects' },
       projectrequests:                  {group: 'project.openshift.io',       version: 'v1',      resource: 'projectrequests' },
       persistentvolumeclaims:           {version: 'v1',                       resource: 'persistentvolumeclaims' },
-      replicasets:                      {group: 'extensions',                 version: 'v1beta1', resource: 'replicasets' },
+      replicasets:                      {group: 'apps',                       version: 'v1',      resource: 'replicasets' },
       replicationcontrollers:           {version: 'v1',                       resource: 'replicationcontrollers' },
       resourcequotas:                   {version: 'v1',                       resource: 'resourcequotas' },
       rolebindings:                     {group: 'rbac.authorization.k8s.io',  version: 'v1',      resource: 'rolebindings' },
