@@ -37,7 +37,8 @@
     "kubernetes-label-selector": "~2.1.1",
     "lodash": "~4.17.4",
     "patternfly": ">=3.27.2 <4.0",
-    "uri.js": "~1.18.12"
+    "uri.js": "~1.18.12",
+    "compare-versions": "^3.1.0"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.11",
