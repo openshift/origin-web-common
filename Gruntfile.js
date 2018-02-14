@@ -117,11 +117,10 @@ module.exports = function (grunt) {
       uglify: {
         options: {
           compress: {},
-          mangle: false,
+          mangle: {},
           beautify: {
             beautify: true,
             indent_level: 0,
-            space_colon: false, // Don't waste characters
             width: 1000
           }
         },
