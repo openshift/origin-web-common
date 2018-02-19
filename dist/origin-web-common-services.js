@@ -1521,6 +1521,27 @@ angular.module('openshiftCommonServices')
     addQueuedNotifications();
   };
 
+  var unknownResourceError = function(resource, opts) {
+    var message;
+    if (!resource) {
+      message = 'Internal error: API resource not specified.';
+    } else {
+      // APIService ResourceGroupVersion objects implement toString()
+      message = "Unknown resource: " + resource.toString();
+    }
+
+    if (_.get(opts, 'errorNotification', true)) {
+      // No HTTP status since no request was made.
+      showRequestError(message);
+    }
+
+    return $q.reject({
+      data: {
+        message: message
+      }
+    });
+  }
+
   function DataService() {
     this._listDeferredMap = {};
     this._watchCallbacksMap = {};
@@ -1613,12 +1634,16 @@ angular.module('openshiftCommonServices')
       data.gracePeriodSeconds = opts.gracePeriodSeconds;
     }
     this._getNamespace(resource, context, opts).then(function(ns){
+      var url = self._urlForResource(resource, name, context, false, ns)
+      if (!url) {
+        return unknownResourceError(resource, opts);
+      }
       $http(angular.extend({
         method: 'DELETE',
         auth: {},
         data: data,
         headers: headers,
-        url: self._urlForResource(resource, name, context, false, ns)
+        url: url
       }, opts.http || {}))
       .success(function(data, status, headerFunc, config, statusText) {
         deferred.resolve(data);
@@ -1648,11 +1673,15 @@ angular.module('openshiftCommonServices')
     var deferred = $q.defer();
     var self = this;
     this._getNamespace(resource, context, opts).then(function(ns){
+      var url = self._urlForResource(resource, name, context, false, ns);
+      if (!url) {
+        return unknownResourceError(resource, opts);
+      }
       $http(angular.extend({
         method: 'PUT',
         auth: {},
         data: object,
-        url: self._urlForResource(resource, name, context, false, ns)
+        url: url
       }, opts.http || {}))
       .success(function(data, status, headerFunc, config, statusText) {
         deferred.resolve(data);
@@ -1717,11 +1746,15 @@ angular.module('openshiftCommonServices')
     var deferred = $q.defer();
     var self = this;
     this._getNamespace(resource, context, opts).then(function(ns){
+      var url = self._urlForResource(resource, name, context, false, ns);
+      if (!url) {
+        return unknownResourceError(resource, opts);
+      }
       $http(angular.extend({
         method: 'POST',
         auth: {},
         data: object,
-        url: self._urlForResource(resource, name, context, false, ns)
+        url: url
       }, opts.http || {}))
       .success(function(data, status, headerFunc, config, statusText) {
         deferred.resolve(data);
@@ -1840,10 +1873,14 @@ angular.module('openshiftCommonServices')
     else {
       var self = this;
       this._getNamespace(resource, context, opts).then(function(ns){
+        var url = self._urlForResource(resource, name, context, false, ns);
+        if (!url) {
+          return unknownResourceError(resource, opts);
+        }
         $http(angular.extend({
           method: 'GET',
           auth: {},
-          url: self._urlForResource(resource, name, context, false, ns)
+          url: url
         }, opts.http || {}))
         .success(function(data, status, headerFunc, config, statusText) {
           if (self._isImmutable(resource)) {
@@ -1888,9 +1925,14 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
   var makeStream = function() {
      return self._getNamespace(resource, context, {})
                 .then(function(params) {
+                  var url = self._urlForResource(resource, name, context, true, _.extend(params, opts));
+                  if (!url) {
+                    return unknownResourceError(resource, opts);
+                  }
+
                   var cumulativeBytes = 0;
                   return  $ws({
-                            url: self._urlForResource(resource, name, context, true, _.extend(params, opts)),
+                            url: url,
                             auth: {},
                             onopen: function(evt) {
                               _.each(openQueue, function(fn) {
@@ -2100,7 +2142,7 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
     opts = opts || {};
     var key = this._uniqueKey(resource, name, context, opts);
     var wrapperCallback;
-    if (callback) {
+    if (key && callback) {
       // If we were given a callback, add it
       this._watchObjectCallbacks(key).add(callback);
       var self = this;
@@ -2365,17 +2407,26 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
   //         bool.  Both websocket & http operations should respond with the same data from cache if key matches
   //         so the unique key will always include http://
   DataService.prototype._uniqueKey = function(resource, name, context, opts) {
+    var key;
     var ns = context && context.namespace ||
              _.get(context, 'project.metadata.name') ||
              context.projectName;
     var params = _.get(opts, 'http.params');
-    var url = this._urlForResource(resource, name, context, null, angular.extend({}, {}, {namespace: ns})).toString() + paramsForKey(params || {});
+    var url = this._urlForResource(resource, name, context, null, angular.extend({}, {}, {namespace: ns}));
+    if (url) {
+      key = url.toString();
+    } else {
+      // Fall back to the ResourceGroupVersion string, "resource/group/version", for resources that weren't
+      // found during discovery.
+      key = resource || '<unknown>';
+    }
+    key = key + paramsForKey(params || {});
     if (_.get(opts, 'partialObjectMetadataList')) {
       // Make sure partial objects get a different cache key.
-      return url + '#' + ACCEPT_PARTIAL_OBJECT_METADATA_LIST;
+      return key + '#' + ACCEPT_PARTIAL_OBJECT_METADATA_LIST;
     }
 
-    return url;
+    return key;
   };
 
 
@@ -2391,14 +2442,20 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
       headers.Accept = ACCEPT_PARTIAL_OBJECT_METADATA_LIST;
     }
 
+    var url;
     var self = this;
     if (context.projectPromise && !resource.equals("projects")) {
       context.projectPromise.done(function(project) {
+        url = self._urlForResource(resource, null, context, false, _.assign({}, params, {namespace: project.metadata.name}))
+        if (!url) {
+          return unknownResourceError(resource, opts);
+        }
+
         $http(angular.extend({
           method: 'GET',
           auth: {},
           headers: headers,
-          url: self._urlForResource(resource, null, context, false, _.assign({}, params, {namespace: project.metadata.name}))
+          url: url
         }, opts.http || {}))
         .success(function(data, status, headerFunc, config, statusText) {
           self._listOpComplete(key, resource, context, opts, data);
@@ -2423,11 +2480,16 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
       });
     }
     else {
+      url = this._urlForResource(resource, null, context, false, params);
+      if (!url) {
+        return unknownResourceError(resource, opts);
+      }
+
       $http({
         method: 'GET',
         auth: {},
         headers: headers,
-        url: this._urlForResource(resource, null, context, false, params),
+        url: url
       }).success(function(data, status, headerFunc, config, statusText) {
         self._listOpComplete(key, resource, context, opts, data);
       }).error(function(data, status, headers, config) {
