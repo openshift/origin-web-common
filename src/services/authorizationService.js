@@ -141,6 +141,12 @@ angular.module("openshiftCommonServices")
         return true;
       }
 
+      // Explicitly check for falsey resources so we don't return true when the
+      // group has a wildcard. If resource is falsey, return false always.
+      if (!resource) {
+        return false;
+      }
+
       // normalize to structured form
       var r = APIService.toResourceGroupVersion(resource);
       var rules = getRulesForProject(projectName || currentProject);
