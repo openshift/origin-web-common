@@ -1,7 +1,7 @@
 {
   "author": "Red Hat",
   "name": "origin-web-common",
-  "version": "3.9.0-alpha.14",
+  "version": "3.9.0",
   "license": "Apache-2.0",
   "description": "Library of common services and components for OpenShift Web Console.",
   "homepage": "https://github.com/openshift/origin-web-common.git",
