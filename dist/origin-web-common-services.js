@@ -3923,6 +3923,7 @@ angular.module('openshiftCommonServices')
       clusterroles:                     {group: 'rbac.authorization.k8s.io',  version: 'v1',      resource: 'clusterroles' },
       clusterserviceclasses:            {group: 'servicecatalog.k8s.io',      version: 'v1beta1', resource: 'clusterserviceclasses' },
       clusterserviceplans:              {group: 'servicecatalog.k8s.io',      version: 'v1beta1', resource: 'clusterserviceplans' },
+      daemonsets:                       {group: 'apps',                       version: 'v1',      resource: 'daemonsets' },
       deployments:                      {group: 'apps',                       version: 'v1beta1', resource: 'deployments' },
       deploymentconfigs:                {group: 'apps.openshift.io',          version: 'v1',      resource: 'deploymentconfigs' },
       'deploymentconfigs/instantiate':  {group: 'apps.openshift.io',          version: 'v1',      resource: 'deploymentconfigs/instantiate' },
