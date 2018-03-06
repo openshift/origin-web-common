@@ -461,6 +461,13 @@ describe("APIService", function() {
         expect(_.find(allKinds, toExclude)).toEqual(undefined);
       });
 
+      it('should NOT return kind: NetworkPolicy with group: extensions', function() {
+        var allKinds = APIService.availableKinds(true);
+        var toExclude = { group: 'extensions', kind: 'NetworkPolicy' };
+
+        expect(_.find(allKinds, toExclude)).toEqual(undefined);
+      });
+
       it('should NOT return any resource with group: authorization.openshift.io', function() {
         var allKinds = APIService.availableKinds(true);
         var toExclude = { group: 'authorization.openshift.io' };
