@@ -57,7 +57,7 @@ module.exports = function(config) {
     },
 
     // web server port
-    port: 8443,
+    port: 9443,
 
     colors: true,
 

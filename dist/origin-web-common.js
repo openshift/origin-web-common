@@ -1425,8 +1425,9 @@ angular.module('openshiftCommonServices')
     //  group/kind.  This is unusual, so we are special casing these.
     groups: [{group: 'authorization.openshift.io'}],
     kinds: [
+      {group: 'extensions', kind: 'DaemonSet'},
       {group: 'extensions', kind: 'HorizontalPodAutoscaler'},
-      {group: 'extensions', kind: 'DaemonSet'}
+      {group: 'extensions', kind: 'NetworkPolicy'}
     ]
   });
 ;'use strict';
