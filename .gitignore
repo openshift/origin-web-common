@@ -8,3 +8,4 @@ phantomjsdriver.log
 .DS_Store
 test/test-results.xml
 npm-debug.log
+Chrome_*
