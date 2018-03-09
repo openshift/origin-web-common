@@ -36,25 +36,51 @@ module.exports = function (grunt) {
       },
       concat: {
         options: {
-          separator: ';'
+          separator: ';\n'
         },
         ui: {
-          src: ['src/**/*UI.module.js', 'dist/scripts/templates.js', 'src/components/**/*.js', 'src/filters/**/*.js', 'src/ui-services/**/*.js'],
+          src: [
+            'src/pluginLoader.js',
+            'src/*UI.module.js',
+            'dist/scripts/templates.js',
+            'src/components/**/*.js',
+            'src/filters/**/*.js',
+            'src/ui-services/**/*.js'
+          ],
           dest: 'dist/origin-web-common-ui.js'
         },
         services: {
-          src: ['src/**/*Services.module.js', 'src/services/**/*.js', 'src/constants/**/*.js'],
+          src: [
+            'src/pluginLoader.js',
+            'src/*Services.module.js',
+            'src/services/**/*.js',
+            'src/constants/**/*.js'
+          ],
           dest: 'dist/origin-web-common-services.js'
         },
         dist: {
-          src: ['src/**/*.module.js', 'dist/scripts/templates.js', 'src/**/*.js'],
+          src: [
+            'src/pluginLoader.js',
+            'src/*.module.js',
+            'dist/scripts/templates.js',
+            'src/constants/**/*.js',
+            'src/filters/**/*.js',
+            'src/services/**/*.js',
+            'src/ui-services/**/*.js',
+            'src/components/**/*.js'
+          ],
           dest: 'dist/origin-web-common.js'
         }
       },
       copy: {
         main: {
           files: [
-            {expand: true, cwd: 'src/styles/', src: ['*'], dest: 'dist/less/'}
+            {
+              expand: true,
+              cwd: 'src/styles/',
+              src: ['*'],
+              dest: 'dist/less/'
+            }
           ]
         }
       },
@@ -71,7 +97,10 @@ module.exports = function (grunt) {
           },
           options: {
             cleancss: true,
-            paths: ['src/styles', 'bower_components/']
+            paths: [
+              'src/styles',
+              'bower_components/'
+            ]
           }
         }
       },
@@ -129,17 +158,35 @@ module.exports = function (grunt) {
           src: 'dist/origin-web-common.js',
           dest: 'dist/origin-web-common.min.js'
         }
+
       }
     });
 
     // You can specify which modules to build as arguments of the build task.
     grunt.registerTask('build', 'Create bootstrap build files', function () {
-      grunt.task.run(['clean', 'ngtemplates', 'concat', 'copy', 'ngAnnotate', 'less', 'uglify:build', 'test']);
+      grunt.task.run([
+        'clean',
+        'ngtemplates',
+        'concat',
+        'copy',
+        'ngAnnotate',
+        'less',
+        'uglify:build',
+        'test'
+      ]);
     });
 
     // Runs all the tasks of build with the exception of tests
     grunt.registerTask('deploy', 'Prepares the project for deployment. Does not run unit tests', function () {
-      grunt.task.run(['clean', 'ngtemplates', 'concat', 'copy', 'ngAnnotate', 'less', 'uglify:build']);
+      grunt.task.run([
+        'clean',
+        'ngtemplates',
+        'concat',
+        'copy',
+        'ngAnnotate',
+        'less',
+        'uglify:build'
+      ]);
     });
 
     grunt.registerTask('default', ['build']);

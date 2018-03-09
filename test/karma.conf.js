@@ -16,6 +16,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+
+      // Load dependencies
       "bower_components/jquery/dist/jquery.js",
       "bower_components/lodash/lodash.js",
       "bower_components/compare-versions/index.js",
@@ -28,19 +30,24 @@ module.exports = function(config) {
       "bower_components/uri.js/src/URITemplate.js",
       "bower_components/uri.js/src/jquery.URI.js",
       "bower_components/uri.js/src/URI.fragmentURI.js",
-      "bower_components/hawtio-core/dist/hawtio-core.js",
-      "bower_components/kubernetes-container-terminal/dist/container-terminal.js",
-      "bower_components/hawtio-extension-service/dist/hawtio-extension-service.js",
-      // load up the fixtures first
+
+      // load fixtures before source
       'test/spec/fixtures/config.js',
       'test/spec/fixtures/constants.js',
       'test/spec/fixtures/api-discovery.js',
-      // TODO: is this causing modules to load multiple times? see `src/**/*.js` below
-      'src/**/*module.js',
+
+      // Load source files
+      'src/pluginLoader.js',
+      'src/*.module.js',
       'dist/scripts/templates.js',
-      'src/**/*.js',
+      'src/constants/**/*.js',
+      'src/filters/**/*.js',
+      'src/services/**/*.js',
+      'src/ui-services/**/*.js',
+      'src/components/**/*.js',
       'test/spec/spec-helper.js',
-      'test/spec/**/*.js'
+      'test/spec/filters/**/*.js',
+      'test/spec/services/**/*.js'
     ],
 
     // list of files / patterns to exclude
@@ -63,7 +70,7 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
-    logLevel: config.LOG_DEBUG,
+    logLevel: config.LOG_WARN,
 
     // enable / disable watching file and executing tests whenever any file changes
     // CLI --auto-watch --no-auto-watch

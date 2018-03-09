@@ -26,4 +26,4 @@ angular.module('openshiftCommonUI', [])
 .constant('IS_IOS', /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
 
 
-hawtioPluginLoader.addModule('openshiftCommonUI');
+pluginLoader.addModule('openshiftCommonUI');
