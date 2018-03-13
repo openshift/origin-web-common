@@ -9,8 +9,8 @@ Contributing
 
 #### Getting started
 1. Install [Nodejs](http://nodejs.org/) and [npm](https://www.npmjs.org/)
-2. Install [grunt-cli](http://gruntjs.com/installing-grunt) and [bower](http://bower.io/) by running `npm install -g grunt-cli bower` (may need to be run with sudo)
-3. Install dependencies by running  `npm install` and  `bower install`
+2. Install [yarn](https://yarnpkg.com/en/docs/install)
+3. Install dependencies by running  `yarn`
 4. Build and run tests by running `grunt build`
 
 #### Before opening a pull request

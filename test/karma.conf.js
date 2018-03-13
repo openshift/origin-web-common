@@ -18,18 +18,18 @@ module.exports = function(config) {
     files: [
 
       // Load dependencies
-      "bower_components/jquery/dist/jquery.js",
-      "bower_components/lodash/lodash.js",
-      "bower_components/compare-versions/index.js",
-      "bower_components/angular/angular.js",
-      'bower_components/angular-mocks/angular-mocks.js',
-      "bower_components/angular-sanitize/angular-sanitize.js",
-      "bower_components/js-logger/src/logger.js",
-      "bower_components/angular-utf8-base64/angular-utf8-base64.js",
-      "bower_components/uri.js/src/URI.js",
-      "bower_components/uri.js/src/URITemplate.js",
-      "bower_components/uri.js/src/jquery.URI.js",
-      "bower_components/uri.js/src/URI.fragmentURI.js",
+      "node_modules/jquery/dist/jquery.js",
+      "node_modules/lodash/lodash.js",
+      "node_modules/compare-versions/index.js",
+      "node_modules/angular/angular.js",
+      'node_modules/angular-mocks/angular-mocks.js',
+      "node_modules/angular-sanitize/angular-sanitize.js",
+      "node_modules/js-logger/src/logger.js",
+      "node_modules/angular-utf8-base64/angular-utf8-base64.js",
+      "node_modules/urijs/src/URI.js",
+      "node_modules/urijs/src/URITemplate.js",
+      "node_modules/urijs/src/jquery.URI.js",
+      "node_modules/urijs/src/URI.fragmentURI.js",
 
       // load fixtures before source
       'test/spec/fixtures/config.js',
@@ -82,7 +82,6 @@ module.exports = function(config) {
     // - Firefox
     // - Opera
     // - Safari (only Mac)
-    // - PhantomJS
     // - IE (only Windows)
     // CLI --browsers Chrome,Firefox,Safari
     browsers: [process.env.TRAVIS ? 'Firefox' : 'Chrome'],

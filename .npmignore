@@ -2,15 +2,12 @@
 .bundle
 .idea
 
-.bowerrc
-.bower.json
 .editorconfig
 .gitignore
 .jshintrc
 .travis.yml
 
 node_modules
-bower_components
 
 phantomjsdriver.log
 
@@ -20,4 +17,3 @@ Makefile
 hack
 src
 test
-
