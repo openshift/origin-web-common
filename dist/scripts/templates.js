@@ -306,7 +306,7 @@ angular.module('openshiftCommonUI').run(['$templateCache', function($templateCac
     "        undone</strong>.  Make sure this is something you really want to do!\n" +
     "      </p>\n" +
     "      <div ng-show=\"typeNameToConfirm\">\n" +
-    "        <p>Type the name of the project to confirm.</p>\n" +
+    "        <p>Type <strong>{{project.metadata.name}}</strong> to confirm deletion.</p>\n" +
     "        <p>\n" +
     "          <label class=\"sr-only\" for=\"resource-to-delete\">project to delete</label>\n" +
     "          <input\n" +
