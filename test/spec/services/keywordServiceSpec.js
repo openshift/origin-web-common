@@ -107,4 +107,94 @@ describe('KeywordService', function() {
       expect(result).toEqual(mockData);
     });
   });
+
+  describe('#weightedSearch', function() {
+    var mockData = {
+      'sample-app': {
+        metadata: {
+          name: 'sample-app',
+          annotations: {
+            'openshift.io/display-name': 'Sample App',
+            'openshift.io/description': 'Sample app that uses Maria'
+          }
+        }
+      },
+      'maria-db': {
+        metadata: {
+          name: 'maria-db',
+          annotations: {
+            'openshift.io/display-name': 'Maria DB'
+          }
+        }
+      },
+      'mongo-db': {
+        metadata: {
+          name: 'mongo-db',
+          annotations: {
+            'openshift.io/display-name': 'Mongo DB',
+            tags: 'db'
+          }
+        }
+      }
+    };
+
+    it('should honor field weights', function() {
+      var keywords = KeywordService.generateKeywords('maria');
+      var result = KeywordService.weightedSearch(mockData, [{
+        path: 'metadata.annotations["openshift.io/display-name"]',
+        weight: 10
+      }, {
+        path: 'metadata.annotations["openshift.io/description"]',
+        weight: 2
+      }], keywords);
+      expect(result).toEqual([ mockData['maria-db'], mockData['sample-app'] ]);
+    });
+
+    it('should weight multiple matches higher', function() {
+      var keywords = KeywordService.generateKeywords('db');
+      var result = KeywordService.weightedSearch(mockData, [{
+        path: 'metadata.annotations["openshift.io/display-name"]',
+        weight: 10
+      }, {
+        path: 'metadata.annotations.tags',
+        weight: 2
+      }], keywords);
+      expect(result).toEqual([ mockData['mongo-db'], mockData['maria-db'] ]);
+    });
+
+    it('should match all keywords', function() {
+      var keywords = KeywordService.generateKeywords('maria db');
+      var result = KeywordService.weightedSearch(mockData, [{
+        path: 'metadata.annotations["openshift.io/display-name"]',
+        weight: 10
+      }, {
+        path: 'metadata.annotations["openshift.io/description"]',
+        weight: 2
+      }], keywords);
+      expect(result).toEqual([ mockData['maria-db'] ]);
+    });
+
+    it('should return an empty array when no keywords', function() {
+      var result = KeywordService.weightedSearch(mockData, [{
+        path: 'metadata.annotations["openshift.io/display-name"]',
+        weight: 10
+      }, {
+        path: 'metadata.annotations["openshift.io/description"]',
+        weight: 2
+      }], []);
+      expect(result.length).toEqual(0);
+    });
+
+    it('should return an empty array when no matches', function() {
+      var keywords = KeywordService.generateKeywords('MISSING');
+      var result = KeywordService.weightedSearch(mockData, [{
+        path: 'metadata.annotations["openshift.io/display-name"]',
+        weight: 10
+      }, {
+        path: 'metadata.annotations["openshift.io/description"]',
+        weight: 2
+      }], keywords);
+      expect(result.length).toEqual(0);
+    });
+  });
 });
