@@ -1,3 +1,430 @@
+/*
+ * This is a pared down version of hawtio-core in order to remove the outdated
+ * dependency as part the migration from bower to yarn.
+ *
+ * TODO Figure out a better strategy for API discovery so that this can be
+ * removed altogether.
+ *
+ */
+
+// log initialization
+/* globals Logger window console document localStorage $ angular jQuery navigator Jolokia */
+(function() {
+  'use strict';
+
+  Logger.setLevel(Logger.INFO);
+  window['LogBuffer'] = 100;
+
+  if ('localStorage' in window) {
+    if (!('logLevel' in window.localStorage)) {
+      window.localStorage['logLevel'] = JSON.stringify(Logger.INFO);
+    }
+    var logLevel = Logger.DEBUG;
+    try {
+      logLevel = JSON.parse(window.localStorage['logLevel']);
+    } catch (e) {
+      console.error("Failed to parse log level setting: ", e);
+    }
+    Logger.setLevel(logLevel);
+
+    if ('logBuffer' in window.localStorage) {
+      var logBuffer = window.localStorage['logBuffer'];
+      window['LogBuffer'] = parseInt(logBuffer, 10);
+    } else {
+      window.localStorage['logBuffer'] = window['LogBuffer'];
+    }
+  }
+})();
+
+/*
+ * Plugin loader and discovery mechanism
+ */
+var pluginLoader = (function(self) {
+  'use strict';
+
+  var log = Logger;
+
+  var bootstrapEl = document.documentElement;
+
+  self.log = log;
+
+  /**
+   * Holds all of the angular modules that need to be bootstrapped
+   * @type {Array}
+   */
+  self.modules = [];
+
+  /**
+   * Tasks to be run before bootstrapping, tasks can be async.
+   * Supply a function that takes the next task to be
+   * executed as an argument and be sure to call the passed
+   * in function.
+   *
+   * @type {Array}
+   */
+  self.tasks = [];
+
+  self.setBootstrapElement = function(el) {
+    log.debug("Setting bootstrap element to: ", el);
+    bootstrapEl = el;
+  }
+
+  self.getBootstrapElement = function() {
+    return bootstrapEl;
+  }
+
+  self.registerPreBootstrapTask = function(task, front) {
+    if (angular.isFunction(task)) {
+      log.debug("Adding legacy task");
+      task = {
+        task: task
+      };
+    }
+
+    if (!task.name) {
+      task.name = 'unnamed-task-' + (self.tasks.length + 1);
+    }
+
+    if (task.depends && !angular.isArray(task.depends) && task.depends !== '*') {
+      task.depends = [task.depends];
+    }
+
+    if (!front) {
+      self.tasks.push(task);
+    } else {
+      self.tasks.unshift(task);
+    }
+  };
+
+  self.addModule = function(module) {
+    log.debug("Adding module: " + module);
+    self.modules.push(module);
+  };
+
+  self.getModules = function() {
+    return self.modules;
+  };
+
+  self.loaderCallback = null;
+
+  self.setLoaderCallback = function(cb) {
+    self.loaderCallback = cb;
+  };
+
+  function intersection(search, needle) {
+    if (!angular.isArray(needle)) {
+      needle = [needle];
+    }
+    var answer = [];
+    needle.forEach(function(n) {
+      search.forEach(function(s) {
+        if (n === s) {
+          answer.push(s);
+        }
+      });
+    });
+    return answer;
+  }
+
+
+  self.loadPlugins = function(callback) {
+
+    var lcb = self.loaderCallback;
+
+    var plugins = {};
+
+    var bootstrap = function() {
+      var executedTasks = [];
+      var deferredTasks = [];
+
+      var bootstrapTask = {
+        name: 'Bootstrap',
+        depends: '*',
+        runs: 0,
+        task: function(next) {
+          function listTasks() {
+            deferredTasks.forEach(function(task) {
+              self.log.info("  name: " + task.name + " depends: ", task.depends);
+            });
+          }
+          if (deferredTasks.length > 0) {
+            self.log.info("tasks yet to run: ");
+            listTasks();
+            bootstrapTask.runs = bootstrapTask.runs + 1;
+            self.log.info("Task list restarted : ", bootstrapTask.runs, " times");
+            if (bootstrapTask.runs === 5) {
+              self.log.info("Orphaned tasks: ");
+              listTasks();
+              deferredTasks.length = 0;
+            } else {
+              deferredTasks.push(bootstrapTask);
+            }
+          }
+          self.log.debug("Executed tasks: ", executedTasks);
+          next();
+        }
+      }
+
+      self.registerPreBootstrapTask(bootstrapTask);
+
+      var executeTask = function() {
+        var tObj = null;
+        var tmp = [];
+        // if we've executed all of the tasks, let's drain any deferred tasks
+        // into the regular task queue
+        if (self.tasks.length === 0) {
+          tObj = deferredTasks.shift();
+        }
+        // first check and see what tasks have executed and see if we can pull a task
+        // from the deferred queue
+        while(!tObj && deferredTasks.length > 0) {
+          var task = deferredTasks.shift();
+          if (task.depends === '*') {
+            if (self.tasks.length > 0) {
+              tmp.push(task);
+            } else {
+              tObj = task;
+            }
+          } else {
+            var intersect = intersection(executedTasks, task.depends);
+            if (intersect.length === task.depends.length) {
+              tObj = task;
+            } else {
+              tmp.push(task);
+            }
+          }
+        }
+        if (tmp.length > 0) {
+          tmp.forEach(function(task) {
+            deferredTasks.push(task);
+          });
+        }
+        // no deferred tasks to execute, let's get a new task
+        if (!tObj) {
+          tObj = self.tasks.shift();
+        }
+        // check if task has dependencies
+        if (tObj && tObj.depends && self.tasks.length > 0) {
+          self.log.debug("Task '" + tObj.name + "' has dependencies: ", tObj.depends);
+          if (tObj.depends === '*') {
+            if (self.tasks.length > 0) {
+              self.log.debug("Task '" + tObj.name + "' wants to run after all other tasks, deferring");
+              deferredTasks.push(tObj);
+              executeTask();
+              return;
+            }
+          } else {
+            var intersect = intersection(executedTasks, tObj.depends);
+            if (intersect.length != tObj.depends.length) {
+              self.log.debug("Deferring task: '" + tObj.name + "'");
+              deferredTasks.push(tObj);
+              executeTask();
+              return;
+            }
+          }
+        }
+        if (tObj) {
+          self.log.debug("Executing task: '" + tObj.name + "'");
+          var called = false;
+          var next = function() {
+            if (next.notFired) {
+              next.notFired = false;
+              executedTasks.push(tObj.name);
+              setTimeout(executeTask, 1);
+            }
+          }
+          next.notFired = true;
+          tObj.task(next);
+        } else {
+          self.log.debug("All tasks executed");
+          setTimeout(callback, 1);
+        }
+      };
+      setTimeout(executeTask, 1);
+    };
+
+    var loadScripts = (function() {
+
+      // keep track of when scripts are loaded so we can execute the callback
+      var loaded = 0;
+      $.each(plugins, function(key, data) {
+        loaded = loaded + data.Scripts.length;
+      });
+
+      var totalScripts = loaded;
+
+      var scriptLoaded = function() {
+        $.ajaxSetup({async:true});
+        loaded = loaded - 1;
+        if (lcb) {
+          lcb.scriptLoaderCallback(lcb, totalScripts, loaded + 1);
+        }
+        if (loaded === 0) {
+          bootstrap();
+        }
+      };
+
+      if (loaded > 0) {
+        $.each(plugins, function(key, data) {
+
+          data.Scripts.forEach( function(script) {
+            var scriptName = data.Context + "/" + script;
+            log.debug("Fetching script: ", scriptName);
+            $.ajaxSetup({async:false});
+            $.getScript(scriptName)
+            .done(function(textStatus) {
+              log.debug("Loaded script: ", scriptName);
+            })
+            .fail(function(jqxhr, settings, exception) {
+              log.info("Failed loading script: \"", exception.message, "\" (<a href=\"", scriptName, ":", exception.lineNumber, "\">", scriptName, ":", exception.lineNumber, "</a>)");
+            })
+            .always(scriptLoaded);
+          });
+        });
+      } else {
+        // no scripts to load, so just do the callback
+        $.ajaxSetup({async:true});
+        bootstrap();
+      }
+      return this;
+    })();
+  };
+
+  self.debug = function() {
+    log.debug("modules");
+    log.debug(self.modules);
+  };
+
+  self.setLoaderCallback({
+    scriptLoaderCallback: function (self, total, remaining) {
+      log.debug("Total scripts: ", total, " Remaining: ", remaining);
+    }
+  });
+
+  return self;
+
+})(pluginLoader || {}, window, undefined);
+
+// Plugin responsible for bootstrapping the app
+var BootstrapPlugin = (function () {
+    'use strict';
+
+    function BootstrapPluginClass(){}
+
+    /**
+     * The app's injector, set once bootstrap is completed
+     */
+    Object.defineProperty(BootstrapPluginClass.prototype, "injector", {
+      get: function() {
+        return BootstrapPlugin._injector;
+      },
+      enumerable: true,
+      configurable: true
+    });
+
+    var BootstrapPlugin = new BootstrapPluginClass();
+
+    /**
+     * This plugin's name and angular module
+     */
+    BootstrapPlugin.pluginName = "bootstrap-plugin";
+    /**
+     * This plugins logger instance
+     */
+    var log = Logger.get(BootstrapPlugin.pluginName);
+
+    var _module = angular.module(BootstrapPlugin.pluginName, []);
+    _module.config(["$locationProvider", function ($locationProvider) {
+      $locationProvider.html5Mode(true);
+    }]);
+
+    _module.run(['documentBase', function (documentBase) {
+      log.debug("loaded");
+    }]);
+
+    BootstrapPlugin.documentBase = function() {
+      var base = $('head').find('base');
+      var answer = '/'
+      if (base && base.length > 0) {
+        answer = base.attr('href');
+      } else {
+        log.warn("Document is missing a 'base' tag, defaulting to '/'");
+      }
+      return answer;
+    }
+
+    // Holds the document base so plugins can easily
+    // figure out absolute URLs when needed
+    _module.factory('documentBase', function() {
+      return BootstrapPlugin.documentBase();
+    });
+
+    pluginLoader.addModule("ng");
+    pluginLoader.addModule("ngSanitize");
+    pluginLoader.addModule(BootstrapPlugin.pluginName);
+
+    // bootstrap the app
+    $(function () {
+
+      jQuery.uaMatch = function( ua ) {
+        ua = ua.toLowerCase();
+
+        var match = /(chrome)[ \/]([\w.]+)/.exec( ua ) ||
+          /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
+          /(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
+          /(msie) ([\w.]+)/.exec( ua ) ||
+          ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
+          [];
+
+        return {
+          browser: match[ 1 ] || "",
+          version: match[ 2 ] || "0"
+        };
+      };
+
+      // Don't clobber any existing jQuery.browser in case it's different
+      if ( !jQuery.browser ) {
+        var matched = jQuery.uaMatch( navigator.userAgent );
+        var browser = {};
+
+        if ( matched.browser ) {
+          browser[ matched.browser ] = true;
+          browser.version = matched.version;
+        }
+
+        // Chrome is Webkit, but Webkit is also Safari.
+        if ( browser.chrome ) {
+          browser.webkit = true;
+        } else if ( browser.webkit ) {
+          browser.safari = true;
+        }
+
+        jQuery.browser = browser;
+      }
+
+      pluginLoader.loadPlugins(function() {
+
+        if (BootstrapPlugin.injector) {
+          log.debug("Application already bootstrapped");
+          return;
+        }
+
+        var bootstrapEl = pluginLoader.getBootstrapElement();
+        log.debug("Using bootstrap element: ", bootstrapEl);
+
+        BootstrapPlugin._injector = angular.bootstrap(bootstrapEl, pluginLoader.getModules(), {
+          strictDi: false
+        });
+        log.debug("Bootstrapped application");
+      });
+    });
+    return BootstrapPlugin;
+})();
+
+// Create an alias for hawtioPluginLoader since it may still be used in other
+// downstream repos.
+window.hawtioPluginLoader = pluginLoader;
+;
 /**
  * @name  openshiftCommonServices
  *
@@ -25,11 +452,11 @@ angular.module('openshiftCommonServices', ['ab-base64'])
     RedirectLoginServiceProvider.OAuthRedirectURI(URI(AUTH_CFG.oauth_redirect_base).segment("oauth").toString());
   }]);
 
-hawtioPluginLoader.addModule('openshiftCommonServices');
+pluginLoader.addModule('openshiftCommonServices');
 
 // API Discovery, this runs before the angular app is bootstrapped
 // TODO we want this to be possible with a single request against the API instead of being dependent on the numbers of groups and versions
-hawtioPluginLoader.registerPreBootstrapTask(function(next) {
+pluginLoader.registerPreBootstrapTask(function(next) {
   // Skips api discovery, needed to run spec tests
   if ( _.get(window, "OPENSHIFT_CONFIG.api.k8s.resources") ) {
     next();
@@ -154,7 +581,8 @@ hawtioPluginLoader.registerPreBootstrapTask(function(next) {
 });
 
 
-;/**
+;
+/**
  * @name  openshiftCommonUI
  *
  * @description
@@ -182,8 +610,9 @@ angular.module('openshiftCommonUI', [])
 .constant('IS_IOS', /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
 
 
-hawtioPluginLoader.addModule('openshiftCommonUI');
-;angular.module('openshiftCommonUI').run(['$templateCache', function($templateCache) {
+pluginLoader.addModule('openshiftCommonUI');
+;
+angular.module('openshiftCommonUI').run(['$templateCache', function($templateCache) {
   'use strict';
 
   $templateCache.put('src/components/binding/bindApplicationForm.html',
@@ -647,777 +1076,8 @@ hawtioPluginLoader.addModule('openshiftCommonUI');
   );
 
 }]);
-;'use strict';
-
-angular.module('openshiftCommonUI').component('bindApplicationForm', {
-  controllerAs: 'ctrl',
-  bindings: {
-    allowNoBinding: '<?',
-    createBinding: '=',
-    applicationName: '=',
-    formName: '=',
-    serviceClasses: '<',
-    serviceInstances: '<',
-    serviceToBind: '='
-  },
-  templateUrl: 'src/components/binding/bindApplicationForm.html',
-  controller: ["BindingService", function (BindingService) {
-    var ctrl = this;
-    ctrl.$onChanges = function (changeObj) {
-      if (changeObj.serviceInstances || changeObj.serviceClasses) {
-        ctrl.bindableServiceInstances = _.filter(ctrl.serviceInstances, isBindable);
-      }
-    };
-
-    function isBindable(serviceInstance) {
-      return BindingService.isServiceBindable(serviceInstance, ctrl.serviceClasses);
-    }
-  }]
-});
-;'use strict';
-
-angular.module('openshiftCommonUI').component('bindResults', {
-  controllerAs: 'ctrl',
-  bindings: {
-    error: '<',
-    binding: '<',
-    serviceToBind: '<',
-    bindType: '@',
-    applicationToBind: '<',
-    showPodPresets: '<',
-    secretHref: '<'
-  },
-  templateUrl: 'src/components/binding/bindResults.html'
-});
-;'use strict';
-
-angular.module('openshiftCommonUI').component('bindServiceForm', {
-  controllerAs: 'ctrl',
-  bindings: {
-    serviceClass: '<',
-    showPodPresets: '<',
-    applications: '<',
-    formName: '=',
-    allowNoBinding: '<?',
-    projectName: '<',
-    bindType: '=', // One of: 'none', 'application', 'secret-only'
-    appToBind: '=' // only applicable to 'application' bindType
-  },
-  templateUrl: 'src/components/binding/bindServiceForm.html',
-  controller: ["$filter", function ($filter) {
-    var ctrl = this;
-
-    var humanizeKind = $filter('humanizeKind');
-    ctrl.groupByKind = function(object) {
-      return humanizeKind(object.kind);
-    };
-  }]
-});
-;"use strict";
-
-angular.module("openshiftCommonUI")
-
-  .directive("createProject", ["$window", function($window) {
-    return {
-      restrict: 'E',
-      scope: {
-        redirectAction: '&',
-        onCancel: '&?',
-        isDialog: '@'
-      },
-      templateUrl: 'src/components/create-project/createProject.html',
-      controller: ["$scope", "$location", "ProjectsService", "NotificationsService", "displayNameFilter", "Logger", function($scope, $location, ProjectsService, NotificationsService, displayNameFilter, Logger) {
-        if(!($scope.submitButtonLabel)) {
-          $scope.submitButtonLabel = 'Create';
-        }
-
-        $scope.isDialog = $scope.isDialog === 'true';
-
-        var hideErrorNotifications = function() {
-          NotificationsService.hideNotification('create-project-error');
-        };
-
-        $scope.createProject = function() {
-          $scope.disableInputs = true;
-          if ($scope.createProjectForm.$valid) {
-            var displayName = $scope.displayName || $scope.name;
-
-            ProjectsService.create($scope.name, $scope.displayName, $scope.description)
-              .then(function(project) {
-                // angular is actually wrapping the redirect action
-                var cb = $scope.redirectAction();
-                if (cb) {
-                  cb(encodeURIComponent(project.metadata.name));
-                } else {
-                  $location.path("project/" + encodeURIComponent(project.metadata.name) + "/create");
-                }
-                NotificationsService.addNotification({
-                  type: "success",
-                  message: "Project \'"  + displayNameFilter(project) + "\' was successfully created."
-                });
-              }, function(result) {
-                $scope.disableInputs = false;
-                var data = result.data || {};
-                if (data.reason === 'AlreadyExists') {
-                  $scope.nameTaken = true;
-                } else {
-                  var msg = data.message || "An error occurred creating project \'" + displayName + "\'.";
-                  NotificationsService.addNotification({
-                    type: 'error',
-                    message: msg
-                  });
-                  Logger.error("Project \'" + displayName + "\' could not be created.", result);
-                }
-              });
-          }
-        };
-
-        $scope.cancelCreateProject = function() {
-          if ($scope.onCancel) {
-            var cb = $scope.onCancel();
-            if (cb) {
-              cb();
-            }
-          } else {
-            $window.history.back();
-          }
-        };
-
-        $scope.$on("$destroy", hideErrorNotifications);
-      }]
-    };
-  }]);
-;'use strict';
-
-angular.module("openshiftCommonUI")
-  .directive("deleteProject", ["$uibModal", "$location", "$filter", "$q", "hashSizeFilter", "APIService", "NotificationsService", "ProjectsService", "Logger", function($uibModal, $location, $filter, $q, hashSizeFilter, APIService, NotificationsService, ProjectsService, Logger) {
-    return {
-      restrict: "E",
-      scope: {
-        // The project to delete
-        project: "=",
-        // Set to true to disable the delete button.
-        disableDelete: "=?",
-        // Force the user to enter the name before we'll delete the project.
-        typeNameToConfirm: "=?",
-        // Optional link label. Defaults to "Delete".
-        label: "@?",
-        // Only show a delete icon with no text.
-        buttonOnly: "@",
-        // Stay on the current page without redirecting to the projects list.
-        stayOnCurrentPage: "=?",
-        // Optional callback when the delete succeeds
-        success: "=?",
-        // Optional redirect URL when the delete succeeds
-        redirectUrl: "@?"
-      },
-      templateUrl: function(elem, attr) {
-        if (angular.isDefined(attr.buttonOnly)) {
-          return "src/components/delete-project/delete-project-button.html";
-        }
-
-        return "src/components/delete-project/delete-project.html";
-      },
-      // Replace so ".dropdown-menu > li > a" styles are applied.
-      replace: true,
-      link: function(scope, element, attrs) {
-        var displayName = $filter('displayName');
-        var navigateToList = function() {
-          if (scope.stayOnCurrentPage) {
-            return;
-          }
-
-          if (scope.redirectUrl) {
-            $location.url(scope.redirectUrl);
-            return;
-          }
-
-          if ($location.path() === '/') {
-            scope.$emit('deleteProject');
-            return;
-          }
-
-          var homeRedirect = URI('/');
-          $location.url(homeRedirect);
-        };
-
-        scope.openDeleteModal = function() {
-          if (scope.disableDelete) {
-            return;
-          }
-
-          // opening the modal with settings scope as parent
-          var modalInstance = $uibModal.open({
-            templateUrl: 'src/components/delete-project/delete-project-modal.html',
-            controller: 'DeleteProjectModalController',
-            scope: scope
-          });
-
-          modalInstance.result.then(function() {
-            // upon clicking delete button, delete resource and send alert
-            var formattedResource = "Project \'"  + displayName(scope.project) + "\'";
-
-            ProjectsService.delete(scope.project).then(function() {
-              NotificationsService.addNotification({
-                type: "success",
-                message: formattedResource + " was marked for deletion."
-              });
-
-              if (scope.success) {
-                scope.success();
-              }
-
-              navigateToList();
-            })
-            .catch(function(err) {
-              // called if failure to delete
-              NotificationsService.addNotification({
-                type: "error",
-                message: formattedResource + " could not be deleted.",
-                details: $filter('getErrorDetails')(err)
-              });
-              Logger.error(formattedResource + " could not be deleted.", err);
-            });
-          });
-        };
-      }
-    };
-  }]);
-;'use strict';
-/* jshint unused: false */
-
-/**
- * @ngdoc function
- * @name openshiftCommonUI.controller:DeleteProjectModalController
- */
-angular.module('openshiftCommonUI')
-  .controller('DeleteProjectModalController', ["$scope", "$uibModalInstance", function ($scope, $uibModalInstance) {
-    $scope.delete = function() {
-      $uibModalInstance.close('delete');
-    };
-
-    $scope.cancel = function() {
-      $uibModalInstance.dismiss('cancel');
-    };
-  }]);
-;"use strict";
-
-angular.module("openshiftCommonUI")
-
-  .directive("editProject", ["$window", function($window) {
-    return {
-      restrict: 'E',
-      scope: {
-        project: '=',
-        submitButtonLabel: '@',
-        redirectAction: '&',
-        onCancel: '&',
-        isDialog: '@'
-      },
-      templateUrl: 'src/components/edit-project/editProject.html',
-      controller: ["$scope", "$filter", "$location", "Logger", "NotificationsService", "ProjectsService", "annotationNameFilter", "displayNameFilter", function($scope,
-                           $filter,
-                           $location,
-                           Logger,
-                           NotificationsService,
-                           ProjectsService,
-                           annotationNameFilter,
-                           displayNameFilter) {
-        if(!($scope.submitButtonLabel)) {
-          $scope.submitButtonLabel = 'Save';
-        }
-
-        $scope.isDialog = $scope.isDialog === 'true';
-
-        var annotation = $filter('annotation');
-        var annotationName = $filter('annotationName');
-
-        var editableFields = function(resource) {
-          return {
-            description: annotation(resource, 'description'),
-            displayName: annotation(resource, 'displayName')
-          };
-        };
-
-        var mergeEditable = function(project, editable) {
-          var toSubmit = angular.copy(project);
-          toSubmit.metadata.annotations[annotationName('description')] = editable.description;
-          toSubmit.metadata.annotations[annotationName('displayName')] = editable.displayName;
-          return toSubmit;
-        };
-
-        var cleanEditableAnnotations = function(resource) {
-          var paths = [
-            annotationNameFilter('description'),
-            annotationNameFilter('displayName')
-          ];
-          _.each(paths, function(path) {
-            if(!resource.metadata.annotations[path]) {
-              delete resource.metadata.annotations[path];
-            }
-          });
-          return resource;
-        };
-
-        $scope.editableFields = editableFields($scope.project);
-
-        $scope.update = function() {
-          $scope.disableInputs = true;
-          if ($scope.editProjectForm.$valid) {
-            ProjectsService
-              .update(
-                $scope.project.metadata.name,
-                cleanEditableAnnotations(mergeEditable($scope.project, $scope.editableFields)))
-              .then(function(project) {
-                // angular is actually wrapping the redirect action :/
-                var cb = $scope.redirectAction();
-                if (cb) {
-                  cb(encodeURIComponent($scope.project.metadata.name));
-                }
-
-                NotificationsService.addNotification({
-                  type: 'success',
-                  message: "Project \'"  + displayNameFilter(project) + "\' was successfully updated."
-                });
-              }, function(result) {
-                $scope.disableInputs = false;
-                $scope.editableFields = editableFields($scope.project);
-                NotificationsService.addNotification({
-                  type: 'error',
-                  message: "An error occurred while updating project \'" + displayNameFilter($scope.project) + "\'." ,
-                  details: $filter('getErrorDetails')(result)
-                });
-                Logger.error("Project \'" + displayNameFilter($scope.project) + "\' could not be updated.", result);
-              });
-          }
-        };
-
-        $scope.cancelEditProject = function() {
-          var cb = $scope.onCancel();
-          if (cb) {
-            cb();
-          } else {
-            $window.history.back();
-          }
-        };
-      }],
-    };
-  }]);
-;"use strict";
-
-angular.module("openshiftCommonUI").component("originModalPopup", {
-  transclude: true,
-  bindings: {
-    modalTitle: '@',
-    shown: '<',
-    position: '@', // 'top-left', 'top-right', 'bottom-left', or 'bottom-right' (default is 'bottom-right')
-    referenceElement: '<?', // Optional reference element, default is parent element. Used to position popup based on screen position
-    onClose: '<'
-  },
-  templateUrl: 'src/components/origin-modal-popup/origin-modal-popup.html',
-  controller: ["$scope", "HTMLService", "$element", "$window", function($scope, HTMLService, $element, $window) {
-    var ctrl = this;
-    var debounceResize;
-
-    function updatePosition() {
-      var positionElement = ctrl.referenceElement || $element[0].parentNode;
-
-      if (positionElement && HTMLService.isWindowAboveBreakpoint(HTMLService.WINDOW_SIZE_SM)) {
-        var posAbove = ctrl.position && ctrl.position.indexOf('top') > -1;
-        var posLeft = ctrl.position && ctrl.position.indexOf('left') > -1;
-        var topPos;
-        var leftPos;
-        var elementRect = positionElement.getBoundingClientRect();
-        var windowHeight = $window.innerHeight;
-        var modalElement = $element[0].children[0];
-        var modalHeight = _.get(modalElement, 'offsetHeight', 0);
-        var modalWidth = _.get(modalElement, 'offsetWidth', 0);
-
-        // auto-adjust vertical position based on showing in the viewport
-        if (elementRect.top < modalHeight) {
-          posAbove = false;
-        } else if (elementRect.bottom + modalHeight > windowHeight) {
-          posAbove = true;
-        }
-
-        if (posAbove) {
-          topPos = (elementRect.top - modalHeight) + 'px';
-        } else {
-          topPos = elementRect.bottom + 'px';
-        }
-
-        if (posLeft) {
-          leftPos = elementRect.left + 'px';
-        } else {
-          leftPos = (elementRect.right - modalWidth) + 'px';
-        }
-
-        ctrl.showAbove = posAbove;
-        ctrl.showLeft = posLeft;
-
-        ctrl.positionStyle = {
-          left: leftPos,
-          top: topPos
-        };
-      } else {
-        ctrl.positionStyle = {};
-      }
-    }
-
-    function showModalBackdrop() {
-      var backdropElement = '<div class="origin-modal-popup-backdrop modal-backdrop fade in tile-click-prevent"></div>';
-      var parentNode = ctrl.referenceElement ? ctrl.referenceElement.parentNode : $element[0].parentNode;
-      $(parentNode).append(backdropElement);
-    }
-
-    function hideModalBackdrop() {
-      $('.origin-modal-popup-backdrop').remove();
-    }
-
-    function onWindowResize() {
-      $scope.$evalAsync(updatePosition);
-    }
-
-    function onShow() {
-      showModalBackdrop();
-      debounceResize = _.debounce(onWindowResize, 50, { maxWait: 250 });
-      angular.element($window).on('resize', debounceResize);
-    }
-
-    function onHide() {
-      hideModalBackdrop();
-      if (debounceResize) {
-        angular.element($window).off('resize', debounceResize);
-        debounceResize = null;
-      }
-    }
-
-    ctrl.$onChanges = function (changeObj) {
-      if (changeObj.shown) {
-        if (ctrl.shown) {
-          onShow();
-        } else {
-          onHide();
-        }
-      }
-
-      if (changeObj.shown || changeObj.referenceElement) {
-        if (ctrl.shown) {
-          updatePosition();
-        }
-      }
-    };
-
-    ctrl.$onDestroy = function() {
-      if (ctrl.shown) {
-        onHide();
-      }
-    }
-  }]
-});
-;'use strict';
-// oscUnique is a validation directive
-// use:
-// Put it on an input or other DOM node with an ng-model attribute.
-// Pass a list (array, or object) via osc-unique="list"
-//
-// Sets model $valid true||false
-// - model is valid so long as the item is not already in the list
-//
-// Key off $valid to enable/disable/sow/etc other objects
-//
-// Validates that the ng-model is unique in a list of values.
-// ng-model: 'foo'
-// oscUnique: ['foo', 'bar', 'baz']       // false, the string 'foo' is in the list
-// oscUnique: [1,2,4]                     // true, the string 'foo' is not in the list
-// oscUnique: {foo: true, bar: false}     // false, the object has key 'foo'
-// NOTES:
-// - non-array values passed to oscUnqiue will be transformed into an array.
-//   - oscUnqiue: 'foo' => [0,1,2]  (probably not what you want, so don't pass a string)
-// - objects passed will be converted to a list of object keys.
-//   - { foo: false } would still be invalid, because the key exists (value is ignored)
-//   - recommended to pass an array
-//
-// Example:
-// - prevent a button from being clickable if the input value has already been used
-// <input ng-model="key" osc-unique="keys" />
-// <button ng-disabled="form.key.$error.oscUnique" ng-click="submit()">Submit</button>
-//
-angular.module('openshiftCommonUI')
-  .directive('oscUnique', function() {
-    return {
-      restrict: 'A',
-      scope: {
-        oscUnique: '=',
-        oscUniqueDisabled: '='
-      },
-      require: 'ngModel',
-      link: function($scope, $elem, $attrs, ctrl) {
-        var list = [];
-        var isUnique = true;
-
-        $scope.$watchCollection('oscUnique', function(newVal) {
-          list = _.isArray(newVal) ?
-                    newVal :
-                    _.keys(newVal);
-        });
-
-        var updateValidity = function() {
-          ctrl.$setValidity('oscUnique', $scope.oscUniqueDisabled || isUnique);
-        };
-
-        $scope.$watch('oscUniqueDisabled', updateValidity);
-
-        ctrl.$parsers.unshift(function(value) {
-          isUnique = !_.includes(list, value);
-          updateValidity();
-          return value;
-        });
-      }
-    };
-  });
-;'use strict';
-
-angular.module('openshiftCommonUI')
-  // This triggers when an element has either a toggle or data-toggle attribute set on it
-  .directive('toggle', ["IS_IOS", function(IS_IOS) {
-    // Sets the CSS cursor value on the document body to allow dismissing the tooltips on iOS.
-    // See https://github.com/twbs/bootstrap/issues/16028#issuecomment-236269114
-    var setCursor = function(cursor) {
-      $('body').css('cursor', cursor);
-    };
-    var setCursorPointer = _.partial(setCursor, 'pointer');
-    var setCursorAuto = _.partial(setCursor, 'auto');
-    if (IS_IOS) {
-      $(document).on('shown.bs.popover', setCursorPointer);
-      $(document).on('shown.bs.tooltip', setCursorPointer);
-      $(document).on('hide.bs.popover', setCursorAuto);
-      $(document).on('hide.bs.tooltip', setCursorAuto);
-    }
-
-    return {
-      restrict: 'A',
-      scope: {
-        dynamicContent: '@?'
-      },
-      link: function($scope, element, attrs) {
-        var popupConfig = {
-          container: attrs.container || "body",
-          placement: attrs.placement || "auto"
-        };
-        if (attrs) {
-          switch(attrs.toggle) {
-            case "popover":
-              // If dynamic-content attr is set at all, even if it hasn't evaluated to a value
-              if (attrs.dynamicContent || attrs.dynamicContent === "") {
-                $scope.$watch('dynamicContent', function() {
-                  $(element).popover("destroy");
-                  // Destroy is asynchronous. Wait for it to complete before updating content.
-                  // See https://github.com/twbs/bootstrap/issues/16376
-                  //     https://github.com/twbs/bootstrap/issues/15607
-                  //     http://stackoverflow.com/questions/27238938/bootstrap-popover-destroy-recreate-works-only-every-second-time
-                  // Destroy calls hide, which takes 150ms to complete.
-                  //     https://github.com/twbs/bootstrap/blob/87121181c8a4b63192865587381d4b8ada8de30c/js/tooltip.js#L31
-                  setTimeout(function() {
-                    $(element)
-                      .attr("data-content", $scope.dynamicContent)
-                      .popover(popupConfig);
-                  }, 200);
-                });
-              }
-              $(element).popover(popupConfig);
-              $scope.$on('$destroy', function(){
-                $(element).popover("destroy");
-              });
-              break;
-            case "tooltip":
-              // If dynamic-content attr is set at all, even if it hasn't evaluated to a value
-              if (attrs.dynamicContent || attrs.dynamicContent === "") {
-                $scope.$watch('dynamicContent', function() {
-                  $(element).tooltip("destroy");
-                  // Destroy is asynchronous. Wait for it to complete before updating content.
-                  // See https://github.com/twbs/bootstrap/issues/16376
-                  //     https://github.com/twbs/bootstrap/issues/15607
-                  //     http://stackoverflow.com/questions/27238938/bootstrap-popover-destroy-recreate-works-only-every-second-time
-                  // Destroy calls hide, which takes 150ms to complete.
-                  //     https://github.com/twbs/bootstrap/blob/87121181c8a4b63192865587381d4b8ada8de30c/js/tooltip.js#L31
-                  setTimeout(function() {
-                    $(element)
-                      .attr("title", $scope.dynamicContent)
-                      .tooltip(popupConfig);
-                  }, 200);
-                });
-              }
-              $(element).tooltip(popupConfig);
-              $scope.$on('$destroy', function(){
-                $(element).tooltip("destroy");
-              });
-              break;
-            case "dropdown":
-              if (attrs.hover === "dropdown") {
-                $(element).dropdownHover({delay: 200});
-                $(element).dropdown();
-              }
-              break;
-          }
-        }
-      }
-    };
-  }]);
-;'use strict';
-
-angular.module('openshiftCommonUI')
-  // The HTML5 `autofocus` attribute does not work reliably with Angular,
-  // so define our own directive
-  .directive('takeFocus', ["$timeout", function($timeout) {
-    return {
-      restrict: 'A',
-      link: function(scope, element) {
-        // Add a delay to allow other asynchronous components to load.
-        $timeout(function() {
-          $(element).focus();
-        }, 300);
-      }
-    };
-  }]);
-;'use strict';
-
-angular.module('openshiftCommonUI')
-  .directive('tileClick', function() {
-    return {
-      restrict: 'AC',
-      link: function($scope, element) {
-        $(element).click(function (evt) {
-          // Don't trigger tile target if the user clicked directly on a link or button inside the tile or any child of a .tile-click-prevent element.
-          var t = $(evt.target);
-          if (t && (t.closest("a", element).length || t.closest("button", element).length) || t.closest(".tile-click-prevent", element).length) {
-            return;
-          }
-          angular.element($('a.tile-target', element))[0].click();
-        });
-      }
-    };
-  });
-;'use strict';
-
-angular.module('openshiftCommonUI')
-  .directive('toastNotifications', ["NotificationsService", "$rootScope", "$timeout", function(NotificationsService, $rootScope, $timeout) {
-    return {
-      restrict: 'E',
-      scope: {},
-      templateUrl: 'src/components/toast-notifications/toast-notifications.html',
-      link: function($scope) {
-        $scope.notifications = [];
-
-        // A notification is removed if it has hidden set and the user isn't
-        // currently hovering over it.
-        var isRemoved = function(notification) {
-          return notification.hidden && !notification.isHover;
-        };
-
-        var removeNotification = function(notification) {
-          notification.isHover = false;
-          notification.hidden = true;
-        };
-
-        // Remove items that are now hidden to keep the array from growing
-        // indefinitely. We loop over the entire array each digest loop, even
-        // if everything is hidden, and any watch update triggers a new digest
-        // loop. If the array grows large, it can hurt performance.
-        var pruneRemovedNotifications = function() {
-          $scope.notifications = _.reject($scope.notifications, isRemoved);
-        };
-
-        $scope.close = function(notification) {
-          removeNotification(notification);
-          if (_.isFunction(notification.onClose)) {
-            notification.onClose();
-          }
-        };
-
-        $scope.onClick = function(notification, link) {
-          if (_.isFunction(link.onClick)) {
-            // If onClick() returns true, also hide the alert.
-            var close = link.onClick();
-            if (close) {
-              removeNotification(notification);
-            }
-          }
-        };
-
-        $scope.setHover = function(notification, isHover) {
-          // Don't change anything if the notification was already removed.
-          // Avoids a potential issue where the flag is reset during the slide
-          // out animation.
-          if (!isRemoved(notification)) {
-            notification.isHover = isHover;
-          }
-        };
-
-        // Listen for updates from NotificationsService to show a notification.
-        var deregisterNotificationListener = $rootScope.$on('NotificationsService.onNotificationAdded', function(event, notification) {
-          if (notification.skipToast) {
-            return;
-          }
-          $scope.$evalAsync(function() {
-            $scope.notifications.push(notification);
-            if (NotificationsService.isAutoDismiss(notification)) {
-              $timeout(function () {
-                notification.hidden = true;
-              }, NotificationsService.dismissDelay);
-            }
-
-            // Whenever we add a new notification, also remove any hidden toasts
-            // so that the array doesn't grow indefinitely.
-            pruneRemovedNotifications();
-          });
-        });
-
-        $scope.$on('$destroy', function() {
-          if (deregisterNotificationListener) {
-            deregisterNotificationListener();
-            deregisterNotificationListener = null;
-          }
-        });
-      }
-    };
-  }]);
-;'use strict';
-
-angular.module('openshiftCommonUI')
-  // Truncates text to a length, adding a tooltip and an ellipsis if truncated.
-  // Different than `text-overflow: ellipsis` because it allows for multiline text.
-  .directive('truncateLongText', ["truncateFilter", function(truncateFilter) {
-    return {
-      restrict: 'E',
-      scope: {
-        content: '=',
-        limit: '=',
-        newlineLimit: '=',
-        useWordBoundary: '=',
-        expandable: '=',
-        // When expandable is on, optionally hide the collapse link so text can only be expanded. (Used for toast notifications.)
-        hideCollapse: '=',
-        keywords: '=highlightKeywords',  // optional keywords to highlight using the `highlightKeywords` filter
-        linkify: '=?'
-      },
-      templateUrl: 'src/components/truncate-long-text/truncateLongText.html',
-      link: function(scope) {
-        scope.toggles = {expanded: false};
-        scope.$watch('content', function(content) {
-          if (content) {
-            scope.truncatedContent = truncateFilter(content, scope.limit, scope.useWordBoundary, scope.newlineLimit);
-            scope.truncated = scope.truncatedContent.length !== content.length;
-          }
-          else {
-            scope.truncatedContent = null;
-            scope.truncated = false;
-          }
-        });
-      }
-    };
-  }]);
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonServices')
   .constant('API_DEDUPLICATION', {
@@ -1430,7 +1090,8 @@ angular.module('openshiftCommonServices')
       {group: 'extensions', kind: 'NetworkPolicy'}
     ]
   });
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonServices')
   .constant('API_PREFERRED_VERSIONS', {
@@ -1482,7 +1143,8 @@ angular.module('openshiftCommonServices')
       templates:                        {group: 'template.openshift.io',      verison: 'v1',      resource: 'templates' },
       users:                            {group: 'user.openshift.io',          version: 'v1',      resource: 'users' }
   });
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonUI')
   .filter("alertStatus", function() {
@@ -1524,7 +1186,8 @@ angular.module('openshiftCommonUI')
       return 'pficon pficon-info';
     };
   });
-;'use strict';
+;
+'use strict';
 /* jshint unused: false */
 
 angular.module('openshiftCommonUI')
@@ -1615,7 +1278,8 @@ angular.module('openshiftCommonUI')
     return (icon) ? icon : "fa fa-cube";
   };
 }]);
-;'use strict';
+;
+'use strict';
 
 angular
   .module('openshiftCommonUI')
@@ -1629,7 +1293,8 @@ angular
       return AuthorizationService.canIAddToProject(namespace);
     };
   }]);
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonUI')
   .filter('isNewerResource', function() {
@@ -1693,7 +1358,8 @@ angular.module('openshiftCommonUI')
       return items;
     };
   }]);
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonUI')
   .filter('highlightKeywords', ["KeywordService", function(KeywordService) {
@@ -1746,7 +1412,8 @@ angular.module('openshiftCommonUI')
       return result;
     };
   }]);
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonUI')
   // Returns an image URL for an icon class if available. Some icons we have
@@ -1777,7 +1444,8 @@ angular.module('openshiftCommonUI')
       return logoBaseUrl + logoImage;
     };
   }]);
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonUI')
   .filter('isAbsoluteURL', function() {
@@ -1790,7 +1458,8 @@ angular.module('openshiftCommonUI')
       return uri.is('absolute') && (protocol === 'http' || protocol === 'https');
     };
   });
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonUI')
 // Usage: <span ng-bind-html="text | linkify : '_blank'"></span>
@@ -1805,7 +1474,8 @@ angular.module('openshiftCommonUI')
     return HTMLService.linkify(text, target, alreadyEscaped);
   };
 }]);
-;'use strict';
+;
+'use strict';
 
 angular.module("openshiftCommonUI")
   .filter("normalizeIconClass", function() {
@@ -1819,7 +1489,8 @@ angular.module("openshiftCommonUI")
       }
     };
   });
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonUI')
   .filter('parseJSON', function() {
@@ -1845,13 +1516,15 @@ angular.module('openshiftCommonUI')
       }
     };
   });
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonUI')
   .filter('preferredVersion', ["APIService", function(APIService) {
     return APIService.getPreferredVersion;
   }]);
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonUI')
   .filter('prettifyJSON', ["parseJSONFilter", function(parseJSONFilter) {
@@ -1866,7 +1539,8 @@ angular.module('openshiftCommonUI')
       }
     };
   }]);
-;'use strict';
+;
+'use strict';
 /* jshint unused: false */
 
 angular.module('openshiftCommonUI')
@@ -2082,7 +1756,8 @@ angular.module('openshiftCommonUI')
     };
   }])
 ;
-;'use strict';
+;
+'use strict';
 angular.module('openshiftCommonUI')
   .filter('camelToLower', function() {
     return function(str) {
@@ -2132,7 +1807,8 @@ angular.module('openshiftCommonUI')
       return true;
     };
   });
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonUI')
   .filter('truncate', function() {
@@ -2164,7 +1840,8 @@ angular.module('openshiftCommonUI')
       return truncated;
     };
   });
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonUI')
   .filter("toArray", function() {
@@ -2222,7 +1899,8 @@ angular.module('openshiftCommonUI')
       return "";
     };
   }]);
-;'use strict';
+;
+'use strict';
 
 angular.module("openshiftCommonServices")
   .service("AlertMessageService", function(){
@@ -2244,7 +1922,8 @@ angular.module("openshiftCommonServices")
       }
     };
   });
-;'use strict';
+;
+'use strict';
 
 // ResourceGroupVersion represents a fully qualified resource
 function ResourceGroupVersion(resource, group, version) {
@@ -2652,7 +2331,8 @@ angular.module('openshiftCommonServices')
     getPreferredVersion: getPreferredVersion
   };
 }]);
-;'use strict';
+;
+'use strict';
 
 angular.module("openshiftCommonServices").
 service("ApplicationsService", ["$q", "APIService", "DataService", function(
@@ -2732,7 +2412,8 @@ service("ApplicationsService", ["$q", "APIService", "DataService", function(
     getApplications: getApplications
   };
 }]);
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonServices')
 // In a config step, set the desired user store and login service. For example:
@@ -3025,7 +2706,8 @@ angular.module('openshiftCommonServices')
     }
   };
 }]);
-;'use strict';
+;
+'use strict';
 
 angular.module("openshiftCommonServices")
   .factory("AuthorizationService", ["$q", "$cacheFactory", "Logger", "$interval", "APIService", "DataService", function($q, $cacheFactory, Logger, $interval, APIService, DataService){
@@ -3202,7 +2884,8 @@ angular.module("openshiftCommonServices")
       getRulesForProject: getRulesForProject
     };
   }]);
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonServices')
   .factory('base64util', function() {
@@ -3218,7 +2901,8 @@ angular.module('openshiftCommonServices')
       }
     };
   });
-;'use strict';
+;
+'use strict';
 
 angular.module("openshiftCommonServices")
   .service("BindingService",
@@ -3459,7 +3143,8 @@ angular.module("openshiftCommonServices")
       sortServiceInstances: sortServiceInstances
     };
   }]);
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonServices')
   .factory('Constants', function() {
@@ -3468,7 +3153,8 @@ angular.module('openshiftCommonServices')
     constants.VERSION = version;
     return constants;
   });
-;'use strict';
+;
+'use strict';
 /* jshint eqeqeq: false, unused: false, expr: true */
 
 angular.module('openshiftCommonServices')
@@ -4962,7 +4648,8 @@ DataService.prototype.createStream = function(resource, name, context, opts, isR
 
   return new DataService();
 }]);
-;'use strict';
+;
+'use strict';
 
 // Logout strategies
 angular.module('openshiftCommonServices')
@@ -4997,7 +4684,8 @@ angular.module('openshiftCommonServices')
     };
   }];
 });
-;'use strict';
+;
+'use strict';
 
 angular.module("openshiftCommonServices")
   .service("KeywordService", ["$filter", function($filter) {
@@ -5101,7 +4789,8 @@ angular.module("openshiftCommonServices")
       generateKeywords: generateKeywords
     };
   }]);
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonServices')
 .provider('Logger', function() {
@@ -5144,7 +4833,8 @@ angular.module('openshiftCommonServices')
     return logger;
   };
 });
-;'use strict';
+;
+'use strict';
 /* jshint unused: false */
 
 // UserStore objects able to remember user and tokens for the current user
@@ -5337,7 +5027,8 @@ angular.module('openshiftCommonServices')
     };
   }];
 });
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonServices')
   .factory('ProjectsService',
@@ -5521,7 +5212,8 @@ angular.module('openshiftCommonServices')
           }
         };
     }]);
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonServices')
   .factory('PromiseUtils', ["$q", function($q) {
@@ -5575,7 +5267,8 @@ angular.module('openshiftCommonServices')
       }
     };
   }]);
-;'use strict';
+;
+'use strict';
 
 angular.module("openshiftCommonServices")
   .service("RecentlyViewedProjectsService", ["$filter", function($filter){
@@ -5644,7 +5337,8 @@ angular.module("openshiftCommonServices")
       isRecentlyViewed: isRecentlyViewed
     };
   }]);
-;'use strict';
+;
+'use strict';
 
 // Login strategies
 angular.module('openshiftCommonServices')
@@ -5906,7 +5600,8 @@ angular.module('openshiftCommonServices')
     };
   }];
 });
-;'use strict';
+;
+'use strict';
 
 angular.module("openshiftCommonServices")
   .service("VersionsService", function(){
@@ -5936,7 +5631,8 @@ angular.module("openshiftCommonServices")
       },
     };
   });
-;'use strict';
+;
+'use strict';
 
 // Provide a websocket implementation that behaves like $http
 // Methods:
@@ -6015,7 +5711,8 @@ angular.module('openshiftCommonServices')
     return $ws;
   }];
 }]);
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonUI').factory('GuidedTourService', function() {
   var hopscotchConfig = {};
@@ -6155,7 +5852,8 @@ angular.module('openshiftCommonUI').factory('GuidedTourService', function() {
     cancelTour: cancelTour
   };
 });
-;'use strict';
+;
+'use strict';
 
 angular.module("openshiftCommonUI")
   .factory("HTMLService", ["BREAKPOINTS", function(BREAKPOINTS) {
@@ -6258,7 +5956,8 @@ angular.module("openshiftCommonUI")
       }
     };
   }]);
-;'use strict';
+;
+'use strict';
 
 angular.module('openshiftCommonUI').provider('NotificationsService', function() {
   this.dismissDelay = 8000;
@@ -6368,3 +6067,787 @@ angular.module('openshiftCommonUI').provider('NotificationsService', function() 
   };
 
 });
+;
+'use strict';
+
+angular.module('openshiftCommonUI').component('bindApplicationForm', {
+  controllerAs: 'ctrl',
+  bindings: {
+    allowNoBinding: '<?',
+    createBinding: '=',
+    applicationName: '=',
+    formName: '=',
+    serviceClasses: '<',
+    serviceInstances: '<',
+    serviceToBind: '='
+  },
+  templateUrl: 'src/components/binding/bindApplicationForm.html',
+  controller: ["BindingService", function (BindingService) {
+    var ctrl = this;
+    ctrl.$onChanges = function (changeObj) {
+      if (changeObj.serviceInstances || changeObj.serviceClasses) {
+        ctrl.bindableServiceInstances = _.filter(ctrl.serviceInstances, isBindable);
+      }
+    };
+
+    function isBindable(serviceInstance) {
+      return BindingService.isServiceBindable(serviceInstance, ctrl.serviceClasses);
+    }
+  }]
+});
+;
+'use strict';
+
+angular.module('openshiftCommonUI').component('bindResults', {
+  controllerAs: 'ctrl',
+  bindings: {
+    error: '<',
+    binding: '<',
+    serviceToBind: '<',
+    bindType: '@',
+    applicationToBind: '<',
+    showPodPresets: '<',
+    secretHref: '<'
+  },
+  templateUrl: 'src/components/binding/bindResults.html'
+});
+;
+'use strict';
+
+angular.module('openshiftCommonUI').component('bindServiceForm', {
+  controllerAs: 'ctrl',
+  bindings: {
+    serviceClass: '<',
+    showPodPresets: '<',
+    applications: '<',
+    formName: '=',
+    allowNoBinding: '<?',
+    projectName: '<',
+    bindType: '=', // One of: 'none', 'application', 'secret-only'
+    appToBind: '=' // only applicable to 'application' bindType
+  },
+  templateUrl: 'src/components/binding/bindServiceForm.html',
+  controller: ["$filter", function ($filter) {
+    var ctrl = this;
+
+    var humanizeKind = $filter('humanizeKind');
+    ctrl.groupByKind = function(object) {
+      return humanizeKind(object.kind);
+    };
+  }]
+});
+;
+"use strict";
+
+angular.module("openshiftCommonUI")
+
+  .directive("createProject", ["$window", function($window) {
+    return {
+      restrict: 'E',
+      scope: {
+        redirectAction: '&',
+        onCancel: '&?',
+        isDialog: '@'
+      },
+      templateUrl: 'src/components/create-project/createProject.html',
+      controller: ["$scope", "$location", "ProjectsService", "NotificationsService", "displayNameFilter", "Logger", function($scope, $location, ProjectsService, NotificationsService, displayNameFilter, Logger) {
+        if(!($scope.submitButtonLabel)) {
+          $scope.submitButtonLabel = 'Create';
+        }
+
+        $scope.isDialog = $scope.isDialog === 'true';
+
+        var hideErrorNotifications = function() {
+          NotificationsService.hideNotification('create-project-error');
+        };
+
+        $scope.createProject = function() {
+          $scope.disableInputs = true;
+          if ($scope.createProjectForm.$valid) {
+            var displayName = $scope.displayName || $scope.name;
+
+            ProjectsService.create($scope.name, $scope.displayName, $scope.description)
+              .then(function(project) {
+                // angular is actually wrapping the redirect action
+                var cb = $scope.redirectAction();
+                if (cb) {
+                  cb(encodeURIComponent(project.metadata.name));
+                } else {
+                  $location.path("project/" + encodeURIComponent(project.metadata.name) + "/create");
+                }
+                NotificationsService.addNotification({
+                  type: "success",
+                  message: "Project \'"  + displayNameFilter(project) + "\' was successfully created."
+                });
+              }, function(result) {
+                $scope.disableInputs = false;
+                var data = result.data || {};
+                if (data.reason === 'AlreadyExists') {
+                  $scope.nameTaken = true;
+                } else {
+                  var msg = data.message || "An error occurred creating project \'" + displayName + "\'.";
+                  NotificationsService.addNotification({
+                    type: 'error',
+                    message: msg
+                  });
+                  Logger.error("Project \'" + displayName + "\' could not be created.", result);
+                }
+              });
+          }
+        };
+
+        $scope.cancelCreateProject = function() {
+          if ($scope.onCancel) {
+            var cb = $scope.onCancel();
+            if (cb) {
+              cb();
+            }
+          } else {
+            $window.history.back();
+          }
+        };
+
+        $scope.$on("$destroy", hideErrorNotifications);
+      }]
+    };
+  }]);
+;
+'use strict';
+
+angular.module("openshiftCommonUI")
+  .directive("deleteProject", ["$uibModal", "$location", "$filter", "$q", "hashSizeFilter", "APIService", "NotificationsService", "ProjectsService", "Logger", function($uibModal, $location, $filter, $q, hashSizeFilter, APIService, NotificationsService, ProjectsService, Logger) {
+    return {
+      restrict: "E",
+      scope: {
+        // The project to delete
+        project: "=",
+        // Set to true to disable the delete button.
+        disableDelete: "=?",
+        // Force the user to enter the name before we'll delete the project.
+        typeNameToConfirm: "=?",
+        // Optional link label. Defaults to "Delete".
+        label: "@?",
+        // Only show a delete icon with no text.
+        buttonOnly: "@",
+        // Stay on the current page without redirecting to the projects list.
+        stayOnCurrentPage: "=?",
+        // Optional callback when the delete succeeds
+        success: "=?",
+        // Optional redirect URL when the delete succeeds
+        redirectUrl: "@?"
+      },
+      templateUrl: function(elem, attr) {
+        if (angular.isDefined(attr.buttonOnly)) {
+          return "src/components/delete-project/delete-project-button.html";
+        }
+
+        return "src/components/delete-project/delete-project.html";
+      },
+      // Replace so ".dropdown-menu > li > a" styles are applied.
+      replace: true,
+      link: function(scope, element, attrs) {
+        var displayName = $filter('displayName');
+        var navigateToList = function() {
+          if (scope.stayOnCurrentPage) {
+            return;
+          }
+
+          if (scope.redirectUrl) {
+            $location.url(scope.redirectUrl);
+            return;
+          }
+
+          if ($location.path() === '/') {
+            scope.$emit('deleteProject');
+            return;
+          }
+
+          var homeRedirect = URI('/');
+          $location.url(homeRedirect);
+        };
+
+        scope.openDeleteModal = function() {
+          if (scope.disableDelete) {
+            return;
+          }
+
+          // opening the modal with settings scope as parent
+          var modalInstance = $uibModal.open({
+            templateUrl: 'src/components/delete-project/delete-project-modal.html',
+            controller: 'DeleteProjectModalController',
+            scope: scope
+          });
+
+          modalInstance.result.then(function() {
+            // upon clicking delete button, delete resource and send alert
+            var formattedResource = "Project \'"  + displayName(scope.project) + "\'";
+
+            ProjectsService.delete(scope.project).then(function() {
+              NotificationsService.addNotification({
+                type: "success",
+                message: formattedResource + " was marked for deletion."
+              });
+
+              if (scope.success) {
+                scope.success();
+              }
+
+              navigateToList();
+            })
+            .catch(function(err) {
+              // called if failure to delete
+              NotificationsService.addNotification({
+                type: "error",
+                message: formattedResource + " could not be deleted.",
+                details: $filter('getErrorDetails')(err)
+              });
+              Logger.error(formattedResource + " could not be deleted.", err);
+            });
+          });
+        };
+      }
+    };
+  }]);
+;
+'use strict';
+/* jshint unused: false */
+
+/**
+ * @ngdoc function
+ * @name openshiftCommonUI.controller:DeleteProjectModalController
+ */
+angular.module('openshiftCommonUI')
+  .controller('DeleteProjectModalController', ["$scope", "$uibModalInstance", function ($scope, $uibModalInstance) {
+    $scope.delete = function() {
+      $uibModalInstance.close('delete');
+    };
+
+    $scope.cancel = function() {
+      $uibModalInstance.dismiss('cancel');
+    };
+  }]);
+;
+"use strict";
+
+angular.module("openshiftCommonUI")
+
+  .directive("editProject", ["$window", function($window) {
+    return {
+      restrict: 'E',
+      scope: {
+        project: '=',
+        submitButtonLabel: '@',
+        redirectAction: '&',
+        onCancel: '&',
+        isDialog: '@'
+      },
+      templateUrl: 'src/components/edit-project/editProject.html',
+      controller: ["$scope", "$filter", "$location", "Logger", "NotificationsService", "ProjectsService", "annotationNameFilter", "displayNameFilter", function($scope,
+                           $filter,
+                           $location,
+                           Logger,
+                           NotificationsService,
+                           ProjectsService,
+                           annotationNameFilter,
+                           displayNameFilter) {
+        if(!($scope.submitButtonLabel)) {
+          $scope.submitButtonLabel = 'Save';
+        }
+
+        $scope.isDialog = $scope.isDialog === 'true';
+
+        var annotation = $filter('annotation');
+        var annotationName = $filter('annotationName');
+
+        var editableFields = function(resource) {
+          return {
+            description: annotation(resource, 'description'),
+            displayName: annotation(resource, 'displayName')
+          };
+        };
+
+        var mergeEditable = function(project, editable) {
+          var toSubmit = angular.copy(project);
+          toSubmit.metadata.annotations[annotationName('description')] = editable.description;
+          toSubmit.metadata.annotations[annotationName('displayName')] = editable.displayName;
+          return toSubmit;
+        };
+
+        var cleanEditableAnnotations = function(resource) {
+          var paths = [
+            annotationNameFilter('description'),
+            annotationNameFilter('displayName')
+          ];
+          _.each(paths, function(path) {
+            if(!resource.metadata.annotations[path]) {
+              delete resource.metadata.annotations[path];
+            }
+          });
+          return resource;
+        };
+
+        $scope.editableFields = editableFields($scope.project);
+
+        $scope.update = function() {
+          $scope.disableInputs = true;
+          if ($scope.editProjectForm.$valid) {
+            ProjectsService
+              .update(
+                $scope.project.metadata.name,
+                cleanEditableAnnotations(mergeEditable($scope.project, $scope.editableFields)))
+              .then(function(project) {
+                // angular is actually wrapping the redirect action :/
+                var cb = $scope.redirectAction();
+                if (cb) {
+                  cb(encodeURIComponent($scope.project.metadata.name));
+                }
+
+                NotificationsService.addNotification({
+                  type: 'success',
+                  message: "Project \'"  + displayNameFilter(project) + "\' was successfully updated."
+                });
+              }, function(result) {
+                $scope.disableInputs = false;
+                $scope.editableFields = editableFields($scope.project);
+                NotificationsService.addNotification({
+                  type: 'error',
+                  message: "An error occurred while updating project \'" + displayNameFilter($scope.project) + "\'." ,
+                  details: $filter('getErrorDetails')(result)
+                });
+                Logger.error("Project \'" + displayNameFilter($scope.project) + "\' could not be updated.", result);
+              });
+          }
+        };
+
+        $scope.cancelEditProject = function() {
+          var cb = $scope.onCancel();
+          if (cb) {
+            cb();
+          } else {
+            $window.history.back();
+          }
+        };
+      }],
+    };
+  }]);
+;
+"use strict";
+
+angular.module("openshiftCommonUI").component("originModalPopup", {
+  transclude: true,
+  bindings: {
+    modalTitle: '@',
+    shown: '<',
+    position: '@', // 'top-left', 'top-right', 'bottom-left', or 'bottom-right' (default is 'bottom-right')
+    referenceElement: '<?', // Optional reference element, default is parent element. Used to position popup based on screen position
+    onClose: '<'
+  },
+  templateUrl: 'src/components/origin-modal-popup/origin-modal-popup.html',
+  controller: ["$scope", "HTMLService", "$element", "$window", function($scope, HTMLService, $element, $window) {
+    var ctrl = this;
+    var debounceResize;
+
+    function updatePosition() {
+      var positionElement = ctrl.referenceElement || $element[0].parentNode;
+
+      if (positionElement && HTMLService.isWindowAboveBreakpoint(HTMLService.WINDOW_SIZE_SM)) {
+        var posAbove = ctrl.position && ctrl.position.indexOf('top') > -1;
+        var posLeft = ctrl.position && ctrl.position.indexOf('left') > -1;
+        var topPos;
+        var leftPos;
+        var elementRect = positionElement.getBoundingClientRect();
+        var windowHeight = $window.innerHeight;
+        var modalElement = $element[0].children[0];
+        var modalHeight = _.get(modalElement, 'offsetHeight', 0);
+        var modalWidth = _.get(modalElement, 'offsetWidth', 0);
+
+        // auto-adjust vertical position based on showing in the viewport
+        if (elementRect.top < modalHeight) {
+          posAbove = false;
+        } else if (elementRect.bottom + modalHeight > windowHeight) {
+          posAbove = true;
+        }
+
+        if (posAbove) {
+          topPos = (elementRect.top - modalHeight) + 'px';
+        } else {
+          topPos = elementRect.bottom + 'px';
+        }
+
+        if (posLeft) {
+          leftPos = elementRect.left + 'px';
+        } else {
+          leftPos = (elementRect.right - modalWidth) + 'px';
+        }
+
+        ctrl.showAbove = posAbove;
+        ctrl.showLeft = posLeft;
+
+        ctrl.positionStyle = {
+          left: leftPos,
+          top: topPos
+        };
+      } else {
+        ctrl.positionStyle = {};
+      }
+    }
+
+    function showModalBackdrop() {
+      var backdropElement = '<div class="origin-modal-popup-backdrop modal-backdrop fade in tile-click-prevent"></div>';
+      var parentNode = ctrl.referenceElement ? ctrl.referenceElement.parentNode : $element[0].parentNode;
+      $(parentNode).append(backdropElement);
+    }
+
+    function hideModalBackdrop() {
+      $('.origin-modal-popup-backdrop').remove();
+    }
+
+    function onWindowResize() {
+      $scope.$evalAsync(updatePosition);
+    }
+
+    function onShow() {
+      showModalBackdrop();
+      debounceResize = _.debounce(onWindowResize, 50, { maxWait: 250 });
+      angular.element($window).on('resize', debounceResize);
+    }
+
+    function onHide() {
+      hideModalBackdrop();
+      if (debounceResize) {
+        angular.element($window).off('resize', debounceResize);
+        debounceResize = null;
+      }
+    }
+
+    ctrl.$onChanges = function (changeObj) {
+      if (changeObj.shown) {
+        if (ctrl.shown) {
+          onShow();
+        } else {
+          onHide();
+        }
+      }
+
+      if (changeObj.shown || changeObj.referenceElement) {
+        if (ctrl.shown) {
+          updatePosition();
+        }
+      }
+    };
+
+    ctrl.$onDestroy = function() {
+      if (ctrl.shown) {
+        onHide();
+      }
+    }
+  }]
+});
+;
+'use strict';
+// oscUnique is a validation directive
+// use:
+// Put it on an input or other DOM node with an ng-model attribute.
+// Pass a list (array, or object) via osc-unique="list"
+//
+// Sets model $valid true||false
+// - model is valid so long as the item is not already in the list
+//
+// Key off $valid to enable/disable/sow/etc other objects
+//
+// Validates that the ng-model is unique in a list of values.
+// ng-model: 'foo'
+// oscUnique: ['foo', 'bar', 'baz']       // false, the string 'foo' is in the list
+// oscUnique: [1,2,4]                     // true, the string 'foo' is not in the list
+// oscUnique: {foo: true, bar: false}     // false, the object has key 'foo'
+// NOTES:
+// - non-array values passed to oscUnqiue will be transformed into an array.
+//   - oscUnqiue: 'foo' => [0,1,2]  (probably not what you want, so don't pass a string)
+// - objects passed will be converted to a list of object keys.
+//   - { foo: false } would still be invalid, because the key exists (value is ignored)
+//   - recommended to pass an array
+//
+// Example:
+// - prevent a button from being clickable if the input value has already been used
+// <input ng-model="key" osc-unique="keys" />
+// <button ng-disabled="form.key.$error.oscUnique" ng-click="submit()">Submit</button>
+//
+angular.module('openshiftCommonUI')
+  .directive('oscUnique', function() {
+    return {
+      restrict: 'A',
+      scope: {
+        oscUnique: '=',
+        oscUniqueDisabled: '='
+      },
+      require: 'ngModel',
+      link: function($scope, $elem, $attrs, ctrl) {
+        var list = [];
+        var isUnique = true;
+
+        $scope.$watchCollection('oscUnique', function(newVal) {
+          list = _.isArray(newVal) ?
+                    newVal :
+                    _.keys(newVal);
+        });
+
+        var updateValidity = function() {
+          ctrl.$setValidity('oscUnique', $scope.oscUniqueDisabled || isUnique);
+        };
+
+        $scope.$watch('oscUniqueDisabled', updateValidity);
+
+        ctrl.$parsers.unshift(function(value) {
+          isUnique = !_.includes(list, value);
+          updateValidity();
+          return value;
+        });
+      }
+    };
+  });
+;
+'use strict';
+
+angular.module('openshiftCommonUI')
+  // This triggers when an element has either a toggle or data-toggle attribute set on it
+  .directive('toggle', ["IS_IOS", function(IS_IOS) {
+    // Sets the CSS cursor value on the document body to allow dismissing the tooltips on iOS.
+    // See https://github.com/twbs/bootstrap/issues/16028#issuecomment-236269114
+    var setCursor = function(cursor) {
+      $('body').css('cursor', cursor);
+    };
+    var setCursorPointer = _.partial(setCursor, 'pointer');
+    var setCursorAuto = _.partial(setCursor, 'auto');
+    if (IS_IOS) {
+      $(document).on('shown.bs.popover', setCursorPointer);
+      $(document).on('shown.bs.tooltip', setCursorPointer);
+      $(document).on('hide.bs.popover', setCursorAuto);
+      $(document).on('hide.bs.tooltip', setCursorAuto);
+    }
+
+    return {
+      restrict: 'A',
+      scope: {
+        dynamicContent: '@?'
+      },
+      link: function($scope, element, attrs) {
+        var popupConfig = {
+          container: attrs.container || "body",
+          placement: attrs.placement || "auto"
+        };
+        if (attrs) {
+          switch(attrs.toggle) {
+            case "popover":
+              // If dynamic-content attr is set at all, even if it hasn't evaluated to a value
+              if (attrs.dynamicContent || attrs.dynamicContent === "") {
+                $scope.$watch('dynamicContent', function() {
+                  $(element).popover("destroy");
+                  // Destroy is asynchronous. Wait for it to complete before updating content.
+                  // See https://github.com/twbs/bootstrap/issues/16376
+                  //     https://github.com/twbs/bootstrap/issues/15607
+                  //     http://stackoverflow.com/questions/27238938/bootstrap-popover-destroy-recreate-works-only-every-second-time
+                  // Destroy calls hide, which takes 150ms to complete.
+                  //     https://github.com/twbs/bootstrap/blob/87121181c8a4b63192865587381d4b8ada8de30c/js/tooltip.js#L31
+                  setTimeout(function() {
+                    $(element)
+                      .attr("data-content", $scope.dynamicContent)
+                      .popover(popupConfig);
+                  }, 200);
+                });
+              }
+              $(element).popover(popupConfig);
+              $scope.$on('$destroy', function(){
+                $(element).popover("destroy");
+              });
+              break;
+            case "tooltip":
+              // If dynamic-content attr is set at all, even if it hasn't evaluated to a value
+              if (attrs.dynamicContent || attrs.dynamicContent === "") {
+                $scope.$watch('dynamicContent', function() {
+                  $(element).tooltip("destroy");
+                  // Destroy is asynchronous. Wait for it to complete before updating content.
+                  // See https://github.com/twbs/bootstrap/issues/16376
+                  //     https://github.com/twbs/bootstrap/issues/15607
+                  //     http://stackoverflow.com/questions/27238938/bootstrap-popover-destroy-recreate-works-only-every-second-time
+                  // Destroy calls hide, which takes 150ms to complete.
+                  //     https://github.com/twbs/bootstrap/blob/87121181c8a4b63192865587381d4b8ada8de30c/js/tooltip.js#L31
+                  setTimeout(function() {
+                    $(element)
+                      .attr("title", $scope.dynamicContent)
+                      .tooltip(popupConfig);
+                  }, 200);
+                });
+              }
+              $(element).tooltip(popupConfig);
+              $scope.$on('$destroy', function(){
+                $(element).tooltip("destroy");
+              });
+              break;
+            case "dropdown":
+              if (attrs.hover === "dropdown") {
+                $(element).dropdownHover({delay: 200});
+                $(element).dropdown();
+              }
+              break;
+          }
+        }
+      }
+    };
+  }]);
+;
+'use strict';
+
+angular.module('openshiftCommonUI')
+  // The HTML5 `autofocus` attribute does not work reliably with Angular,
+  // so define our own directive
+  .directive('takeFocus', ["$timeout", function($timeout) {
+    return {
+      restrict: 'A',
+      link: function(scope, element) {
+        // Add a delay to allow other asynchronous components to load.
+        $timeout(function() {
+          $(element).focus();
+        }, 300);
+      }
+    };
+  }]);
+;
+'use strict';
+
+angular.module('openshiftCommonUI')
+  .directive('tileClick', function() {
+    return {
+      restrict: 'AC',
+      link: function($scope, element) {
+        $(element).click(function (evt) {
+          // Don't trigger tile target if the user clicked directly on a link or button inside the tile or any child of a .tile-click-prevent element.
+          var t = $(evt.target);
+          if (t && (t.closest("a", element).length || t.closest("button", element).length) || t.closest(".tile-click-prevent", element).length) {
+            return;
+          }
+          angular.element($('a.tile-target', element))[0].click();
+        });
+      }
+    };
+  });
+;
+'use strict';
+
+angular.module('openshiftCommonUI')
+  .directive('toastNotifications', ["NotificationsService", "$rootScope", "$timeout", function(NotificationsService, $rootScope, $timeout) {
+    return {
+      restrict: 'E',
+      scope: {},
+      templateUrl: 'src/components/toast-notifications/toast-notifications.html',
+      link: function($scope) {
+        $scope.notifications = [];
+
+        // A notification is removed if it has hidden set and the user isn't
+        // currently hovering over it.
+        var isRemoved = function(notification) {
+          return notification.hidden && !notification.isHover;
+        };
+
+        var removeNotification = function(notification) {
+          notification.isHover = false;
+          notification.hidden = true;
+        };
+
+        // Remove items that are now hidden to keep the array from growing
+        // indefinitely. We loop over the entire array each digest loop, even
+        // if everything is hidden, and any watch update triggers a new digest
+        // loop. If the array grows large, it can hurt performance.
+        var pruneRemovedNotifications = function() {
+          $scope.notifications = _.reject($scope.notifications, isRemoved);
+        };
+
+        $scope.close = function(notification) {
+          removeNotification(notification);
+          if (_.isFunction(notification.onClose)) {
+            notification.onClose();
+          }
+        };
+
+        $scope.onClick = function(notification, link) {
+          if (_.isFunction(link.onClick)) {
+            // If onClick() returns true, also hide the alert.
+            var close = link.onClick();
+            if (close) {
+              removeNotification(notification);
+            }
+          }
+        };
+
+        $scope.setHover = function(notification, isHover) {
+          // Don't change anything if the notification was already removed.
+          // Avoids a potential issue where the flag is reset during the slide
+          // out animation.
+          if (!isRemoved(notification)) {
+            notification.isHover = isHover;
+          }
+        };
+
+        // Listen for updates from NotificationsService to show a notification.
+        var deregisterNotificationListener = $rootScope.$on('NotificationsService.onNotificationAdded', function(event, notification) {
+          if (notification.skipToast) {
+            return;
+          }
+          $scope.$evalAsync(function() {
+            $scope.notifications.push(notification);
+            if (NotificationsService.isAutoDismiss(notification)) {
+              $timeout(function () {
+                notification.hidden = true;
+              }, NotificationsService.dismissDelay);
+            }
+
+            // Whenever we add a new notification, also remove any hidden toasts
+            // so that the array doesn't grow indefinitely.
+            pruneRemovedNotifications();
+          });
+        });
+
+        $scope.$on('$destroy', function() {
+          if (deregisterNotificationListener) {
+            deregisterNotificationListener();
+            deregisterNotificationListener = null;
+          }
+        });
+      }
+    };
+  }]);
+;
+'use strict';
+
+angular.module('openshiftCommonUI')
+  // Truncates text to a length, adding a tooltip and an ellipsis if truncated.
+  // Different than `text-overflow: ellipsis` because it allows for multiline text.
+  .directive('truncateLongText', ["truncateFilter", function(truncateFilter) {
+    return {
+      restrict: 'E',
+      scope: {
+        content: '=',
+        limit: '=',
+        newlineLimit: '=',
+        useWordBoundary: '=',
+        expandable: '=',
+        // When expandable is on, optionally hide the collapse link so text can only be expanded. (Used for toast notifications.)
+        hideCollapse: '=',
+        keywords: '=highlightKeywords',  // optional keywords to highlight using the `highlightKeywords` filter
+        linkify: '=?'
+      },
+      templateUrl: 'src/components/truncate-long-text/truncateLongText.html',
+      link: function(scope) {
+        scope.toggles = {expanded: false};
+        scope.$watch('content', function(content) {
+          if (content) {
+            scope.truncatedContent = truncateFilter(content, scope.limit, scope.useWordBoundary, scope.newlineLimit);
+            scope.truncated = scope.truncatedContent.length !== content.length;
+          }
+          else {
+            scope.truncatedContent = null;
+            scope.truncated = false;
+          }
+        });
+      }
+    };
+  }]);

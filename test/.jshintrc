@@ -38,8 +38,6 @@
     "xit": false,
     "jasmine": false,
     "spyOn": false,
-    "hawtioPluginLoader": false,
-    "HawtioCore": false,
     "Logger" : false,
     "LabelSelector": false,
     "moment": false,
