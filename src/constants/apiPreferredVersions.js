@@ -26,6 +26,7 @@ angular.module('openshiftCommonServices')
       imagestreamimages:                {group: 'image.openshift.io',         version: 'v1',      resource: 'imagestreamimages' },
       imagestreamimports:               {group: 'image.openshift.io',         version: 'v1',      resource: 'imagestreamimports' },
       limitranges:                      {version: 'v1',                       resource: 'limitranges' },
+      mobileclients:                    {group: "mobile.k8s.io",              version: "v1alpha1", resource: "mobileclients"},
       oauthaccesstokens:                {group: 'oauth.openshift.io',         version: 'v1',      resource: 'oauthaccesstokens' },
       pods:                             {version: 'v1',                       resource: 'pods' },
       'pods/log':                       {version: 'v1',                       resource: 'pods/log' },
