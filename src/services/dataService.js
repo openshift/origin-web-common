@@ -4,14 +4,8 @@
 angular.module('openshiftCommonServices')
 .factory('DataService', function($cacheFactory, $http, $ws, $rootScope, $q, API_CFG, APIService, Logger, $timeout, base64, base64util) {
 
-  // Accept PartialObjectMetadataList. Unfortunately we can't use the Accept
-  // header to fallback to JSON due to an API server content negotiation bug.
-  // https://github.com/kubernetes/kubernetes/issues/50519
-  //
-  // This is a potential version skew issue for when the web console runs in
-  // a pod where we potentially need to support different server versions.
-  // https://trello.com/c/9oaUh8xP
-  var ACCEPT_PARTIAL_OBJECT_METADATA_LIST = 'application/json;as=PartialObjectMetadataList;v=v1alpha1;g=meta.k8s.io';
+  // This will request just a list of the object metadata, falling back to application/json if needed.
+  var ACCEPT_PARTIAL_OBJECT_METADATA_LIST = 'application/json;as=PartialObjectMetadataList;v=v1beta1;g=meta.k8s.io,application/json';
 
   function Data(array) {
     this._data = {};
