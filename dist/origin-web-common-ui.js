@@ -1904,7 +1904,7 @@ angular.module('openshiftCommonUI').factory('GuidedTourService', function() {
 ;'use strict';
 
 angular.module("openshiftCommonUI")
-  .factory("HTMLService", function(BREAKPOINTS) {
+  .factory("HTMLService", function($sanitize, BREAKPOINTS) {
     var WINDOW_SIZE_XXS = 'xxs';
     var WINDOW_SIZE_XS = 'xs';
     var WINDOW_SIZE_SM = 'sm';
@@ -2003,13 +2003,13 @@ angular.module("openshiftCommonUI")
         }
 
         // Replace any URLs with links.
-        return text.replace(/https?:\/\/[A-Za-z0-9._%+-]+\S*[^\s.;,(){}<>"\u201d\u2019]/gm, function(str) {
+        return $sanitize(text.replace(/https?:\/\/[A-Za-z0-9._%+-]+\S*[^\s.;,(){}<>"\u201d\u2019]/gm, function(str) {
           if (target) {
             return "<a href=\"" + str + "\" target=\"" + target + "\">" + str + "</a>";
           }
 
           return "<a href=\"" + str + "\">" + str + "</a>";
-        });
+        }));
       }
     };
   });
