@@ -6,7 +6,7 @@ set -e
 # we can amend our path to look into the local node_modules for the
 # correct binaries.
 repo_root="$( dirname "${BASH_SOURCE}" )/.."
-export PATH="${PATH}:${repo_root}/node_modules/grunt-cli/bin"
+export PATH="${PATH}:${repo_root}/node_modules/.bin"
 
 grunt build
 

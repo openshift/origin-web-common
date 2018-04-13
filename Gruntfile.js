@@ -99,7 +99,7 @@ module.exports = function (grunt) {
             cleancss: true,
             paths: [
               'src/styles',
-              'bower_components/'
+              'node_modules/'
             ]
           }
         }

@@ -3,9 +3,9 @@ coverage
 .tmp
 .bundle
 .idea
-bower_components
 phantomjsdriver.log
 .DS_Store
 test/test-results.xml
 npm-debug.log
 Chrome_*
+yarn-error.log

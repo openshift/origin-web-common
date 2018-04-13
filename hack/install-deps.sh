@@ -23,26 +23,24 @@ function cmd() {
   exit $rc
 }
 
-# We don't need grunt and bower to be installed globally for the system,
+# We don't need grunt and yarn to be installed globally for the system,
 # so we can amend our path to look into the local node_modules for the
 # correct binaries.
 repo_root="$( dirname "${BASH_SOURCE}" )/.."
-export PATH="${PATH}:${repo_root}/node_modules/bower/bin:${repo_root}/node_modules/grunt-cli/bin"
+export PATH="${PATH}:${repo_root}/node_modules/.bin"
 
-# Install bower if needed
-if ! which bower > /dev/null 2>&1 ; then
-  cmd "npm install bower"
+# Install yarn if needed
+if ! which yarn > /dev/null 2>&1 ; then
+  cmd "npm install yarn"
 fi
+
+# In case upstream components change things without incrementing versions
+cmd "yarn cache clean"
+cmd "yarn"
 
 # Install grunt if needed
 if ! which grunt > /dev/null 2>&1 ; then
-  cmd "npm install grunt-cli"
+  cmd "yarn add -D grunt-cli"
 fi
-
-cmd "npm install --unsafe-perm"
-
-# In case upstream components change things without incrementing versions
-cmd "bower cache clean --allow-root"
-cmd "bower update --allow-root" 3
 
 ret=$?; ENDTIME=$(date +%s); echo "$0 took $(($ENDTIME - $STARTTIME)) seconds"; exit "$ret"
