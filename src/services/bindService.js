@@ -66,16 +66,15 @@ angular.module("openshiftCommonServices")
       return secret;
     };
 
-    var makeBinding = function(serviceInstance, application, parametersSecretName) {
+    var makeBinding = function(serviceInstance, application, parametersSecretName, metadata) {
       var instanceName = serviceInstance.metadata.name;
 
+      metadata = _.assign({ generateName: instanceName + '-' }, metadata);
       var credentialSecretName = generateSecretName(serviceInstance.metadata.name + '-credentials-');
       var binding = {
         kind: 'ServiceBinding',
         apiVersion: 'servicecatalog.k8s.io/v1beta1',
-        metadata: {
-          generateName: instanceName + '-'
-        },
+        metadata: metadata,
         spec: {
           instanceRef: {
             name: instanceName
@@ -207,13 +206,13 @@ angular.module("openshiftCommonServices")
       // is specified, also create a pod preset for that application using its
       // `spec.selector`. `serviceClass` is required to determine if any
       // parameters need to be set when creating the binding.
-      bindService: function(serviceInstance, application, serviceClass, parameters) {
+      bindService: function(serviceInstance, application, serviceClass, parameters, metadata) {
         var parametersSecretName;
         if (!_.isEmpty(parameters)) {
           parametersSecretName = generateSecretName(serviceInstance.metadata.name + '-bind-parameters-');
         }
 
-        var newBinding = makeBinding(serviceInstance, application, parametersSecretName);
+        var newBinding = makeBinding(serviceInstance, application, parametersSecretName, metadata);
         var context = {
           namespace: serviceInstance.metadata.namespace
         };
