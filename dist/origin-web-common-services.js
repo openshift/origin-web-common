@@ -3900,7 +3900,8 @@ angular.module('openshiftCommonServices')
     kinds: [
       {group: 'extensions', kind: 'DaemonSet'},
       {group: 'extensions', kind: 'HorizontalPodAutoscaler'},
-      {group: 'extensions', kind: 'NetworkPolicy'}
+      {group: 'extensions', kind: 'NetworkPolicy'},
+      {group: 'extensions', kind: 'ReplicationControllerDummy'}
     ]
   });
 ;'use strict';
