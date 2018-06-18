@@ -28,7 +28,9 @@ angular.module('openshiftCommonUI')
       "loggingDataPrefix":        ["openshift.io/logging.data.prefix"],
       "idledAt":                  ["idling.alpha.openshift.io/idled-at"],
       "idledPreviousScale":       ["idling.alpha.openshift.io/previous-scale"],
-      "systemOnly":               ["authorization.openshift.io/system-only"]
+      "systemOnly":               ["authorization.openshift.io/system-only"],
+      "mobileSetBuildDownload":   ["aerogear.org/download-mobile-artifact"],
+      "mobileGetBuildDownload":   ["aerogear.org/download-mobile-artifact-url"]
     };
     return function(annotationKey) {
       return annotationMap[annotationKey] || null;
